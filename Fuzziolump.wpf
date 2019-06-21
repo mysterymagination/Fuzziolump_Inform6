@@ -1,0 +1,40 @@
+###########################################################################
+# Template for Wide Project File (Wide / Inform Pack)
+#
+###########################################################################
+#
+# Save this template as "filename.wpf" and use it as Wide Project 
+# 
+# Possible values:
+#
+# ZCODEVERSION (values 5 or 8) 
+#
+# [FILES]     Add your files (inf o h) in this section
+# [CLASSES]   Add your custom classes  (will be visible inside the object's tree)
+# [KEYWORDS]  Add your custom keywords (will be highlighted inside Wide)
+#
+# See below for example values
+#
+###########################################################################
+
+# values:5 or 8
+# set zcode version of your project
+ZCODEVERSION=5
+
+# add here sources of your project
+[FILES]
+F00=example.inf
+F01=example_game.inf
+F02=example_menu.inf
+
+# add here your custom class: will be visible inside the object's tree
+[CLASSES]
+C00=Room
+C01=Prop
+C02=MyDoor
+C03=NPC
+
+# add here your custom keywords
+[KEYWORDS]
+K00=attitude
+K01=turnsinside
