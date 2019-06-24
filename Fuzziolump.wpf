@@ -23,9 +23,6 @@ ZCODEVERSION=5
 
 # add here sources of your project
 [FILES]
-F00=example.inf
-F01=example_game.inf
-F02=example_menu.inf
 
 # add here your custom class: will be visible inside the object's tree
 [CLASSES]

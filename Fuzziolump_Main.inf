@@ -1,0 +1,63 @@
+! story title - this is presumably metadata given what comes next...
+Constant Story "Fuzziolump";
+
+! story headline that will be user-facing
+Constant Headline
+              "^Fuzziolump - Version 0.3^
+                By Jeff Creswell (2019)^";
+
+! high score
+Constant MAX_SCORE 255;
+
+! current build revision
+Release 0.3
+
+! Parser and VerbLib form the foundation of the Inform parser and are required
+Include "Parser";
+Include "VerbLib";
+
+! Grammar will provide the standard Inform grammar plus extensions
+Include "Grammar";
+
+! The following function is called by Inform when the player types SCORE or when
+! the player ends the game. As you can see, each range of points has a different
+! string printed. You can modify this function to suit your own story. Remember,
+! the constant MAX_SCORE contains the value that is used by Inform to represent
+! "You have scored <score> out of <MAX_SCORE>", so you want both the Constant
+! and this function to be synchronized.
+[ PrintRank;
+  print ", earning you the rank of ";
+  if (score >= 100) "the greatest.";
+  if (score >= 80) "above average.";
+  if (score >= 60) "average.";
+  if (score >= 40) "below average.";
+  if (score >= 20) "the barely living.";
+  "the living dead.";
+  ! todo: what a weird conditional branch structure... I guess print opens a stream
+  ! of some sort and then can optionally take in more input, but how does
+  ! it know to not take in the default 'the living dead.' string after 
+  ! selecting one of the others?  This presumably works as a switch
+  ! statement with specific case handling and then a default case, but it
+  ! reads like it would bleed through into the default regardless.
+];
+
+! Define the object "Wombat Warren"
+   !
+   ! Object Name: Wombat Warren
+   ! Short Description: "A Warren of Wombats"
+   ! Initial Description: none
+   ! Normal Description: "You are standing outside the Wombat Warren, amidst a ruinous landscape in the aftermath of battle."
+   ! Attributes: light
+   !
+   ! The Wombat Warren is the first location of our game.  It includes a description
+   ! and when we enter it, it will have light.
+   !
+   Object Wombat Warren "A Warren of Wombats"
+       with  description
+             "You are standing outside the Wombat Warren, amidst a ruinous landscape in the aftermath of battle.",
+       has   light;
+
+! main fn
+[ Inititalise;
+  location = Wombat Warren;
+];
