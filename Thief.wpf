@@ -23,7 +23,7 @@ ZCODEVERSION=5
 
 # add here sources of your project
 [FILES]
-F00=Fuzziolump_Main.inf
+F00=Thief_Main.inf
 
 # add here your custom class: will be visible inside the object's tree
 [CLASSES]

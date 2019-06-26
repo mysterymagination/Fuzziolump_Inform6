@@ -1,16 +1,16 @@
 ! story title - this is presumably metadata given what comes next...
-Constant Story "Fuzziolump";
+Constant Story "Thief";
 
 ! story headline that will be user-facing
 Constant Headline
-              "^Fuzziolump - Version 0.3^
+              "^Thief - Version 1^
                 By Jeff Creswell (2019)^";
 
 ! high score
 Constant MAX_SCORE 255;
 
 ! current build revision
-Release 3;
+Release 1;
 
 ! Parser and VerbLib form the foundation of the Inform parser and are required
 Include "Parser";
@@ -21,7 +21,7 @@ Include "Grammar";
 
 ! main fn
 [ Initialise;
-  location = WombatWarren;
+  location = Grandiossuary;
 ];
 
 ! The following function is called by Inform when the player types SCORE or when
@@ -46,18 +46,23 @@ Include "Grammar";
   ! reads like it would bleed through into the default regardless.
 !];
 
-! Define the object "WombatWarren"
+! Define the object "Grandiossuary"
    !
-   ! Object Name: WombatWarren
-   ! Short Description: "A Warren of Wombats"
+   ! Object Name: Grandiossuary
+   ! Short Description: "A lavish atrium, flush with thorned roses."
    ! Initial Description: none
-   ! Normal Description: "You are standing outside the Wombat Warren, amidst a ruinous landscape in the aftermath of battle."
+   ! Normal Description: "You are standing before a dazzling array of glittering oppulence.  
+   ! Rows upon rows of bespectacled dwarves labor over ledgers amidst a cacophony
+   ! of quill scratches, all ignoring you studiously.  Several burly guards, each wielding
+   ! twin battleaxes with blades twice the width of your shoulderspan, watch you 
+   ! carefully.  A gorgeous female receptionist beams at you, her incandescence making
+   ! you sweat from across the room."
    ! Attributes: light
    !
-   ! The Wombat Warren is the first location of our game.  It includes a description
+   ! The Gradiossuary is the first location of our game.  It includes a description
    ! and when we enter it, it will have light.
    !
-   Object WombatWarren "A Warren of Wombats"
-       with  description
-             "You are standing outside the Wombat Warren, amidst a ruinous landscape in the aftermath of battle.",
-       has   light;
+   Object Grandiossuary "A lavish atrium, flush with thorned roses."
+       with description
+             "You are standing before a dazzling array of glittering oppulence.  Rows upon rows of bespectacled dwarves labor over ledgers amidst a cacophony of quill scratches, all ignoring you studiously.  Several burly guards, each wielding twin battleaxes with blades twice the width of your shoulderspan, watch you carefully.  A gorgeous female receptionist beams at you, her incandescence making you sweat from across the room.",
+       has light;
