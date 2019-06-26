@@ -46,7 +46,7 @@ Include "Grammar";
   ! reads like it would bleed through into the default regardless.
 !];
 
-! Define the object "Grandiossuary"
+! Define locations
    !
    ! Object Name: Grandiossuary
    ! Short Description: "A lavish atrium, flush with thorned roses."
@@ -59,10 +59,15 @@ Include "Grammar";
    ! you sweat from across the room."
    ! Attributes: light
    !
-   ! The Gradiossuary is the first location of our game.  It includes a description
-   ! and when we enter it, it will have light.
+   ! The Gradiossuary is the oppulent to 11 atrium of the Dwarven Royal Treasury,
+   ! and hosts a multitude of dwarves whose smiles are all teeth.
    !
    Object Grandiossuary "A lavish atrium, flush with thorned roses."
        with description
              "You are standing before a dazzling array of glittering oppulence.  Rows upon rows of bespectacled dwarves labor over ledgers amidst a cacophony of quill scratches, all ignoring you studiously.  Several burly guards, each wielding twin battleaxes with blades twice the width of your shoulderspan, watch you carefully.  A gorgeous female receptionist beams at you, her incandescence making you sweat from across the room.",
        has light;
+    
+    ! The Vault is the public heart of the dwarven treasury, holding immeasurable wealth
+    Object Vault "A vault capable of keeping anything out... or in."
+       with description
+          "Mountains of gold coins, shimmering gems in every color of the rainbow plus a few you're certain you've never seen before, and powerful artifacts humming with magical potential languish in idle safety before you.  Your mouth begins to water, but you staunchly refuse to be distracted from your true goal: The OmniNomicron.  It should be here somewhere amidst the hoard.";
