@@ -1,3 +1,5 @@
+Constant DEBUG;
+
 ! story title - this is presumably metadata given what comes next...
 ! What we're going for here is a Fable in Five, basically a bite-sized IF 
 ! adventure with approximately 5 locations, 1 minor quest, 1 non-trivial puzzle/riddle thing,
@@ -68,13 +70,26 @@ Include "Grammar";
    Object Grandiossuary "A lavish atrium, flush with thorned roses"
        with description
              "You are standing before a dazzling array of glittering oppulence.  Rows upon rows of bespectacled dwarves labor over ledgers amidst a cacophony of quill scratches, all ignoring you studiously.  Several burly guards, each wielding twin battleaxes with blades twice the width of your shoulderspan, watch you carefully.  A gorgeous female receptionist beams at you, her incandescence making you sweat from across the room.",
+       nw_to Archive,
+       ne_to WardenChamber,
+       n_to Vault_Door,
        has light;
     
     ! The Vault: N of the Grandiossuary is the public heart of the dwarven treasury, holding immeasurable wealth
     Object Vault "A vault capable of keeping anything out... or in"
        with description
-          "Mountains of gold coins, shimmering gems in every color of the rainbow plus a few you're certain you've never seen before, and powerful artifacts humming with magical potential languish in idle safety before you.  Your mouth begins to water, but you staunchly refuse to be distracted from your true goal: The OmniNomicron.  It should be here somewhere amidst the hoard.";
+          "Mountains of gold coins, shimmering gems in every color of the rainbow plus a few you're certain you've never seen before, and powerful artifacts humming with magical potential languish in idle safety before you.  Your mouth begins to water, but you staunchly refuse to be distracted from your true goal: The OmniNomicron.  It should be here somewhere amidst the hoard.",
+        s_to Vault_Door;
     
+    Object Vault_Door "An immeasurably heavy steel door"
+       with name "Vault" "Door",
+            description "The door to the vault showcases the Dwarves' pragmatism: neither gilding nor carvings adorn the barrier separating the covetous from their untold riches.  Rather, the heavy steel construction that is so heavy it requires an inricate system of levers and counterweights even for approved visitors to open speaks for itself.  The actual lock, you imagine, is complex beyond all comprehension.",
+            when_open "The vault door stands ajar, a looming temptress.",
+            when_closed "The vault door stubbornly separates stalwart ~treasure hunters~ (such as you) from the hidden wonders within.",
+            door_to [; if (location == Vault) return Grandiossuary; else return Vault;],
+            door_dir [; if (location == Vault) return s_to; else return n_to;],
+            found_in Vault Grandiossuary,
+            has static door openable lockable locked;
     ! The Archive: NW off the Grandiossuary, this chamber hosts
     ! the collected lore of the Treasury.  There are copious ledgers
     ! here, as one would expect, and beneath this veneer of practicality lurks
