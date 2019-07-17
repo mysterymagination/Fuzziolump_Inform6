@@ -70,10 +70,61 @@ Include "Grammar";
    Object Grandiossuary "A lavish atrium, flush with thorned roses"
        with description
              "You are standing before a dazzling array of glittering oppulence.  Rows upon rows of bespectacled dwarves labor over ledgers amidst a cacophony of quill scratches, all ignoring you studiously.  Several burly guards, each wielding twin battleaxes with blades twice the width of your shoulderspan, watch you carefully.  A gorgeous female receptionist beams at you, her incandescence making you sweat from across the room.",
-       nw_to Archive,
-       ne_to WardenChamber,
-       n_to Vault_Door,
+             guards 'TGuard1' 'TGuard2',
+             nw_to Archive,
+             ne_to WardenChamber,
+             n_to Vault_Door,
        has light;
+    
+    Attribute distracted;
+    
+    ! a person is a sapient creature with, for the purposes of this tale, an array of interest strings and a mapping of characters to affinity integer values.
+    ! The affinity values represent how much this person likes the named character, and is a mostly nonsense ordinal. 
+    Class Person
+       class Object
+       with interests, affinities,
+       has animate;
+  
+    Class Dwarf
+       class Person
+       with description "The stocky race of dwarves are famed for their ingenuity, tenacity, and a certain fondness for unnecessarily heavy weaponry.  Lesser known is their natural resistance to magical effects, which is born of their ties to earth.",
+            gender "unknown",
+            height 4, !feet
+            weight 150; !pounds
+            
+    Class TreasuryGuard
+       class Dwarf
+       with description "This imposing guard wears a serious expression, and watches you like a hawk.",
+            name "guard" "treasury guard" "vault guard",
+            isWatching [;
+               ! a treasury guard is watching if they are not distracted and are present in the Grandiossuary
+               if (~~(self has distracted && self in Grandiossuary)) {
+                  rtrue;
+               } else {
+                  rfalse;
+               }
+               
+            ],
+            weapon "battleaxe",
+            interests,
+            found_in Grandiossuary;
+    
+    ! Skjordun can be distracted by offerings of food or attention from the pretty receptionist
+    TreasuryGuard Skjordun "Skjordun" 
+       with name "Skjordun",
+            description "Having surveilled Skjordun at his local tavern haunts over the past few weeks, you know that he is a glutton; anything savory will command his attention.  You've also noticed that he spends most of his time studying the back of Brunhilde the receptionist, and trying to pretend he isn't.",
+            gender "male",
+            height 5,
+            weight 250,
+            interests 'food' 'Brunhilde',
+       has proper;
+    ! Falknir is greedy, and can only be distracted with monetary compensation
+    TreasuryGuard Falknir "Falknir"
+       with name "Falknir",
+            description "Falknir is a grumpy old fellow, whose only loyalty is to money.  The royal treasury trusts him because they are confident none can beat their pay; they're not wrong.  Several of the street urchins you hired to probe his susceptibility to bribes met with great success while extracting privileged information about The Ancient Society of Scrooge, a secret organization by and for penny-pinchers who read the first chapter of the Dickens work, declared it the greatest work of all time, and then never finished it.",
+            gender "male",
+            interests 'wealth',
+       has proper;
     
     ! The Vault: N of the Grandiossuary is the public heart of the dwarven treasury, holding immeasurable wealth
     Object Vault "A vault capable of keeping anything out... or in"
@@ -84,12 +135,22 @@ Include "Grammar";
     Object Vault_Door "An immeasurably heavy steel door"
        with name "Vault" "Door",
             description "The door to the vault showcases the Dwarves' pragmatism: neither gilding nor carvings adorn the barrier separating the covetous from their untold riches.  Rather, the heavy steel construction that is so heavy it requires an inricate system of levers and counterweights even for approved visitors to open speaks for itself.  The actual lock, you imagine, is complex beyond all comprehension.",
-            when_open "The vault door stands ajar, a looming temptress.",
+            when_open "The vault door stands ajar, a looming temptation.",
             when_closed "The vault door stubbornly separates stalwart ~treasure hunters~ (such as you) from the hidden wonders within.",
             door_to [; if (location == Vault) return Grandiossuary; else return Vault;],
             door_dir [; if (location == Vault) return s_to; else return n_to;],
             found_in Vault Grandiossuary,
+            before [; Open:
+                      if(Skjordun.isWatching() || Falknir.isWatching()) {
+                        print "The guards eye you warily as you fiddle with the vault door's opening mechanism.  ~Please step away from that.  Immediately.~^";
+                        rfalse;
+                      } else {
+                        rtrue;
+                      }
+                      
+                   ],
             has static door openable lockable locked;
+            
     ! The Archive: NW off the Grandiossuary, this chamber hosts
     ! the collected lore of the Treasury.  There are copious ledgers
     ! here, as one would expect, and beneath this veneer of practicality lurks
