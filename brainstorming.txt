@@ -1,0 +1,46 @@
+Storyboard:
+    Background: 
+    "
+     original idea for Thief's thief was to be posing as a government inspector, which gives the player supervised access to the vault.  From there they were supposed to figure out how to get rid of the banker and guards to search for loot.  I like this idea, but I'd prefer to leave the situation a little more free form - start the player in the antechamber and then give them some context: they came here hoping to steal the OmniNomicron, and Plan A is to present a counterfeit govt id to the head of the treasury in order to gain access to the vault.  But that's only Plan A -- other options include /distracting the guards and Fritzwick the accountant so they can sneak into a secret passage... but why would there be secret passages into the vault? 
+    "
+
+Cosmic horror teases in the Tomb of Forgotten Gods:
+1. Anarachnithyzarina: spider+octopus, spider-fied human face on one side and squid-ified human face on the other.  Something about multiple spinnerets from the beak and/or tentacles.  8 legs and 8 arms.  Beautiful puppet-woman over the spider-y head that is painfully animated when the creature needs some charisma.  
+2. Pendulum Spirit: a corpse skewered by and crucified upon a jagged, roughly cross-shaped iron blade with a pendulum bob at its tip.  The pendulum swings in 3 dimensions, hunting living beings in the same room as the spirit and in the vicinity of its arc, and its bob has spiked extensions that scrape the ground to ensure no one can duck under it.
+
+Powers:
+1. Shapechange
+2. Magic Rings
+    2.1 Fire ring:
+        Usage desc (as weapon, in vault): 
+        "
+        The _ ring on your _ turns painfully hot for a moment, and an imperious voice fills your mind, "How dare you command the likes of me, mortal?!  I shall burn, but for my pleasure."
+        For an eternal instant searing agony shreds your reality as the _ ring flashes white hot.  Lazy tendrils of smoke and the stench of melted flesh wend their way casually up to your nostrils, and doubtless to those of the enemies surrounding you.  As the Vault swims back into focus, you realize you've been cradling your hand reflexively, and allow it to drop.
+        "What-", the nearest guard begins to ask, but he's cut off by the deafening shriek of an alarm system. 
+        "MAGIC HAS BEEN DETECTED WITHIN THE PERIMITER", a monotonous female voice announces. "ALL EXITS HAVE BEEN SEALED, AND SHALL REMAIN SEALED UNTIL THE PERPETRATOR HAS BEEN DEALT WITH.  PLEASE REMAIN CALM, CONTINUE WITH YOUR WORK, AND DO NOT MIND THE ARACHNULLS."
+        Not good.  You've never heard of arachnulls, but the context would suggest they are spiders that combat, or perhaps feed upon, magic and wielders thereof.  Your more immediate problem, however, is the accusatory look leveled at you by the treasurer and guards.
+        "Did you just use magic inside the treasury?"
+        "I..."
+        "
+    2.2 Water ring:
+        Usage desc (as escape tactic from vault after triggering magic alarm): 
+        "
+        "Sorry", a bubbly voice chirps in your head, "that's boring.  I've heard that dwarves like to feed intruders to the Forsaken Ones -- I wanna see a dead god!"
+        "
+
+Rooms:
+    Grandiossuary:
+        Desc: "Behold, ye grand hall... hundreds of harrassed-looking dwarven accountants sit at ornate mahagony desks, crunching numbers.  You note with some dismay that all the (effectively nailed-down) marble, mahagony, and gold in-lay must have reduced the size of the treasure hoard significantly.  'Folk are so selfish,' you think, 'why do they never consider us thieves before spreading their cash around?'"
+    Vault:
+        Items:
+            1. Mahagony Bookcase
+                Desc: "The comforting scent of old wood, old ink, and even older leather beckons you closer to the mahagony bookcase.  One of the guards eyes you warily, and the Treasurer chirrups "Look with your eyes, only, please!".  There are many famous titles here: Eldman's Annotated Apocrypha, Nnamni's My God: The Paradox, B. Ezda's Elder Strolls: An Extraplanar Excursion, and Edgar Lovecrust's feel-good travel log satire They're Mad, Mad, Mad, Mad, Mountains, to name but a few.  From their patina, and the way the guard nearest you is purposefully sharpening his axe, you'd guess that they are all first editions -- quite possibly worth more than the entire heap of gold and jewels that dominate the landscape. Still soggy fishsticks compared to the OmniNomicron, though."
+            2. Pedestal, atop which is a Puzzle Box containing the OmniNomicron
+                Desc: "The North wall is dominated by a massive pedestal atop which rests a dwarven puzzle box.  You've heard scary things about these contraptions, but their rarity suggests that the item within is of mouth-watering value."
+            3. Puzzle Box
+                Desc: "A closer look through the transparent puzzle box confirms your supposition -- here rests the coveted OmniNomicron, prized atlas and encyclopedia of Dwarven culinary science.  Also, maybe, in the wrong (right?) hands, an unstoppable killing machine."
+            4. OmniNomicron
+                Desc: "The glorious OmniNomicron is hailed as the definitive guide to the unrivaled realm of Dwarven culinary science.  This alone would make it prized, but its mysterious magic is what makes it priceless: officially no one knows for sure how said magic can be released or what it can accomplish, but it is rumored to contain the secret to performing ___<some kinda culinary pun equivalent to transmogriphication, maybe using our old friend 'nom' again>, the process by which a given lifeform is metamorphosed into a bite-sized edible confection that fully replicates the poor creature's character in a cornucopia of gastronomic brilliance.  Ever found someone so sweet you kinda wanted to be able to taste their awesomeness?  With the OmniNomicron, you literally could.  Anyway, its presence here under puzzle-lock and guard at the heart of the Dwarven treasury vault suggests that the rumors may be credible.  As he taps his foot ostentaciously behind you, you wonder idly what sort of fancy foul-smelling cheese spread the fussy Treasurer would become."
+            5. The Hoard
+                Desc: "A pile of gold and jewels so bright that you can't look directly at it without pain.  What a sweet, sweet pain it is."
+       

@@ -1,3 +1,6 @@
+! todo: add shape change mechanic, which will show us how to make Inform 6 recognize a new action e.g. verb 'change' followed by noun 'shape', or maybe a simpler one-off custom verb shapechange which only ever applies to the player.
+! todo: consider magic ring mechanic?  I like the friendly NPC element that adds.
+
 Constant DEBUG;
 
 ! story title - this is presumably metadata given what comes next...
@@ -118,6 +121,7 @@ Include "Grammar";
             weight 250,
             interests 'food' 'Brunhilde',
        has proper;
+       
     ! Falknir is greedy, and can only be distracted with monetary compensation
     TreasuryGuard Falknir "Falknir"
        with name "Falknir",
@@ -125,6 +129,10 @@ Include "Grammar";
             gender "male",
             interests 'wealth',
        has proper;
+       
+    Dwarf Brunhilde "Brunhilde"
+       with name "Brunhilde",
+            description "The glowing receptionist's name is Brunhilde, and she is far wilier than she lets on.  Her professional persona is one of polite innocence and an infinitely earnest desire to help; having trailed her during off-hours, you've discovered that she makes ",
     
     ! The Vault: N of the Grandiossuary is the public heart of the dwarven treasury, holding immeasurable wealth
     Object Vault "A vault capable of keeping anything out... or in"
