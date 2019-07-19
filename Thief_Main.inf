@@ -24,12 +24,51 @@ Release 1;
 Include "Parser";
 Include "VerbLib";
 
+   !
+   ! Added function ReadSub so that the property 'before' can use it. The default,
+   ! if there is no 'before read', is to examine the object.
+   !
+   [ ReadSub; <<Examine noun>>; ];
+   
+   ! tear verb; default behavior is to say it can't be torn.
+   [ TearSub; "You can't tear that"; ];
+
 ! Grammar will provide the standard Inform grammar plus extensions
 Include "Grammar";
+
+   !
+   ! We also have to extend the read grammar to call ReadSub
+   ! by default.
+   !
+   ! We're using the 'Extend' statment because the word "read" is already defined
+   ! in the grammar file included above. This adds our usage.
+   !
+   ! The 'first' tag is used to indicate to Inform that this usage of the word
+   ! "read" should be the first one checked. Without 'first', the "read" word
+   ! will not work the way we want it to because the default usage will get
+   ! called and will not handle our code properly.
+   !
+   ! 'legible' is the attribute we created and by placing it here, we're telling
+   ! Inform that this attribute must be present in the object to call this usage
+   ! of the word "read".
+   !
+   Extend "read" first * legible                       -> Read;
+   
+   ! We've also added the ability to 'tear' an object. Notice
+   ! we had to specify 'noun' and then direct the default to
+   ! TearSub.
+   !
+   ! By the way, the 'Sub' is added on automatically by Inform.
+   !
+   ! The word 'noun' tells Inform that the word "tear" must be followed by a
+   ! noun, otherwise Inform will reply, "What do you want to tear?".
+   !
+   Verb "tear" * noun                                    -> Tear;
 
 ! main fn
 [ Initialise;
   location = Grandiossuary;
+  ! todo: add letter with some exposition to player inventory
 ];
 
 ! The following function is called by Inform when the player types SCORE or when
@@ -132,7 +171,7 @@ Include "Grammar";
        
     Dwarf Brunhilde "Brunhilde"
        with name "Brunhilde",
-            description "The glowing receptionist's name is Brunhilde, and she is far wilier than she lets on.  Her professional persona is one of polite innocence and an infinitely earnest desire to help.  Having trailed her during off-hours, you've come to doubt that this veneer is genuine: most nights she treks down to a very shady shrine deep in the city's underworks.  Often she brings a man or occasionally a woman with her, a different one each time.  She always returns to the surface alone.",
+            description "The glowing receptionist's name is Brunhilde, and she is far wilier than she lets on.  Her professional persona is one of polite innocence and an infinitely earnest desire to help.  Having trailed her during off-hours, you've come to doubt that this veneer is genuine: most nights she treks down to a very shady shrine deep in the city's underworks, the sort of place not even a masterful creature of the shadows such as yourself would dare enter.  Often she brings a man or occasionally a woman with her, a different one each time.  One she was leading a black ram and had a black rooster under her arm.  She always returns to the surface alone.",
             gender "female",
             interests 'cosmic horror' 'arcana' 'sweets',
             found_in Grandiossuary,
