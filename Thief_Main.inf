@@ -24,14 +24,16 @@ Release 1;
 Include "Parser";
 Include "VerbLib";
 
+! custom attributes
+! legible means something can be read with the read action
+Attribute legible;
+
+! custom actions
    !
    ! Added function ReadSub so that the property 'before' can use it. The default,
    ! if there is no 'before read', is to examine the object.
    !
    [ ReadSub; <<Examine noun>>; ];
-   
-   ! tear verb; default behavior is to say it can't be torn.
-   [ TearSub; "You can't tear that"; ];
 
 ! Grammar will provide the standard Inform grammar plus extensions
 Include "Grammar";
@@ -53,23 +55,22 @@ Include "Grammar";
    ! of the word "read".
    !
    Extend "read" first * legible                       -> Read;
-   
-   ! We've also added the ability to 'tear' an object. Notice
-   ! we had to specify 'noun' and then direct the default to
-   ! TearSub.
-   !
-   ! By the way, the 'Sub' is added on automatically by Inform.
-   !
-   ! The word 'noun' tells Inform that the word "tear" must be followed by a
-   ! noun, otherwise Inform will reply, "What do you want to tear?".
-   !
-   Verb "tear" * noun                                    -> Tear;
 
 ! main fn
 [ Initialise;
+  ! player starts in the Grandiossuary atrium of the Treasury, with the SkullLetter
   location = Grandiossuary;
-  ! todo: add letter with some exposition to player inventory
+  move SkullLetter to player;
 ];
+
+! Define starting inventory
+Object SkullLetter "Skullduggerous Letter"
+   with name 'letter' 'skullduggerous letter' 'instructions',
+        description "This yellowed parchment contains a coded message from your informants, explaining your mission and the plan hatched between ye maestros of mischief.",
+        before [; read: 
+        print "~The chicken squawks upon the lowest branch, her eggs balanced perfectly.  The monk, meanwhile, must make his pilgrimmage down the southwestern slopes of purgatory before descending to hell itself; there only shall he learn the meaning of light by confronting true darkness.~^This nonsense is meant to read like the ravings of a demented priest, or perhaps a fragment of a strange novel.  It's not a code so much as a mneumonic to remind you that your informants, a group of crooked contractors who recently replaced plumbing in the Treasury's undercarriage, bored a hole up into the vault in the exact center of the cellar ceiling.  It's been disguised expertly, and they assure you none would find it without knowing its position.  Further, the bizarre philosophical drivel about a monk traveling to hell means that the best covert way into the cellar is through the air ducts; the safest and most hidden of these can be found in the Southwest corner of the Atrium."; 
+        rtrue;],
+   has legible;
 
 ! The following function is called by Inform when the player types SCORE or when
 ! the player ends the game. As you can see, each range of points has a different
@@ -111,7 +112,7 @@ Include "Grammar";
    !
    Object Grandiossuary "A lavish atrium, flush with thorned roses"
        with description
-             "You are standing before a dazzling array of glittering oppulence.  Rows upon rows of bespectacled dwarves labor over ledgers amidst a cacophony of quill scratches, all ignoring you studiously.  Several burly guards, each wielding twin battleaxes with blades twice the width of your shoulderspan, watch you carefully.  A gorgeous female receptionist beams at you, her incandescence making you sweat from across the room.",
+             "You are standing before a dazzling array of glittering oppulence.  Rows upon rows of bespectacled dwarves labor over ledgers amidst a cacophony of quill scratches, all ignoring you studiously.  Several burly guards, each wielding twin battleaxes with blades twice the width of your shoulderspan, watch you carefully.  A gorgeous female receptionist beams at you, her incandescence making you sweat from across the room.^The mighty Vault looms imposingly directly North, with the Treasury Archive off to the Northwest and the humble Warden's chamber tucked away beyond the Northeast corner of the room.",
              !guards 'TGuard1' 'TGuard2', !array creation
              nw_to Archive,
              ne_to WardenChamber,
@@ -145,7 +146,6 @@ Include "Grammar";
                } else {
                   rfalse;
                }
-               
             ],
             weapon "battleaxe",
             interests,
@@ -167,6 +167,14 @@ Include "Grammar";
             description "Falknir is a grumpy old fellow, whose only loyalty is to money.  The royal treasury trusts him because they are confident none can beat their pay; they're not wrong.  Several of the street urchins you hired to probe his susceptibility to bribes met with great success while extracting privileged information about The Ancient Society of Scrooge, a secret organization by and for penny-pinchers who read the first chapter of the Dickens work, declared it the greatest work of all time, and then never finished it.",
             gender "male",
             interests 'wealth',
+            money_counts 0,
+            daemon  [;   switch (random(10)) {
+                        1: "Falknir shifts his weight, grumping softly about creaking joints.";
+                        3: "With a huff, Falknir blows out his glorious curled mustache and glares at you suspiciously.";
+                        5: "Falknir ostentatiously jingles the coins in his many pouches, baring his gray teeth in a greasy grin.";
+                        7: "Taking his eyes off you for a moment, Falknir busily counts out all the gold in his main money pouch (complete with a dollar sign in gold leaf) for the ",self.money_counts++,"th time.";
+                    }
+               ],
        has proper;
        
     Dwarf Brunhilde "Brunhilde"

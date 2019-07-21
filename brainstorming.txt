@@ -54,6 +54,12 @@ Rooms:
                 Desc: "A pile of gold and jewels so bright that you can't look directly at it without pain.  What a sweet, sweet pain it is."
 
 Puzzles:
-Rainbow Coil: a coil of buzzing rainbow light stretches around the vault's perimiter, afixed to the ceiling.  It prevents free movement in different ways depending on the wavelength of light someone is currently caught in, but this can be modified with prismatic crystals amongst the hoard.  The player has to figure out how to modify the light shining on them to traverse the vault's interior.
+Rainbow Coil: a buzzing coil stretches around the vault's perimiter, afixed to the ceiling.
+    Purpose: 
+    The Rainbow Coil acts like an immaterial Farraday Cage against magical radiation: its colors are normally outside the spectrum of human visible light, though dwarves can make them out vaguely, and these extremely long or short wavelengths are specifically calculated to interfere with and zero-out waves of magic energy.  This keeps the Forgotten Gods from reaching out beyond the bounds of their tomb, and also prevents the use of magic within the vault.     
     Details:
+    -If the Oddly Empty Section of Wall has Glittering Purple light cast upon it in concert with Aquamarine of the Abyss, the passage enchantment is no longer zeroed out.  This allows passage North into the Maw of Infinity.
+    ...  
+    Exploits: 
+    There are gems within the vault that can bend the light from the coil, moving it into the visible spectrum and making it possible for certain wavelengths of magic to permeate the field.  At first, this will allow the gods to advise and entice the player, recommending actions to be taken with the wards from the Warden's chamber to further disrupt the coil and eventually reveal the secret passage between the vault and the Maw of Infinity, an enchanment itself that teleports the solid rock of Godspeak mountain to an extradimensional space and allows passage; with the coil active in the vicinity of this passage, beside the Pedestal against the North wall of the Vault, the enchantment is suppressed.
        
