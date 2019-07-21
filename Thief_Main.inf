@@ -61,6 +61,8 @@ Include "Grammar";
   ! player starts in the Grandiossuary atrium of the Treasury, with the SkullLetter
   location = Grandiossuary;
   move SkullLetter to player;
+  ! start NPC daemons
+  StartDaemon(Falknir);
 ];
 
 ! Define starting inventory
@@ -114,6 +116,8 @@ Object SkullLetter "Skullduggerous Letter"
        with description
              "You are standing before a dazzling array of glittering oppulence.  Rows upon rows of bespectacled dwarves labor over ledgers amidst a cacophony of quill scratches, all ignoring you studiously.  Several burly guards, each wielding twin battleaxes with blades twice the width of your shoulderspan, watch you carefully.  A gorgeous female receptionist beams at you, her incandescence making you sweat from across the room.^The mighty Vault looms imposingly directly North, with the Treasury Archive off to the Northwest and the humble Warden's chamber tucked away beyond the Northeast corner of the room.",
              !guards 'TGuard1' 'TGuard2', !array creation
+             ! intercept entry to Grandiossuary with a command to start Falknir's daemon activity
+             before [; enter: print "we have entered the Grandiossuary"; StartDaemon(Falknir); rfalse;], ! not the right hook?
              nw_to Archive,
              ne_to WardenChamber,
              n_to Vault_Door,
@@ -168,12 +172,15 @@ Object SkullLetter "Skullduggerous Letter"
             gender "male",
             interests 'wealth',
             money_counts 0,
-            daemon  [;   switch (random(10)) {
+            daemon  [; 
+                       if(player in Grandiossuary) {
+                          switch (random(10)) {
                         1: "Falknir shifts his weight, grumping softly about creaking joints.";
                         3: "With a huff, Falknir blows out his glorious curled mustache and glares at you suspiciously.";
                         5: "Falknir ostentatiously jingles the coins in his many pouches, baring his gray teeth in a greasy grin.";
-                        7: "Taking his eyes off you for a moment, Falknir busily counts out all the gold in his main money pouch (complete with a dollar sign in gold leaf) for the ",self.money_counts++,"th time.";
-                    }
+                        7: "Taking his eyes off you for a moment, Falknir busily counts out all the gold in his main money pouch (complete with a dollar sign in gold leaf) for the ",++self.money_counts,"th time.";
+                          }
+                       }
                ],
        has proper;
        
@@ -221,6 +228,7 @@ Object SkullLetter "Skullduggerous Letter"
     Object Archive "The Archive of Treasured Memory"
       with description
         "Bookcases filled with accounting ledgers line the walls here, making the room stuffy despite being quite large.  As a draft rustles the ancient yellowed pages of a nearby text, you wonder why a Treasury needs its own library.  Whispers just beyond hearing plague the silence.",
+           se_to Grandiossuary,
       has light;
     
     ! The Warden's Chamber: NE off the Grandiossuary, this is the office of 
@@ -230,6 +238,7 @@ Object SkullLetter "Skullduggerous Letter"
     Object WardenChamber "The Treasurer's Office"
       with description
         "A few ledgers are placed ostentatiously, though the layer of dust upon them suggests they are not visited as often as one would expect.  The walls are decorated with odd symbols, one of which you recognize as a symbol of warding against the local Goddess of Lost Things, Amyria.  That one's not so strange for an accountant but the dozens of others, along with copious arcane-looking artifacts on display, seem suspicious.",
+        sw_to Grandiossuary,
         has light;
     
     ! The Maw of Infinity: N of the Vault, the entryway to the Tomb of Forgotten Gods,
