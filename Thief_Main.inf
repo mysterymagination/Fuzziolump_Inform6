@@ -62,7 +62,7 @@ Include "Grammar";
   location = Grandiossuary;
   move SkullLetter to player;
   ! start NPC daemons
-  StartDaemon(Falknir);
+  !StartDaemon(Falknir);
 ];
 
 ! Define starting inventory
@@ -117,7 +117,7 @@ Object SkullLetter "Skullduggerous Letter"
              "You are standing before a dazzling array of glittering oppulence.  Rows upon rows of bespectacled dwarves labor over ledgers amidst a cacophony of quill scratches, all ignoring you studiously.  Several burly guards, each wielding twin battleaxes with blades twice the width of your shoulderspan, watch you carefully.  A gorgeous female receptionist beams at you, her incandescence making you sweat from across the room.^The mighty Vault looms imposingly directly North, with the Treasury Archive off to the Northwest and the humble Warden's chamber tucked away beyond the Northeast corner of the room.",
              !guards 'TGuard1' 'TGuard2', !array creation
              ! intercept entry to Grandiossuary with a command to start Falknir's daemon activity
-             before [; enter: print "we have entered the Grandiossuary"; StartDaemon(Falknir); rfalse;], ! not the right hook?
+             after [; go: print "we have entered the Grandiossuary"; StartDaemon(Falknir); rfalse;], ! not the right hook?
              nw_to Archive,
              ne_to WardenChamber,
              n_to Vault_Door,
@@ -159,17 +159,15 @@ Object SkullLetter "Skullduggerous Letter"
     TreasuryGuard Skjordun "Skjordun" 
        with name "Skjordun",
             description "Having surveilled Skjordun at his local tavern haunts over the past few weeks, you know that he is a glutton; anything savory will command his attention.  You've also noticed that he spends most of his time studying the back of Brunhilde the receptionist, and trying to pretend he isn't.",
-            gender "male",
             height 5,
             weight 250,
             interests 'food' 'Brunhilde',
-       has proper;
+       has proper male;
        
     ! Falknir is greedy, and can only be distracted with monetary compensation
     TreasuryGuard Falknir "Falknir"
        with name "Falknir",
             description "Falknir is a grumpy old fellow, whose only loyalty is to money.  The royal treasury trusts him because they are confident none can beat their pay; they're not wrong.  Several of the street urchins you hired to probe his susceptibility to bribes met with great success while extracting privileged information about The Ancient Society of Scrooge, a secret organization by and for penny-pinchers who read the first chapter of the Dickens work, declared it the greatest work of all time, and then never finished it.",
-            gender "male",
             interests 'wealth',
             money_counts 0,
             daemon  [; 
@@ -182,15 +180,25 @@ Object SkullLetter "Skullduggerous Letter"
                           }
                        }
                ],
-       has proper;
+       has proper male;
        
     Dwarf Brunhilde "Brunhilde"
        with name "Brunhilde",
             description "The glowing receptionist's name is Brunhilde, and she is far wilier than she lets on.  Her professional persona is one of polite innocence and an infinitely earnest desire to help.  Having trailed her during off-hours, you've come to doubt that this veneer is genuine: most nights she treks down to a very shady shrine deep in the city's underworks, the sort of place not even a masterful creature of the shadows such as yourself would dare enter.  Often she brings a man or occasionally a woman with her, a different one each time.  One she was leading a black ram and had a black rooster under her arm.  She always returns to the surface alone.",
-            gender "female",
+            life [; 
+                     Answer: 
+                        switch(noun) {
+                           'hello', 'hi', 'hey', 'howdy', 'heya', 'hiya':
+                              "~Why hello there!  Welcome to the fabulous and most ancient Royal Treasury of the Dwarves!~";
+                        }
+                        "Brunhilde adopts a look of cherubic innocence.  ~Pardon?  I'm afraid I don't follow you.~";
+                     Tell: "Batting her lashes at you, she simpers, ~Do go on about ", second, "!~";
+                     NotUnderstood: "She furrows her brow ostentatiously before saying, ~I'm afraid I don't know anything about that.~"; 
+                     default: "Brunhilde smiles politely and tidies her desk."; 
+                  ],
             interests 'cosmic horror' 'arcana' 'sweets',
             found_in Grandiossuary,
-        has proper;
+        has proper female;
     
     ! The Vault: N of the Grandiossuary is the public heart of the dwarven treasury, holding immeasurable wealth
     Object Vault "A vault capable of keeping anything out... or in"
