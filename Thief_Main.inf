@@ -154,6 +154,15 @@ Object SkullLetter "Skullduggerous Letter"
             weapon "battleaxe",
             interests,
             found_in Grandiossuary;
+            
+    ! Fritzwig is the accountant whose desk happens to be nearest the air duct
+    ! player will have to distract him and the guards (the receptionist is on board with the robbery) to enter the air duct
+    Dwarf Fritzwig "Fritzwig" 
+       with name 'Fritzwig' 'accountant',
+            description "This spindly accountant pours over ledgers like an overwrought machine, zipping through papers and somehow leaving more notes than there was source material.  Sweat dripping from his brow, he pauses for a moment to glance at Brunhilde, his perma-furrowed brow relaxing when and only when he takes in her visage.  With a whisper of a sigh, he then returns to his figures.  You apparently didn't need to spy on Mr. Fritzwig to learn his weakness, though of course you did: there's actually a little shrine to her in his flat, filled with discarded utensils and other garbage-y tidbits that had once come into contact with her -- it's creepy.",
+            weight 100,
+            interests 'numbers' 'ledgers' 'Brunhilde',
+       has proper male;
     
     ! Skjordun can be distracted by offerings of food or attention from the pretty receptionist
     TreasuryGuard Skjordun "Skjordun" 
@@ -170,6 +179,15 @@ Object SkullLetter "Skullduggerous Letter"
             description "Falknir is a grumpy old fellow, whose only loyalty is to money.  The royal treasury trusts him because they are confident none can beat their pay; they're not wrong.  Several of the street urchins you hired to probe his susceptibility to bribes met with great success while extracting privileged information about The Ancient Society of Scrooge, a secret organization by and for penny-pinchers who read the first chapter of the Dickens work, declared it the greatest work of all time, and then never finished it.",
             interests 'wealth',
             money_counts 0,
+            life [; 
+                    Show:
+                       switch(noun) {
+                          'money', 'gold', 'gem', 'gems':
+                             "Falknir's eyes light up at the sight of such treasures";
+                       }
+                    default: "The surly old dwarf points toward Brunhilde and says, ~Please direct all inquiries to our receptionist.  I'm sure you'll find her very friendly.  Not so, me.~";
+                       
+                 ],
             daemon  [; 
                        if(player in Grandiossuary) {
                           switch (random(10)) {
@@ -189,9 +207,10 @@ Object SkullLetter "Skullduggerous Letter"
                      Answer: 
                         switch(noun) {
                            'hello', 'hi', 'hey', 'howdy', 'heya', 'hiya':
-                              "~Why hello there!  Welcome to the fabulous and most ancient Royal Treasury of the Dwarves!~";
+                               "~Why hello there, you gorgeous person you!  Welcome to the fabulous and most ancient Royal Treasury of the Dwarves!~  She stands and waves her hands about, framing the elaborate vault at the far side of the room flourish-y-ly.";
+                            default:
+                               "Brunhilde adopts a look of cherubic innocence.  ~Pardon?  I'm afraid I don't follow you.~";
                         }
-                        "Brunhilde adopts a look of cherubic innocence.  ~Pardon?  I'm afraid I don't follow you.~";
                      Tell: "Batting her lashes at you, she simpers, ~Do go on about ", second, "!~";
                      NotUnderstood: "She furrows her brow ostentatiously before saying, ~I'm afraid I don't know anything about that.~"; 
                      default: "Brunhilde smiles politely and tidies her desk."; 
