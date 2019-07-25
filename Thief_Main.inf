@@ -62,7 +62,8 @@ Include "Grammar";
   location = Grandiossuary;
   move SkullLetter to player;
   ! start NPC daemons
-  !StartDaemon(Falknir);
+  StartDaemon(Falknir);
+  StartDaemon(Skjordun);
 ];
 
 ! Define starting inventory
@@ -117,7 +118,7 @@ Object SkullLetter "Skullduggerous Letter"
              "You are standing before a dazzling array of glittering oppulence.  Rows upon rows of bespectacled dwarves labor over ledgers amidst a cacophony of quill scratches, all ignoring you studiously.  Several burly guards, each wielding twin battleaxes with blades twice the width of your shoulderspan, watch you carefully.  A gorgeous female receptionist beams at you, her incandescence making you sweat from across the room.^The mighty Vault looms imposingly directly North, with the Treasury Archive off to the Northwest and the humble Warden's chamber tucked away beyond the Northeast corner of the room.",
              !guards 'TGuard1' 'TGuard2', !array creation
              ! intercept entry to Grandiossuary with a command to start Falknir's daemon activity
-             after [; go: print "we have entered the Grandiossuary"; StartDaemon(Falknir); rfalse;], ! not the right hook?
+             ! after [; go: print "we have entered the Grandiossuary"; StartDaemon(Falknir); rfalse;], ! not the right hook? UPDATE NewRoom() would likely be the entry point fn to override
              nw_to Archive,
              ne_to WardenChamber,
              n_to Vault_Door,
@@ -168,20 +169,34 @@ Object SkullLetter "Skullduggerous Letter"
     TreasuryGuard Skjordun "Skjordun" 
        with name "Skjordun",
             description "Having surveilled Skjordun at his local tavern haunts over the past few weeks, you know that he is a glutton; anything savory will command his attention.  You've also noticed that he spends most of his time studying the back of Brunhilde the receptionist, and trying to pretend he isn't.",
+            daemon  [; 
+                       if(player in Grandiossuary) {
+                          switch (random(5)) {
+                             1: "Skjordun's stomach growls, filling the atrium with a sound like a tiger whose burning brightness has been ignored."
+                          }
+                       }
+                    ],
             life [;
                     Answer:
                        ! iterate through interest string array
                        for(interestIndex = 0: interestIndex < self.#interests: interestIndex++) {
                           if(noun == self.interests-->interestIndex) {
+                             print "~I have great interest in ", noun, "!~";
                              switch(noun) {
                                 'food':
-                                   "Skjordun's nose twitches and his stony gaze locks onto you.  ~Someone said food?~"; ! todo: handle food disctraction iff player hands it over
+                                   "Skjordun's nose twitches and his stony gaze locks onto you.  ~Someone said food?  May I have some?~"; ! todo: handle food disctraction iff player hands it over
                                 'Brunhilde':
                                    "The mighty guard's eyes widen and his rapt attention washes over you. ~Did she something about me?!~  He flushes deeply and a goofy grin spreads across his face as wild imaginings dance behind his eyes.";
                                    ! todo: handle Brunhilde distraction vector iff player has already colluded with her so she flirts with Skjordun
                              }
                           }
                        }
+                       Show:
+                          ! todo: what we really want is something like if(categoricalObjectMap.get('food').contains(noun)) so we don't need hardcoded checks for exactly what sort of food the player was offering.  For now, let's just go with a generic food item on someone's desk that the player can steal, identified only as 'food'
+                          if(noun == 'food') {
+                             "Skjordun greedily snatches the offered food, and begins to chow down.  He is a man obsessed, and all the rest of the world fades from his notice";
+                             self.distracted;
+                          }
                     default: "The stoic warrior stares straight ahead, ever vigilant save for the glances he steals at Brunhilde once a minute or so.";
                  ],
             height 5,
