@@ -168,6 +168,22 @@ Object SkullLetter "Skullduggerous Letter"
     TreasuryGuard Skjordun "Skjordun" 
        with name "Skjordun",
             description "Having surveilled Skjordun at his local tavern haunts over the past few weeks, you know that he is a glutton; anything savory will command his attention.  You've also noticed that he spends most of his time studying the back of Brunhilde the receptionist, and trying to pretend he isn't.",
+            life [;
+                    Answer:
+                       ! iterate through interest string array
+                       for(interestIndex = 0: interestIndex < self.#interests: interestIndex++) {
+                          if(noun == self.interests-->interestIndex) {
+                             switch(noun) {
+                                'food':
+                                   "Skjordun's nose twitches and his stony gaze locks onto you.  ~Someone said food?~"; ! todo: handle food disctraction iff player hands it over
+                                'Brunhilde':
+                                   "The mighty guard's eyes widen and his rapt attention washes over you. ~Did she something about me?!~  He flushes deeply and a goofy grin spreads across his face as wild imaginings dance behind his eyes.";
+                                   ! todo: handle Brunhilde distraction vector iff player has already colluded with her so she flirts with Skjordun
+                             }
+                          }
+                       }
+                    default: "The stoic warrior stares straight ahead, ever vigilant save for the glances he steals at Brunhilde once a minute or so.";
+                 ],
             height 5,
             weight 250,
             interests 'food' 'Brunhilde',
