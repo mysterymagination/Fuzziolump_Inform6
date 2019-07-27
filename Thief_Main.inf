@@ -61,6 +61,7 @@ Include "Grammar";
   ! player starts in the Grandiossuary atrium of the Treasury, with the SkullLetter
   location = Grandiossuary;
   move SkullLetter to player;
+  move Food to player;
   ! start NPC daemons
   StartDaemon(Falknir);
   StartDaemon(Skjordun);
@@ -74,6 +75,11 @@ Object SkullLetter "Skullduggerous Letter"
         print "~The chicken squawks upon the lowest branch, her eggs balanced perfectly.  The monk, meanwhile, must make his pilgrimmage down the southwestern slopes of purgatory before descending to hell itself; there only shall he learn the meaning of light by confronting true darkness.~^This nonsense is meant to read like the ravings of a demented priest, or perhaps a fragment of a strange novel.  It's not a code so much as a mneumonic to remind you that your informants, a group of crooked contractors who recently replaced plumbing in the Treasury's undercarriage, bored a hole up into the vault in the exact center of the cellar ceiling.  It's been disguised expertly, and they assure you none would find it without knowing its position.  Further, the bizarre philosophical drivel about a monk traveling to hell means that the best covert way into the cellar is through the air ducts; the safest and most hidden of these can be found in the Southwest corner of the Atrium."; 
         rtrue;],
    has legible;
+
+Object Food "Food"
+   with name 'food',
+        description "Some placeholder food",
+   has edible;
 
 ! The following function is called by Inform when the player types SCORE or when
 ! the player ends the game. As you can see, each range of points has a different
@@ -124,7 +130,7 @@ Object SkullLetter "Skullduggerous Letter"
              n_to Vault_Door,
        has light;
     
-    Attribute distracted;
+    !Attribute distracted; ! seems attributes have to be set statically at compile time and are read-only thereafter?
     
     ! a person is a sapient creature with, for the purposes of this tale, an array of interest strings and a mapping of characters to affinity integer values.
     ! The affinity values represent how much this person likes the named character, and is a mostly nonsense ordinal. 
@@ -137,6 +143,7 @@ Object SkullLetter "Skullduggerous Letter"
        class Person
        with description "The stocky race of dwarves are famed for their ingenuity, tenacity, and a certain fondness for unnecessarily heavy weaponry.  Lesser known is their natural resistance to magical effects, which is born of their ties to earth.",
             gender "unknown",
+            distractionStatus false,
             height 4, !feet
             weight 150; !pounds
             
@@ -146,7 +153,7 @@ Object SkullLetter "Skullduggerous Letter"
             name "guard" "treasury guard" "vault guard",
             isWatching [;
                ! a treasury guard is watching if they are not distracted and are present in the Grandiossuary
-               if (~~(self has distracted && self in Grandiossuary)) {
+               if (~~(self.distractionStatus && self in Grandiossuary)) {
                   rtrue;
                } else {
                   rfalse;
@@ -160,7 +167,7 @@ Object SkullLetter "Skullduggerous Letter"
     ! player will have to distract him and the guards (the receptionist is on board with the robbery) to enter the air duct
     Dwarf Fritzwig "Fritzwig" 
        with name 'Fritzwig' 'accountant',
-            description "This spindly accountant pours over ledgers like an overwrought machine, zipping through papers and somehow leaving more notes than there was source material.  Sweat dripping from his brow, he pauses for a moment to glance at Brunhilde, his perma-furrowed brow relaxing when and only when he takes in her visage.  With a whisper of a sigh, he then returns to his figures.  You apparently didn't need to spy on Mr. Fritzwig to learn his weakness, though of course you did: there's actually a little shrine to her in his flat, filled with discarded utensils and other garbage-y tidbits that had once come into contact with her -- it's creepy.",
+            description "This spindly accountant pours over ledgers like an overwrought machine, zipping through papers and somehow leaving more notes than there was source material.  Sweat dripping from his brow, he pauses for a moment to glance at Brunhilde, his perma-furrowed brow relaxing when and only when he takes in her visage.  With a whisper of a sigh, he then returns to his figures.  You didn't need to spy on Mr. Fritzwig to learn his weakness, though of course you did anyway: there's actually a little shrine to her in his flat, filled with discarded utensils and other garbage-y tidbits that had once come into contact with her -- it's creepy.",
             weight 100,
             interests 'numbers' 'ledgers' 'Brunhilde',
        has proper male;
@@ -169,34 +176,47 @@ Object SkullLetter "Skullduggerous Letter"
     TreasuryGuard Skjordun "Skjordun" 
        with name "Skjordun",
             description "Having surveilled Skjordun at his local tavern haunts over the past few weeks, you know that he is a glutton; anything savory will command his attention.  You've also noticed that he spends most of his time studying the back of Brunhilde the receptionist, and trying to pretend he isn't.",
+            ! wtf: for some idiot reason, all arrays are byte arrays and any string is stored in 2 bytes somehow?  I have no idea how you're meant to reconstruct string from a string array during iteration in this case, but to hell with it -- this language suuuuuuucks
+!           handleSkjordunInterests_Answer [interestIndex answeredNoun;
+!       for(interestIndex = 0: interestIndex < self.#interests: interestIndex= interestIndex + 2) {
+!       print "interest index ", interestIndex, " of ", self.#interests/2, " which is ", self.&interests-->interestIndex;
+!                          if(answeredNoun == self.&interests-->interestIndex) {
+!                             print "~I have great interest in ", noun, "!~";
+!                             switch(answeredNoun) {
+!                                'food':
+!                                   "Skjordun's nose twitches and his stony gaze locks onto you.  ~Someone said food?  May I have some?~"; ! todo: handle food disctraction iff player hands it over
+!                                'Brunhilde':
+!                                   "The mighty guard's eyes widen and his rapt attention washes over you. ~Did she something about me?!~  He flushes deeply and a goofy grin spreads across his face as wild imaginings dance behind his eyes.";
+                                   
+!                             }
+!                          }
+!                       }
+!    ],
             daemon  [; 
                        if(player in Grandiossuary) {
                           switch (random(5)) {
-                             1: "Skjordun's stomach growls, filling the atrium with a sound like a tiger whose burning brightness has been ignored."
+                             1: "Skjordun's stomach growls, filling the atrium with a sound like a tiger whose burning brightness will no longer be ignored.";
                           }
                        }
                     ],
-            life [;
+            life [; 
                     Answer:
-                       ! iterate through interest string array
-                       for(interestIndex = 0: interestIndex < self.#interests: interestIndex++) {
-                          if(noun == self.interests-->interestIndex) {
-                             print "~I have great interest in ", noun, "!~";
-                             switch(noun) {
+                       switch(noun) {
                                 'food':
                                    "Skjordun's nose twitches and his stony gaze locks onto you.  ~Someone said food?  May I have some?~"; ! todo: handle food disctraction iff player hands it over
                                 'Brunhilde':
                                    "The mighty guard's eyes widen and his rapt attention washes over you. ~Did she something about me?!~  He flushes deeply and a goofy grin spreads across his face as wild imaginings dance behind his eyes.";
                                    ! todo: handle Brunhilde distraction vector iff player has already colluded with her so she flirts with Skjordun
                              }
-                          }
-                       }
+                       
                        Show:
-                          ! todo: what we really want is something like if(categoricalObjectMap.get('food').contains(noun)) so we don't need hardcoded checks for exactly what sort of food the player was offering.  For now, let's just go with a generic food item on someone's desk that the player can steal, identified only as 'food'
-                          if(noun == 'food') {
-                             "Skjordun greedily snatches the offered food, and begins to chow down.  He is a man obsessed, and all the rest of the world fades from his notice";
-                             self.distracted;
+                          switch(noun) {
+                             ! another oddment: since the noun in this case is an Object, you have to use that same Object (our man Food) in the switch case to get triggered by it instead of using a string literal representation as normal.
+                             Food: 
+                                "Skjordun greedily snatches the offered food, and begins to chow down.  He is a man obsessed, and all the rest of the world fades from his notice", 
+                                self.distractionStatus = true;
                           }
+                          print "Skjordun distraction status is ", self. distractionStatus;
                     default: "The stoic warrior stares straight ahead, ever vigilant save for the glances he steals at Brunhilde once a minute or so.";
                  ],
             height 5,
