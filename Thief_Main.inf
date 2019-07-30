@@ -72,7 +72,7 @@ Object SkullLetter "Skullduggerous Letter"
    with name 'letter' 'skullduggerous letter' 'instructions',
         description "This yellowed parchment contains a coded message from your informants, explaining your mission and the plan hatched between ye maestros of mischief.",
         before [; read: 
-        print "~The chicken squawks upon the lowest branch, her eggs balanced perfectly.  The monk, meanwhile, must make his pilgrimmage down the southwestern slopes of purgatory before descending to hell itself; there only shall he learn the meaning of light by confronting true darkness.~^This nonsense is meant to read like the ravings of a demented priest, or perhaps a fragment of a strange novel.  It's not a code so much as a mneumonic to remind you that your informants, a group of crooked contractors who recently replaced plumbing in the Treasury's undercarriage, bored a hole up into the vault in the exact center of the cellar ceiling.  It's been disguised expertly, and they assure you none would find it without knowing its position.  Further, the bizarre philosophical drivel about a monk traveling to hell means that the best covert way into the cellar is through the air ducts; the safest and most hidden of these can be found in the Southwest corner of the Atrium."; 
+        print "~The swan sings upon the lowest branch, her eggs balanced perfectly.  The monk, meanwhile, must make his pilgrimmage down the southwestern slopes of purgatory before descending to hell itself; there only shall he learn the meaning of light by confronting true darkness.~^This nonsense is meant to read like the ravings of a demented priest, or perhaps a fragment of a strange novel.  It's not a code so much as a mneumonic to remind you that your informants, a group of crooked contractors who recently replaced plumbing in the Treasury's undercarriage, bored a hole up into the vault in the exact center of the cellar ceiling.  It's been disguised expertly, and they assure you none would find it without knowing its position.  Further, the Treasury's receptionist Brunhilde, who greets everyone as they enter and serves as a rather impossible to miss or mistake face of the Treasury, is their woman on the inside -- she's privy to the plan and fully cut-in to the profits, so she'll try to help.  Finally, the bizarre philosophical drivel about a monk traveling to hell means that the best covert way into the cellar is through the air ducts; the safest and most hidden of these can be found in the Southwest corner of the Atrium."; 
         rtrue;],
    has legible;
 
@@ -203,10 +203,14 @@ Object Food "Food"
                     Answer:
                        switch(noun) {
                                 'food':
-                                   "Skjordun's nose twitches and his stony gaze locks onto you.  ~Someone said food?  May I have some?~"; ! todo: handle food disctraction iff player hands it over
+                                   "Skjordun's nose twitches and his stony gaze locks onto you.  ~Someone said food?  May I have some?~"; 
                                 'Brunhilde':
-                                   "The mighty guard's eyes widen and his rapt attention washes over you. ~Did she something about me?!~  He flushes deeply and a goofy grin spreads across his face as wild imaginings dance behind his eyes.";
-                                   ! todo: handle Brunhilde distraction vector iff player has already colluded with her so she flirts with Skjordun
+                                   "The mighty guard's eyes widen and his rapt attention washes over you. ~Did she something about me?!  Oh, she's the best and there's just no words suitable to describe her beauty -- magicute is the best I can come up with.~  He flushes deeply and a goofy grin spreads across his face as wild imaginings dance behind his eyes.";
+                                   if(Brunhilde.flirt_with == Skjordun) {
+                                      print "^Just as Skjordun's daydreams ignite a sparkle behind his eyes, Brunhilde turns around in her desk, stretching luxuriously.  As she comes out of her preening, she meets his gaze smooth as you please and winks.  After an exchange of shy waves and a virginal blush only a professional actress could manage, the dreamy spark in Skjordun's eyes has turned to a conflagration and totally consumed his ability to pay attention to anything but her.";
+                                      self.distractionStatus = true;
+                                   }
+                
                              }
                        
                        Show:
@@ -266,6 +270,8 @@ Object Food "Food"
                      NotUnderstood: "She furrows her brow ostentatiously before saying, ~I'm afraid I don't know anything about that.~"; 
                      default: "Brunhilde smiles politely and tidies her desk."; 
                   ],
+            ! the player can get her to flirt with someone to potentially distract them
+            flirt_with,
             interests 'cosmic horror' 'arcana' 'sweets',
             found_in Grandiossuary,
         has proper female;
@@ -274,7 +280,9 @@ Object Food "Food"
     Object Vault "A vault capable of keeping anything out... or in"
        with description
           "Mountains of gold coins, shimmering gems in every color of the rainbow plus a few you're certain you've never seen before, and powerful artifacts humming with magical potential languish in idle safety before you.  Your mouth begins to water, but you staunchly refuse to be distracted from your true goal: The OmniNomicron.  It should be here somewhere amidst the hoard.",
-        s_to Vault_Door;
+        s_to Vault_Door,
+        scored_value 50,
+        has scored;
     
     Object Vault_Door "An immeasurably heavy steel door"
        with name "Vault" "Door",
@@ -324,4 +332,6 @@ Object Food "Food"
     ! of their journey.
     Object MawOfInfinity "The Maw of Infinity"
       with description
-        "Mount Godspeak is not supposed to be hollow, but you stand in a yawning cavern beyond the carefully hewn stone of the Treasury behind you.  You stand on a narrow outcropping that stretches out over an infinite abyss, something of a lookout point.  Things stir in the darkness and all the hair on your body stands on end.";
+        "Mount Godspeak is not supposed to be hollow, but you stand in a yawning cavern beyond the carefully hewn stone of the Treasury behind you.  You stand on a narrow outcropping that stretches out over an infinite abyss, something of a lookout point.  Things stir in the darkness and all the hair on your body stands on end.",
+           scored_value 100, 
+      has scored;
