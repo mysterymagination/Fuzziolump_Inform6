@@ -61,10 +61,11 @@ Include "Grammar";
   ! player starts in the Grandiossuary atrium of the Treasury, with the SkullLetter
   location = Grandiossuary;
   move SkullLetter to player;
-  move Food to player;
   ! start NPC daemons
   StartDaemon(Falknir);
   StartDaemon(Skjordun);
+  StartDaemon(Brunhilde);
+  StartDaemon(Fritzwig);
 ];
 
 ! Define starting inventory
@@ -76,10 +77,17 @@ Object SkullLetter "Skullduggerous Letter"
         rtrue;],
    has legible;
 
-Object Food "Food"
-   with name 'food',
-        description "Some placeholder food",
-   has edible;
+Object FoodTable "Smorgasbord"
+   with name 'table' 'smorgasbord' 'snacks' 'treats',
+        description "A table boasting a marvelous spread of delectible yummies has been laid out in front of Brunhilde's desk.  A sign near the center reads ~Welcome new clients!  Your precious treasures are our precious treasures here, and we'll keep them safe like our own kin.  Safer!  You know what happened to the last person who tried to steal from us?  Nor does anyone else.  Help yourself to a treat!~",
+        found_in Grandiossuary,
+   has edible static supporter;
+
+Object -> TastyCake "Tasty Cake"
+   with name 'food' 'tasty cake' 'tasty' 'snack' 'snacks' 'cake' 'cakes' 'treat' 'treats',
+        description "Surely it is scrumptious, but you are not here to glut yourself.",
+        score_value 10,
+   has edible scored;
 
 ! The following function is called by Inform when the player types SCORE or when
 ! the player ends the game. As you can see, each range of points has a different
@@ -168,6 +176,16 @@ Object Food "Food"
     Dwarf Fritzwig "Fritzwig" 
        with name 'Fritzwig' 'accountant',
             description "This spindly accountant pours over ledgers like an overwrought machine, zipping through papers and somehow leaving more notes than there was source material.  Sweat dripping from his brow, he pauses for a moment to glance at Brunhilde, his perma-furrowed brow relaxing when and only when he takes in her visage.  With a whisper of a sigh, he then returns to his figures.  You didn't need to spy on Mr. Fritzwig to learn his weakness, though of course you did anyway: there's actually a little shrine to her in his flat, filled with discarded utensils and other garbage-y tidbits that had once come into contact with her -- it's creepy.",
+            daemon [;
+                       if(player in Grandiossuary) {
+                          switch (random(10)) {
+                        1: "Fritzwig leaps gleefully onto his chair with a cry of ~Eureka!~  The silent and withering gaze of his colleagues brings him back down, figuratively and literally, as he sheepishly explains, ~Well, that account had been all collie-wobbles for decades.  Can't blame a chap for a smidge of celebration.~";
+                        3: "Without turning his head from his work, Fritzwig grabs another paper from his inbox.  ~Tsk tsk, oh dear, oh dear...~  He mutters as the numbers are ALL WRONG.";
+                        5: "Fritzwig sits back in his chair and stares openly at Brunhilde.  She nods at him nervously and turns her gaze elsewhere, but he remains motionless and vigilant as a stalking statue.";
+                        7: "Several dwarves gather for a spot of tea, joking and jostling one another.  Fritzwig eagerly joins them, but the moment he arrives they suddenly remember an urgent meeting.  Far away.  Invites only.  Fritzwig slumps back to his desk and stares at Brunhilde for awhile.";
+                          }
+                       }
+                   ],
             weight 100,
             interests 'numbers' 'ledgers' 'Brunhilde',
        has proper male;
@@ -216,7 +234,7 @@ Object Food "Food"
                        Show:
                           switch(noun) {
                              ! another oddment: since the noun in this case is an Object, you have to use that same Object (our man Food) in the switch case to get triggered by it instead of using a string literal representation as normal.
-                             Food: 
+                             TastyCake: 
                                 "Skjordun greedily snatches the offered food, and begins to chow down.  He is a man obsessed, and all the rest of the world fades from his notice", 
                                 self.distractionStatus = true;
                           }
@@ -279,6 +297,18 @@ Object Food "Food"
                      NotUnderstood: "She furrows her brow ostentatiously before saying, ~I'm afraid I don't know anything about that.~"; 
                      default: "Brunhilde smiles politely and tidies her desk."; 
                   ],
+            daemon [;
+                    if(player in Grandiossuary) {
+                          switch (random(10)) {
+                        1, 2: "Brunhilde stretches ostentatiously, preening herself.  A silence as staggering as a struck gong fills the atrium as dozens of quills cease their otherwise omnipresent scratching as one, if only for a moment.";
+                        3, 4, 7, 8: "Clearing her throat demurely, Brunhilde flashes you a tiny smirk deep with conspiracy.";
+                        9: "Humming tunelessly, Brunhilde opens a book.  The cover is a sultry romance novel, but your keen eyes spot the places where she glued this facade on over the true face of her pocket dimension.  Peering over her shoulder, you recognize the accounts of one Dr. Herbert Wolfsworth, a famously sadistic demonologist and conjurer.";
+                        10: "A buzzing insect lands on Brunhilde's nose, and she doesn't twitch a muscle.  Even as it begins to suck her blood, she remains still as a stone.  With glacial patience, she stealthily moves a pair of quills up to her nose and then snatches the pest up between them, striking like a surgical serpent.  Gently as you please and wearing a small, deeply satisfied smile, she maneuvers the creature behind a stack of papers, shielding it from easy sight, and then begins slowly ripping off its many limbs.  Her eyes sparkle and her breath catches in a soft gasp, its toe just over the threshold of audibility, whenever a limb pops free.";
+                        5, 6: "With the practiced languid carelessness of a mistress loof, Brunhilde brushes out her hair.  For an hour.  You hear a longing sigh from somewhere, quickly stifled into a fairly obvious fit of coughing.";
+                        
+                          }
+                       }
+                   ],
             ! the player can get her to flirt with someone to potentially distract them
             flirt_with,
             waiting_to_flirt false,
