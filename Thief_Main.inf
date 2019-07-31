@@ -27,7 +27,10 @@ Include "VerbLib";
 ! custom attributes
 ! legible means something can be read with the read action
 Attribute legible;
-
+! index for iterating lists, since Inform 6 is weird about local vars for no reason
+Global index = 0;
+! placeholder var for manually examining tokens in user input
+Global currentWord;
 ! custom actions
    !
    ! Added function ReadSub so that the property 'before' can use it. The default,
@@ -67,6 +70,7 @@ Include "Grammar";
   StartDaemon(Brunhilde);
   StartDaemon(Fritzwig);
 ];
+
 
 ! Define starting inventory
 Object SkullLetter "Skullduggerous Letter"
@@ -276,10 +280,11 @@ Object -> TastyCake "Tasty Cake"
     Dwarf Brunhilde "Brunhilde"
        with name "Brunhilde",
             description "The glowing receptionist's name is Brunhilde, and she is far wilier than she lets on.  Her professional persona is one of polite innocence and an infinitely earnest desire to help.  Having trailed her during off-hours, you've come to doubt that this veneer is genuine: most nights she treks down to a very shady shrine deep in the city's underworks, the sort of place not even a masterful creature of the shadows such as yourself would dare enter.  Often she brings a man or occasionally a woman with her, a different one each time.  One she was leading a black ram and had a black rooster under her arm.  She always returns to the surface alone.",
-            life [; 
+            life [ n; 
                      Answer: 
                         switch(noun) {
-                           Skjordun, Fitzwig: 
+                           'Skjordun', 'Fritzwig', 'Falknir':
+                              "";
                            'hello', 'hi', 'hey', 'howdy', 'heya', 'hiya':
                                "~Why hello there, you gorgeous person you!  Welcome to the fabulous and most ancient Royal Treasury of the Dwarves!~  She stands and waves her hands about, framing the elaborate vault at the far side of the room flourish-y-ly.";
                             'job', 'the job', 'heist', 'the heist', 'thief', 'steal':
@@ -288,6 +293,7 @@ Object -> TastyCake "Tasty Cake"
                                "Brunhilde adopts a look of cherubic innocence.  ~Pardon?  I'm afraid I don't follow you.~";
                         }
                      Tell: 
+                        ! todo: a better way to handle custom actions like Flirt that require an object e.g. the "with Fritzwig" in "tell Brunhilde to flirt with Fritzwig" would be to create a custom verb.  Since this is a short one-off, I'm going to cut corners like I did for I7 and just grep for keywords and inference from there regardless of language structure. 
                         switch(second) {
                            'distract', 'flirt', 'catch', 'seduce', 'charm': 
                               "~Who should I ", second, "?~" ;
@@ -295,6 +301,19 @@ Object -> TastyCake "Tasty Cake"
                            default: "Batting her lashes at you, she simpers, ~Do go on about ", second, "!~";
                         }
                      NotUnderstood: "She furrows her brow ostentatiously before saying, ~I'm afraid I don't know anything about that.~"; 
+                     !Ask: "the first 21st 22nd and 23rd chars of buffer says [", (char)buffer->21, (char)buffer->22, (char)buffer->23, "]"; ! woo, this kinda works for intercepting raw user input!
+                     Ask: 
+                        for(index = 0: index < consult_words: index++) {
+                           currentWord = NextWord();
+                           print "^the ", index, "th word in the any clause is [", currentWord,"].  BTW, consult_from says ", consult_from;
+                           if(currentWord == 'flirt') {
+                              ! todo: after finding the flirt token, look for an NPC symbol
+                              print "^Brunhilde smiles slyly.  ~You want me to flirt with someone?~";
+                           }
+                        }
+                        n = 0;
+                        while (NextWord() ~= 'flirt' && n <= consult_words) n++;
+                        print "we found flirt at the ", n, "th word of ", consult_words, "!";
                      default: "Brunhilde smiles politely and tidies her desk."; 
                   ],
             daemon [;
