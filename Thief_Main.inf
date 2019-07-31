@@ -72,7 +72,7 @@ Object SkullLetter "Skullduggerous Letter"
    with name 'letter' 'skullduggerous letter' 'instructions',
         description "This yellowed parchment contains a coded message from your informants, explaining your mission and the plan hatched between ye maestros of mischief.",
         before [; read: 
-        print "~The swan sings upon the lowest branch, her eggs balanced perfectly.  The monk, meanwhile, must make his pilgrimmage down the southwestern slopes of purgatory before descending to hell itself; there only shall he learn the meaning of light by confronting true darkness.~^This nonsense is meant to read like the ravings of a demented priest, or perhaps a fragment of a strange novel.  It's not a code so much as a mneumonic to remind you that your informants, a group of crooked contractors who recently replaced plumbing in the Treasury's undercarriage, bored a hole up into the vault in the exact center of the cellar ceiling.  It's been disguised expertly, and they assure you none would find it without knowing its position.  Further, the Treasury's receptionist Brunhilde, who greets everyone as they enter and serves as a rather impossible to miss or mistake face of the Treasury, is their woman on the inside -- she's privy to the plan and fully cut-in to the profits, so she'll try to help.  Finally, the bizarre philosophical drivel about a monk traveling to hell means that the best covert way into the cellar is through the air ducts; the safest and most hidden of these can be found in the Southwest corner of the Atrium."; 
+        print "~The swan sings upon the lowest branch, her eggs balanced perfectly.  The monk, meanwhile, must make his pilgrimmage down the southwestern slopes of purgatory before descending to hell itself; there only shall he learn the meaning of light by confronting the puzzle of true darkness.~^This nonsense is meant to read like the ravings of a demented priest, or perhaps a fragment of a strange novel.  It's not a code so much as a mneumonic to remind you that your informants, a group of crooked contractors who recently replaced plumbing in the Treasury's undercarriage, bored a hole up into the vault in the exact center of the cellar ceiling.  It's been disguised expertly, and they assure you none would find it without knowing its position.  Stealing much from the Treasury would be impossible with all its safeguards -- a heist like this calls for a surgical strike, and that's what you're for!  The job is to lift ~Nnamni's My God: The Paradox~ from a set of precious 1st edition books inside the Vault, then get out.  The book is worth about three-quarters of the gold and gems the dwarves likely have hoarded away on its own anyway, so there's no need to shovel loot into a conspicuous container.  The ~plumbers~ furnished you with a forgery of the book to replace it, so with any luck no one will miss it for a few days and you can all make good your flight out of town.  Further, the Treasury's receptionist Brunhilde, who greets everyone as they enter and serves as a rather impossible to miss or mistake face of the Treasury, is their woman on the inside -- she's privy to the plan and fully cut-in to the profits, so she'll try to help.  Finally, the bizarre philosophical drivel about a monk traveling to hell means that the best covert way into the cellar is through the air ducts; the safest and most hidden of these can be found in the Southwest corner of the Atrium."; 
         rtrue;],
    has legible;
 
@@ -261,17 +261,27 @@ Object Food "Food"
             life [; 
                      Answer: 
                         switch(noun) {
+                           Skjordun, Fitzwig: 
                            'hello', 'hi', 'hey', 'howdy', 'heya', 'hiya':
                                "~Why hello there, you gorgeous person you!  Welcome to the fabulous and most ancient Royal Treasury of the Dwarves!~  She stands and waves her hands about, framing the elaborate vault at the far side of the room flourish-y-ly.";
+                            'job', 'the job', 'heist', 'the heist', 'thief', 'steal':
+                            "She glances about and then winks at you conspiratorially.  ~I'm here to help -- tell me to do something and I'll give it a go, so long as it doesn't look suspicious.  I need to stick here at my desk; maybe I could catch someone's eye for you?~  She bats her lashes and bares her teeth in a cruel grin.";
                             default:
                                "Brunhilde adopts a look of cherubic innocence.  ~Pardon?  I'm afraid I don't follow you.~";
                         }
-                     Tell: "Batting her lashes at you, she simpers, ~Do go on about ", second, "!~";
+                     Tell: 
+                        switch(second) {
+                           'distract', 'flirt', 'catch', 'seduce', 'charm': 
+                              "~Who should I ", second, "?~" ;
+                              self.waiting_to_flirt = true;
+                           default: "Batting her lashes at you, she simpers, ~Do go on about ", second, "!~";
+                        }
                      NotUnderstood: "She furrows her brow ostentatiously before saying, ~I'm afraid I don't know anything about that.~"; 
                      default: "Brunhilde smiles politely and tidies her desk."; 
                   ],
             ! the player can get her to flirt with someone to potentially distract them
             flirt_with,
+            waiting_to_flirt false,
             interests 'cosmic horror' 'arcana' 'sweets',
             found_in Grandiossuary,
         has proper female;
