@@ -37,6 +37,16 @@ Global currentWord;
    ! if there is no 'before read', is to examine the object.
    !
    [ ReadSub; <<Examine noun>>; ];
+   
+   ! Added function HitSub so that the property 'before' can use it. The default,
+   ! if there is no 'before hit', is to attack the object.
+   !
+   [ HitSub; <<Attack noun>>; ];
+   
+   ! Added function PunchSub so that the property 'before' can use it. The default,
+   ! if there is no 'before punch', is to hit the object.
+   !
+   [ PunchSub; <<Hit noun>>; ];
 
 ! Grammar will provide the standard Inform grammar plus extensions
 Include "Grammar";
@@ -76,10 +86,10 @@ Include "Grammar";
 Object CoinPurse "Leather coin purse"
    with name 'purse' 'pouch' 'wallet',
         description "You've always loved the smell of tough old leather, especially when it mingles with that of gold; reminds you that hard work (ideally someone else's) pays off.",
-   has container openable closed;
+   has container openable;
    
 ! todo: how can I put N instances of an object, say the Coin, into a container?  Would the player be able to then name a number of them to take an action with, and/or be able to specify one or all at once?   
-Object Coin "A shiny gold coin"
+Object -> Coin "A shiny gold coin"
    with name 'coin' 'gold',
         description "This ancient gold coin is a collector's item.  Well, it's a very good counterfeit of a collector's item -- due to a printing misadventure embarked upon by a drunken ex-employee of the Royal Mint, the Cavernous Crown, which is emblazoned on all dwarven currency, is pictured here with seven gemstones across its band rather than the auspicious eight.  Only a few hundred of these were minted before production was halted and the offending worker flensed living.  Since they mock the correct configuration of the crown, the superstitious and scrupulous dwarven people call this set the Cursed Coins.";
         
@@ -150,6 +160,7 @@ Object -> TastyCake "Tasty Cake"
              nw_to Archive,
              ne_to WardenChamber,
              n_to Vault_Door,
+             d_to AirDuct,
        has light;
     
     !Attribute distracted; ! seems attributes have to be set statically at compile time and are read-only thereafter?
@@ -187,9 +198,10 @@ Object -> TastyCake "Tasty Cake"
             
     Object AirDuct "Loose air duct"
        with description "This air duct leads down into the cellar, according to your contacts.  It's relatively out of the way, hard to see, and close to the entrance so you can make good your escape with whatever spoils you can claim.",
+            name 'duct' 'airduct',
             door_to Cellar,
             door_dir d_to,
-            before [; Go:
+            before [; Open, Close, Go:
                          if(Fritzwig.distractionStatus && Falknir.distractionStatus && Skjordun.distractionStatus) {
                             rfalse; ! because we want the library to process normal Go behavior
                          } else {
@@ -197,11 +209,11 @@ Object -> TastyCake "Tasty Cake"
                             rtrue;
                          }
                    ],
-       has static;
+            found_in Grandiossuary,
+       has static door openable;
             
     Object FritzwigDesk "The desk of Fritzwig"
        with description "This old mahagony desk has been polished and cared for meticulously.  A few worn spots on the blotter from frequent and frenzied figuring are all that mar its pristine surface.",
-             with_key TheKeyToAccounting,
              found_in Grandiossuary,
        has static supporter;
     
@@ -339,7 +351,7 @@ Object -> TastyCake "Tasty Cake"
                            'Skjordun', 'Fritzwig', 'Falknir':
                               "";
                            'hello', 'hi', 'hey', 'howdy', 'heya', 'hiya':
-                               "~Why hello there, you gorgeous person you!  Welcome to the fabulous and most ancient Royal Treasury of the Dwarves!~  She stands and waves her hands about, framing the elaborate vault at the far side of the room flourish-y-ly.";
+                               "~Why hello there, you gorgeous person you!  Welcome to the fabulous and most ancient Royal Treasury of the Dwarves!~  She stands and waves her hands about, framing the elaborate vault at the far side of the room flourish-y-ly.  In a hushed voice, she whispers, ~They gave me your description, so I know you're here to pull the job.  I'm here to help!~  She winks at you, and despite being a consummate professional you feel your knees go weak for an instant.";
                             'job', 'the job', 'heist', 'the heist', 'thief', 'steal':
                             "She glances about and then winks at you conspiratorially.  ~I'm here to help -- tell me to do something and I'll give it a go, so long as it doesn't look suspicious.  I need to stick here at my desk; maybe I could catch someone's eye for you?~  She bats her lashes and bares her teeth in a cruel grin.";
                             default:
@@ -387,6 +399,27 @@ Object -> TastyCake "Tasty Cake"
             interests 'cosmic horror' 'arcana' 'sweets',
             found_in Grandiossuary,
         has proper female;
+    
+    ! The Cellar: D from the Grandiossuary is the Treasury's undercarriage, wherein vital automation that no one wants to see dutifully chugs along... until it doesn't
+    Object Cellar "Undercarriage of the Treasury"
+       with description
+          "It's damp down here, and musty.  Most people don't like dank dark places, but you've always felt at home there.  The air duct you came down through sits innocently high above you, out of reach now thanks to cursed gravity.  A row of Climatrol brand heating and cooling pillars lines the West wall, magical flame currently keeping the winter chill at bay.  Brilliant copper pipes criss-cross the other walls like an orgy of serpents, compelte with occasional writhing when someone flushes a toilet or turns on a sink.  The Treasury really should have hired actual plumbers; thieves and grifters know much, but not how to set up functional plumbing.  The ceiling, your singular point of interest, is bare stone and looks untouched and impregnable.  A close look up on the handy stepladder nearby reveals a perfectly circular hair's breadth groove cut into it, however -- the hole is just large enough for someone your size to barely squeeze through, which should also mean you can support the stone once you open the hole and avoid a loud crashing of stone and/or crushed thief flesh.",
+        name 'cellar' 'basement' 'undercarriage',
+        u_to Vault_Trapdoor,
+        scored_value 10
+        has scored;
+    
+   Object Vault_Trapdoor "Trapdoor"
+      with name 'trapdoor' 'hole',
+           description "This carefully hewn trapdoor has been secured with several invisible clamps; your conspirators have provided you with an illustration of where they were placed.",
+           when_open     "The vault trapdoor stands open, the maw of opportunity.",
+           when_closed   "The vault trapdoor remains closed.",
+           door_to [; if(location==Vault) return Cellar; else return Vault;],
+           door_dir [; if(location==Cellar) return u_to; else return d_to;],
+           found_in Cellar Vault,
+      has static door openable;
+   
+    
     
     ! The Vault: N of the Grandiossuary is the public heart of the dwarven treasury, holding immeasurable wealth
     Object Vault "A vault capable of keeping anything out... or in"
