@@ -64,6 +64,7 @@ Include "Grammar";
   ! player starts in the Grandiossuary atrium of the Treasury, with the SkullLetter
   location = Grandiossuary;
   move SkullLetter to player;
+  move CoinPurse to player;
   ! start NPC daemons
   StartDaemon(Falknir);
   StartDaemon(Skjordun);
@@ -71,8 +72,17 @@ Include "Grammar";
   StartDaemon(Fritzwig);
 ];
 
-
 ! Define starting inventory
+Object CoinPurse "Leather coin purse"
+   with name 'purse' 'pouch' 'wallet',
+        description "You've always loved the smell of tough old leather, especially when it mingles with that of gold; reminds you that hard work (ideally someone else's) pays off.",
+   has container openable closed;
+   
+! todo: how can I put N instances of an object, say the Coin, into a container?  Would the player be able to then name a number of them to take an action with, and/or be able to specify one or all at once?   
+Object Coin "A shiny gold coin"
+   with name 'coin' 'gold',
+        description "This ancient gold coin is a collector's item.  Well, it's a very good counterfeit of a collector's item -- due to a printing misadventure embarked upon by a drunken ex-employee of the Royal Mint, the Cavernous Crown, which is emblazoned on all dwarven currency, is pictured here with seven gemstones across its band rather than the auspicious eight.  Only a few hundred of these were minted before production was halted and the offending worker flensed living.  Since they mock the correct configuration of the crown, the superstitious and scrupulous dwarven people call this set the Cursed Coins.";
+        
 Object SkullLetter "Skullduggerous Letter"
    with name 'letter' 'skullduggerous letter' 'instructions',
         description "This yellowed parchment contains a coded message from your informants, explaining your mission and the plan hatched between ye maestros of mischief.",
@@ -175,11 +185,54 @@ Object -> TastyCake "Tasty Cake"
             interests,
             found_in Grandiossuary;
             
+    Object AirDuct "Loose air duct"
+       with description "This air duct leads down into the cellar, according to your contacts.  It's relatively out of the way, hard to see, and close to the entrance so you can make good your escape with whatever spoils you can claim.",
+            door_to Cellar,
+            door_dir d_to,
+            before [; Go:
+                         if(Fritzwig.distractionStatus && Falknir.distractionStatus && Skjordun.distractionStatus) {
+                            rfalse; ! because we want the library to process normal Go behavior
+                         } else {
+                            print "You can't just slip into an air duct with all these eyes on!  A distraction, or several, are in order.";
+                            rtrue;
+                         }
+                   ],
+       has static;
+            
+    Object FritzwigDesk "The desk of Fritzwig"
+       with description "This old mahagony desk has been polished and cared for meticulously.  A few worn spots on the blotter from frequent and frenzied figuring are all that mar its pristine surface.",
+             with_key TheKeyToAccounting,
+             found_in Grandiossuary,
+       has static supporter;
+    
+    Object -> FritzwigInbox "Fritzwig's inbox"
+       with description "If the fullness of an inbox is an indicator of responsibility then Fritzwig must be the most important person in the multiverse.  Though he works furiously to combat the pile, every few minutes someone passes by and drops off a few more action items.  The tower of headaches stretches significantly above the lip of the flimsy plastic box, and even a disturbance as benign as a stray breeze sends it into a precarious lean that makes Fritzwig hyperventilate.  You begin to suspect his colleagues that jog swiftly past his desk, while fanning themselves, may have some sort of malicious intent.",
+            before [; 
+                      Take: "Like a striking serpent, Fritzwig's hand flashes out and slaps yours away from his precious work. ~Kindly leave that alone, please.  It is sorted VERY particularly.~"; rfalse;
+                      Push, Hit, Punch:
+                         "*CRASH* With barely a touch you send the stack of papers scattering to the floor, and a few to the winds.  Fritzwig makes a sort of whining shriek like a wounded animal that cannot comprehend its own pain, and dives upon the mess.  A passing accountant chuckles and whispers, ~Good one, mate!  He'll be fiddling with that rot for days.~";
+                         Fritzwig.distractionStatus = true;
+                   ],
+       has container;
+    
     ! Fritzwig is the accountant whose desk happens to be nearest the air duct
     ! player will have to distract him and the guards (the receptionist is on board with the robbery) to enter the air duct
     Dwarf Fritzwig "Fritzwig" 
        with name 'Fritzwig' 'accountant',
             description "This spindly accountant pours over ledgers like an overwrought machine, zipping through papers and somehow leaving more notes than there was source material.  Sweat dripping from his brow, he pauses for a moment to glance at Brunhilde, his perma-furrowed brow relaxing when and only when he takes in her visage.  With a whisper of a sigh, he then returns to his figures.  You didn't need to spy on Mr. Fritzwig to learn his weakness, though of course you did anyway: there's actually a little shrine to her in his flat, filled with discarded utensils and other garbage-y tidbits that had once come into contact with her -- it's creepy.",
+            life [; 
+                    Answer:
+                       if(noun == Brunhilde) {
+                          print "Fritzwig looks up at you irritably, then starts as the name you've just invoked registers.  ~What was that? Has she said something?  Is she looking this way?!~  His eyes roll wildly, like those of a frenzied horse.  Then, abruptly, they settle on you with a fearsome intensity.  ~How do you even know her, anyway?  You're not one of us.~";
+                          if(Brunhilde.flirt_with == Fritzwig) {
+                            print "^Just as Fritzwig seems to have decided he should murder you to be on the safe side of competition, Brunhilde waves to him and favors him with a smile whose luminance could strike onlookers blind as surely as it leaves them dumb.  Forgetting both you and the rest of the world besides Brunhilde, Fritzwig tries to smile back at her (managing a lopsided leer).";
+                           } else if(Brunhilde.flirt_with == Skjordun) {
+                              print "^Just as Fritzwig seems to have decided he should murder you to be on the safe side of competition, he notices Brunhilde mooning over Skjordun.  His eyes begin to twitch erratically, and his fingernails gouge divots in his blotter as his hands unconciously (?) practice wrapping around a throat.";
+                           }
+                           self.distractionStatus = true;
+                        }
+                      default: "Without looking up from his work, Fritzwig drones, ~I'm VERY busy at the moment.  Please find someone else to harass.~";
+                   ],
             daemon [;
                        if(player in Grandiossuary) {
                           switch (random(10)) {
