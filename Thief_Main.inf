@@ -103,7 +103,7 @@ Object SkullLetter "Skullduggerous Letter"
 
 Object FoodTable "Smorgasbord"
    with name 'table' 'smorgasbord' 'snacks' 'treats',
-        description "A table boasting a marvelous spread of delectible yummies has been laid out in front of Brunhilde's desk.  A sign near the center reads ~Welcome new clients!  Your precious treasures are our precious treasures here, and we'll keep them safe like our own kin.  Safer!  You know what happened to the last person who tried to steal from us?  Nor does anyone else.  Help yourself to a treat!~",
+        description "A table boasting a marvelous spread of delectible yummies has been laid out in front of Brunhilde's desk.  A sign near the center reads ~Welcome new clients!  Your precious treasures are ours here, and we'll keep them safe like our own kin.  Safer!  You know what happened to the last person who tried to steal from us?  Nor does anyone else.  Help yourself to a treat!~",
         found_in Grandiossuary,
    has edible static supporter;
 
@@ -300,11 +300,12 @@ Object -> TastyCake "Tasty Cake"
                 
                              }
                        
-                       Show:
+                       Show, Give:
                           switch(noun) {
                              ! another oddment: since the noun in this case is an Object, you have to use that same Object (our man Food) in the switch case to get triggered by it instead of using a string literal representation as normal.
                              TastyCake: 
-                                "Skjordun greedily snatches the offered food, and begins to chow down.  He is a man obsessed, and all the rest of the world fades from his notice", 
+                                "Skjordun greedily snatches the offered food, and begins to chow down.  He is a man obsessed, and all the rest of the world fades from his notice";
+                                move TastyCake to Skjordun;
                                 self.distractionStatus = true;
                           }
                           print "Skjordun distraction status is ", self. distractionStatus;
@@ -322,10 +323,12 @@ Object -> TastyCake "Tasty Cake"
             interests 'wealth',
             money_counts 0,
             life [; 
-                    Show:
+                    Show, Give:
                        switch(noun) {
-                          'money', 'gold', 'gem', 'gems':
-                             "Falknir's eyes light up at the sight of such treasures";
+                          Coin:
+                             "Falknir's eyes light up at the sight of such a rare treasure as one of the infamous Cursed Coins.  ~Let me see that!~  he fairly howls, barely restraining himself from snatching it out of your hand.  You flip it to him, and hold a finger before your lips for an instant in a discreet hushing gesture.  He nods knowingly and begins studiously drooling over his new acquisition.";
+                             move Coin to Falknir;
+                             self.distractionStatus = true;
                        }
                     default: "The surly old dwarf points toward Brunhilde and says, ~Please direct all inquiries to our receptionist.  I'm sure you'll find her very friendly.  Not so, me.~";
                        
@@ -349,7 +352,12 @@ Object -> TastyCake "Tasty Cake"
                      Answer: 
                         switch(noun) {
                            'Skjordun', 'Fritzwig', 'Falknir':
-                              "";
+                              if(self.waiting_to_flirt) {
+                                 print "The predatory and proprietary smile of a tigress' smile baring her teeth before prey transforms Brunhilde's face for a flash as she turns to ", noun,".  ~Ready and...~ her voice darkens and sharpens, becoming husky and hot enough to burn, ~...willing.  Eager.  Needy.  Urgently!  Point them at me and I'll wrap them up so tightly in puppet strings they'd blissfully watch you cart away the whole mountain!~";
+                                 self.flirt_with = noun;
+                              } else {
+                                 print "Brunhilde frowns and asks, ~What about him?~  Her pupils dilate and she continues, ~You wanna distraction?  I can't leave me desk, but I can draw eyes at range... tell me who to flirt with!~";
+                              }
                            'hello', 'hi', 'hey', 'howdy', 'heya', 'hiya':
                                "~Why hello there, you gorgeous person you!  Welcome to the fabulous and most ancient Royal Treasury of the Dwarves!~  She stands and waves her hands about, framing the elaborate vault at the far side of the room flourish-y-ly.  In a hushed voice, she whispers, ~They gave me your description, so I know you're here to pull the job.  I'm here to help!~  She winks at you, and despite being a consummate professional you feel your knees go weak for an instant.";
                             'job', 'the job', 'heist', 'the heist', 'thief', 'steal':
@@ -357,7 +365,7 @@ Object -> TastyCake "Tasty Cake"
                             default:
                                "Brunhilde adopts a look of cherubic innocence.  ~Pardon?  I'm afraid I don't follow you.~";
                         }
-                     Tell: 
+                     Ask: 
                         ! todo: a better way to handle custom actions like Flirt that require an object e.g. the "with Fritzwig" in "tell Brunhilde to flirt with Fritzwig" would be to create a custom verb.  Since this is a short one-off, I'm going to cut corners like I did for I7 and just grep for keywords and inference from there regardless of language structure. 
                         switch(second) {
                            'distract', 'flirt', 'catch', 'seduce', 'charm': 
@@ -367,7 +375,9 @@ Object -> TastyCake "Tasty Cake"
                         }
                      NotUnderstood: "She furrows her brow ostentatiously before saying, ~I'm afraid I don't know anything about that.~"; 
                      !Ask: "the first 21st 22nd and 23rd chars of buffer says [", (char)buffer->21, (char)buffer->22, (char)buffer->23, "]"; ! woo, this kinda works for intercepting raw user input!
-                     Ask: 
+                     Tell: 
+                        print "~I'm afraid I'm too busy to deal with ", second," just now.~";
+                        rtrue; ! remove this to reach debug raw parsing block below.  I sure love not having multiline comments...
                         for(index = 0: index < consult_words: index++) {
                            currentWord = NextWord();
                            print "^the ", index, "th word in the any clause is [", currentWord,"].  BTW, consult_from says ", consult_from;
