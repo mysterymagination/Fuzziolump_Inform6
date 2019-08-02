@@ -348,16 +348,50 @@ Object -> TastyCake "Tasty Cake"
     Dwarf Brunhilde "Brunhilde"
        with name "Brunhilde",
             description "The glowing receptionist's name is Brunhilde, and she is far wilier than she lets on.  Her professional persona is one of polite innocence and an infinitely earnest desire to help.  Having trailed her during off-hours, you've come to doubt that this veneer is genuine: most nights she treks down to a very shady shrine deep in the city's underworks, the sort of place not even a masterful creature of the shadows such as yourself would dare enter.  Often she brings a man or occasionally a woman with her, a different one each time.  One she was leading a black ram and had a black rooster under her arm.  She always returns to the surface alone.",
-            life [ n; 
+            life [ n consultWords consultToken is_flirting flirt_object; 
+            
+                     ! any clause flirt detection
+                     wn = consult_from; ! the magic var wn is the <any clause> token position in the input string where NextWord() will start from 
+                     consultWords = consult_words; ! the number of understood <any clause> tokens
+                     is_flirting = false;
+                     flirt_object = 'placeholder';
+                     while(consultWords) {
+                        ! the current word from user input that does not fit in the life structure table
+                        consultToken = NextWord();
+                        consultWords--;
+                        print "Examining consult token [", consultToken,"]";
+                        switch(consultToken) {
+                           'distract', 'flirt', 'catch', 'seduce', 'charm':
+                              is_flirting = true;
+                           'Skjordun', 'Fritzwig', 'Falknir':
+                              flirt_object = consultToken;
+                        }
+                        if(is_flirting) {
+                           if(flirt_object ~= 'placeholder') {
+                           self.flirt_with = consultToken;
+                           print "The predatory and proprietary smile of a tigress' smile baring her teeth before prey transforms Brunhilde's face for a flash as she turns to ", flirt_object,".  ~Ready and...~ her voice darkens and sharpens, becoming husky and hot enough to burn, ~...willing.  Eager.  Needy.  Urgently!  Point him at me and I'll wrap him up so tightly in puppet strings he'd blissfully watch you cart away the whole mountain!~^";
+                           rtrue;
+                           } else {
+                              ! this logic handles the case that player tries to 2-step this situation, first saying/telling/asking her to flirt, and then telling her who to flirt with in a new input
+                              print "Brunhilde smiles slyly.  ~You want me to flirt with someone?~^";
+                              self.waiting_to_flirt = true;
+                              rtrue;
+                           }
+                        }
+                     }
                      Answer: 
                         switch(noun) {
                            'Skjordun', 'Fritzwig', 'Falknir':
                               if(self.waiting_to_flirt) {
-                                 print "The predatory and proprietary smile of a tigress' smile baring her teeth before prey transforms Brunhilde's face for a flash as she turns to ", noun,".  ~Ready and...~ her voice darkens and sharpens, becoming husky and hot enough to burn, ~...willing.  Eager.  Needy.  Urgently!  Point them at me and I'll wrap them up so tightly in puppet strings they'd blissfully watch you cart away the whole mountain!~";
-                                 self.flirt_with = noun;
+                                 print "answering in flirt mode about ", noun;
+                                 print "The predatory and proprietary smile of a tigress' smile baring her teeth before prey transforms Brunhilde's face for a flash as she turns to ", noun,".  ~Ready and...~ her voice darkens and sharpens, becoming husky and hot enough to burn, ~...willing.  Eager.  Needy.  Urgently!  Point them at me and I'll wrap them up so tightly in puppet strings they'd blissfully watch you cart away the whole mountain!~^";
+                                 rtrue;
                               } else {
-                                 print "Brunhilde frowns and asks, ~What about him?~  Her pupils dilate and she continues, ~You wanna distraction?  I can't leave me desk, but I can draw eyes at range... tell me who to flirt with!~";
+                                 print "answering out of flirt mode about ", noun;
+                                 print "Brunhilde arches a brow and asks, ~What about him?~  Her pupils dilate and she continues, ~You wanna distraction?  I can't leave me desk, but I can draw eyes at range... tell me who to flirt with!~^";
+                                 rtrue;
                               }
+                              
                            'hello', 'hi', 'hey', 'howdy', 'heya', 'hiya':
                                "~Why hello there, you gorgeous person you!  Welcome to the fabulous and most ancient Royal Treasury of the Dwarves!~  She stands and waves her hands about, framing the elaborate vault at the far side of the room flourish-y-ly.  In a hushed voice, she whispers, ~They gave me your description, so I know you're here to pull the job.  I'm here to help!~  She winks at you, and despite being a consummate professional you feel your knees go weak for an instant.";
                             'job', 'the job', 'heist', 'the heist', 'thief', 'steal':
@@ -368,9 +402,9 @@ Object -> TastyCake "Tasty Cake"
                      Ask: 
                         ! todo: a better way to handle custom actions like Flirt that require an object e.g. the "with Fritzwig" in "tell Brunhilde to flirt with Fritzwig" would be to create a custom verb.  Since this is a short one-off, I'm going to cut corners like I did for I7 and just grep for keywords and inference from there regardless of language structure. 
                         switch(second) {
-                           'distract', 'flirt', 'catch', 'seduce', 'charm': 
-                              "~Who should I ", second, "?~" ;
-                              self.waiting_to_flirt = true;
+                           !'distract', 'flirt', 'catch', 'seduce', 'charm':  ! you have to <ask ... about ...>, you can't <ask ... to ...> for some reason.  The order rule kind of handles this, but who's going to guess you have to say <order Brundhilde to flirt...>?  Seems kinda aggressive.
+                            !  "~Who should I ", second, "?~" ;
+                             ! self.waiting_to_flirt = true;
                            default: "Batting her lashes at you, she simpers, ~Do go on about ", second, "!~";
                         }
                      NotUnderstood: "She furrows her brow ostentatiously before saying, ~I'm afraid I don't know anything about that.~"; 
