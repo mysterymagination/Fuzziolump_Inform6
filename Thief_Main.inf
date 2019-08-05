@@ -359,35 +359,37 @@ Object -> TastyCake "Tasty Cake"
                         ! the current word from user input that does not fit in the life structure table
                         consultToken = NextWord();
                         consultWords--;
-                        print "Examining consult token [", consultToken,"]";
+                        !print "Examining consult token [", (address)consultToken,"], of ", consultWords," tokens";
+                        !print "understood noun is [", (address)noun, "] and second is [", (address)second,"]";
                         switch(consultToken) {
                            'distract', 'flirt', 'catch', 'seduce', 'charm':
                               is_flirting = true;
                            'Skjordun', 'Fritzwig', 'Falknir':
                               flirt_object = consultToken;
                         }
-                        if(is_flirting) {
+                     } ! end whileing over the consult tokens
+                     if(is_flirting) {
                            if(flirt_object ~= 'placeholder') {
                            self.flirt_with = consultToken;
-                           print "The predatory and proprietary smile of a tigress' smile baring her teeth before prey transforms Brunhilde's face for a flash as she turns to ", flirt_object,".  ~Ready and...~ her voice darkens and sharpens, becoming husky and hot enough to burn, ~...willing.  Eager.  Needy.  Urgently!  Point him at me and I'll wrap him up so tightly in puppet strings he'd blissfully watch you cart away the whole mountain!~^";
+                           print "The predatory and proprietary smile of a tigress baring her teeth before prey transforms Brunhilde's face for a flash as she turns to ", (address)flirt_object,".  ~Ready and...~ her voice darkens and sharpens, becoming husky and hot enough to burn, ~...willing.  Eager.  Needy.  Urgently!  Point him at me and I'll wrap him up so tightly in puppet strings he'd blissfully watch you cart away the whole mountain!~^";
                            rtrue;
                            } else {
                               ! this logic handles the case that player tries to 2-step this situation, first saying/telling/asking her to flirt, and then telling her who to flirt with in a new input
-                              print "Brunhilde smiles slyly.  ~You want me to flirt with someone?~^";
+                              print "Brunhilde smiles slyly.  ~You want me to flirt with someone?  Who?~^";
                               self.waiting_to_flirt = true;
                               rtrue;
                            }
-                        }
-                     }
+                    }
+                        
                      Answer: 
                         switch(noun) {
                            'Skjordun', 'Fritzwig', 'Falknir':
                               if(self.waiting_to_flirt) {
-                                 print "answering in flirt mode about ", noun;
-                                 print "The predatory and proprietary smile of a tigress' smile baring her teeth before prey transforms Brunhilde's face for a flash as she turns to ", noun,".  ~Ready and...~ her voice darkens and sharpens, becoming husky and hot enough to burn, ~...willing.  Eager.  Needy.  Urgently!  Point them at me and I'll wrap them up so tightly in puppet strings they'd blissfully watch you cart away the whole mountain!~^";
+                                 print "answering in flirt mode about ", (address)noun;
+                                 print "The predatory and proprietary smile of a tigress' smile baring her teeth before prey transforms Brunhilde's face for a flash as she turns to ", (address)noun,".  ~Ready and...~ her voice darkens and sharpens, becoming husky and hot enough to burn, ~...willing.  Eager.  Needy.  Urgently!  Point them at me and I'll wrap them up so tightly in puppet strings they'd blissfully watch you cart away the whole mountain!~^";
                                  rtrue;
                               } else {
-                                 print "answering out of flirt mode about ", noun;
+                                 print "answering out of flirt mode about ", (address)noun;
                                  print "Brunhilde arches a brow and asks, ~What about him?~  Her pupils dilate and she continues, ~You wanna distraction?  I can't leave me desk, but I can draw eyes at range... tell me who to flirt with!~^";
                                  rtrue;
                               }
