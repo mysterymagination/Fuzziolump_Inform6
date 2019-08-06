@@ -84,7 +84,7 @@ Include "Grammar";
 
 ! Define starting inventory
 Object CoinPurse "Leather coin purse"
-   with name 'purse' 'pouch' 'wallet',
+   with name 'purse' 'pouch' 'wallet' 'coin purse' 'leather coin purse',
         description "You've always loved the smell of tough old leather, especially when it mingles with that of gold; reminds you that hard work (ideally someone else's) pays off.",
    has container openable;
    
@@ -206,6 +206,7 @@ Object -> TastyCake "Tasty Cake"
                             rfalse; ! because we want the library to process normal Go behavior
                          } else {
                             print "You can't just slip into an air duct with all these eyes on!  A distraction, or several, are in order.";
+                            print "fritzwig distracted: ", Fritzwig.distractionStatus,"Skjordun distracted: ", Skjordun.distractionStatus, "falknir distracted: ", Falknir.distractionStatus;
                             rtrue;
                          }
                    ],
@@ -218,14 +219,16 @@ Object -> TastyCake "Tasty Cake"
        has static supporter;
     
     Object -> FritzwigInbox "Fritzwig's inbox"
-       with description "If the fullness of an inbox is an indicator of responsibility then Fritzwig must be the most important person in the multiverse.  Though he works furiously to combat the pile, every few minutes someone passes by and drops off a few more action items.  The tower of headaches stretches significantly above the lip of the flimsy plastic box, and even a disturbance as benign as a stray breeze sends it into a precarious lean that makes Fritzwig hyperventilate.  You begin to suspect his colleagues that jog swiftly past his desk, while fanning themselves, may have some sort of malicious intent.",
+       with name 'box' 'inbox' 'Fritwig inbox' 'Fritzwig^s inbox' 'mail' 'mailbox',
+            description "If the fullness of an inbox is an indicator of responsibility then Fritzwig must be the most important person in the multiverse.  Though he works furiously to combat the pile, every few minutes someone passes by and drops off a few more action items.  The tower of headaches stretches significantly above the lip of the flimsy plastic box, and even a disturbance as benign as a stray breeze sends it into a precarious lean that makes Fritzwig hyperventilate.  You begin to suspect his colleagues that jog swiftly past his desk, while fanning themselves, may have some sort of malicious intent.",
             before [; 
-                      Take: "Like a striking serpent, Fritzwig's hand flashes out and slaps yours away from his precious work. ~Kindly leave that alone, please.  It is sorted VERY particularly.~"; rfalse;
+                      Take: "Like a striking serpent, Fritzwig's hand flashes out and slaps yours away from his precious work. ~Kindly leave that alone, please.  It is sorted VERY particularly.~"; 
                       Push, Hit, Punch:
-                         "*CRASH* With barely a touch you send the stack of papers scattering to the floor, and a few to the winds.  Fritzwig makes a sort of whining shriek like a wounded animal that cannot comprehend its own pain, and dives upon the mess.  A passing accountant chuckles and whispers, ~Good one, mate!  He'll be fiddling with that rot for days.~";
+                         print "*CRASH* With barely a touch you send the stack of papers scattering to the floor, and a few to the winds.  Fritzwig makes a sort of whining shriek like a wounded animal that cannot comprehend its own pain, and dives upon the mess.  A passing accountant chuckles and whispers, ~Good one, mate!  He'll be fiddling with that rot for days.~";
                          Fritzwig.distractionStatus = true;
+                         rtrue;
                    ],
-       has container;
+       has container open;
     
     ! Fritzwig is the accountant whose desk happens to be nearest the air duct
     ! player will have to distract him and the guards (the receptionist is on board with the robbery) to enter the air duct
@@ -234,29 +237,40 @@ Object -> TastyCake "Tasty Cake"
             description "This spindly accountant pours over ledgers like an overwrought machine, zipping through papers and somehow leaving more notes than there was source material.  Sweat dripping from his brow, he pauses for a moment to glance at Brunhilde, his perma-furrowed brow relaxing when and only when he takes in her visage.  With a whisper of a sigh, he then returns to his figures.  You didn't need to spy on Mr. Fritzwig to learn his weakness, though of course you did anyway: there's actually a little shrine to her in his flat, filled with discarded utensils and other garbage-y tidbits that had once come into contact with her -- it's creepy.",
             life [; 
                     Answer:
-                       if(noun == Brunhilde) {
+                       if(noun == 'Brunhilde') {
                           print "Fritzwig looks up at you irritably, then starts as the name you've just invoked registers.  ~What was that? Has she said something?  Is she looking this way?!~  His eyes roll wildly, like those of a frenzied horse.  Then, abruptly, they settle on you with a fearsome intensity.  ~How do you even know her, anyway?  You're not one of us.~";
-                          if(Brunhilde.flirt_with == Fritzwig) {
+                          if(Brunhilde.flirt_with == 'Fritzwig') {
                             print "^Just as Fritzwig seems to have decided he should murder you to be on the safe side of competition, Brunhilde waves to him and favors him with a smile whose luminance could strike onlookers blind as surely as it leaves them dumb.  Forgetting both you and the rest of the world besides Brunhilde, Fritzwig tries to smile back at her (managing a lopsided leer).";
+                            self.distractionStatus = true;
                            } else if(Brunhilde.flirt_with == Skjordun) {
                               print "^Just as Fritzwig seems to have decided he should murder you to be on the safe side of competition, he notices Brunhilde mooning over Skjordun.  His eyes begin to twitch erratically, and his fingernails gouge divots in his blotter as his hands unconciously (?) practice wrapping around a throat.";
                            }
-                           self.distractionStatus = true;
+                           
+                           rtrue;
                         }
                       default: "Without looking up from his work, Fritzwig drones, ~I'm VERY busy at the moment.  Please find someone else to harass.~";
                    ],
             daemon [;
                        if(player in Grandiossuary) {
+                          if(self.distractionStatus) {
+                             if(Brunhilde.flirt_with == 'Fritzwig') {
+                                print "Fritzwig stares dumbly at Brunhilde as she smiles and winks at him.  He looks vaguely terrified, like a dog who has finally caught a car and now has to do something with it.";
+                             } else {
+                                print "The sound of crumpling papers and muffled curses drift up from where Fritzwig is vainly trying to reconstruct his shattered world on the floor beside his desk.";
+                             }
+                          } else {
                           switch (random(10)) {
                         1: "Fritzwig leaps gleefully onto his chair with a cry of ~Eureka!~  The silent and withering gaze of his colleagues brings him back down, figuratively and literally, as he sheepishly explains, ~Well, that account had been all collie-wobbles for decades.  Can't blame a chap for a smidge of celebration.~";
                         3: "Without turning his head from his work, Fritzwig grabs another paper from his inbox.  ~Tsk tsk, oh dear, oh dear...~  He mutters as the numbers are ALL WRONG.";
                         5: "Fritzwig sits back in his chair and stares openly at Brunhilde.  She nods at him nervously and turns her gaze elsewhere, but he remains motionless and vigilant as a stalking statue.";
                         7: "Several dwarves gather for a spot of tea, joking and jostling one another.  Fritzwig eagerly joins them, but the moment he arrives they suddenly remember an urgent meeting.  Far away.  Invites only.  Fritzwig slumps back to his desk and stares at Brunhilde for awhile.";
                           }
+                         } ! if not distracted
                        }
                    ],
             weight 100,
             interests 'numbers' 'ledgers' 'Brunhilde',
+            found_in Grandiossuary,
        has proper male;
     
     ! Skjordun can be distracted by offerings of food or attention from the pretty receptionist
@@ -281,9 +295,18 @@ Object -> TastyCake "Tasty Cake"
 !    ],
             daemon  [; 
                        if(player in Grandiossuary) {
+                          if(self.distractionStatus) {
+                             if(Brunhilde.flirt_with == 'Skjordun') {
+                                print "Flushed red as a lobster, Skjordun does his best to return Brunhilde's implied affection with blinky winks and wavering waves.";
+                             } else {
+                                print "Crumbs fairly fly every direction as Skjordun devours the offering you've left with him.";
+                             }
+                          } else {
                           switch (random(5)) {
                              1: "Skjordun's stomach growls, filling the atrium with a sound like a tiger whose burning brightness will no longer be ignored.";
+                             2: "With a sigh like a deflating bellows, Skjordun casts a quick glance at Brunhilde and then immediately begins studying his feet.";
                           }
+                        } ! if not distracted
                        }
                     ],
             life [; 
@@ -292,11 +315,13 @@ Object -> TastyCake "Tasty Cake"
                                 'food':
                                    "Skjordun's nose twitches and his stony gaze locks onto you.  ~Someone said food?  May I have some?~"; 
                                 'Brunhilde':
-                                   "The mighty guard's eyes widen and his rapt attention washes over you. ~Did she something about me?!  Oh, she's the best and there's just no words suitable to describe her beauty -- magicute is the best I can come up with.~  He flushes deeply and a goofy grin spreads across his face as wild imaginings dance behind his eyes.";
-                                   if(Brunhilde.flirt_with == Skjordun) {
+                                   print "The mighty guard's eyes widen and his rapt attention washes over you. ~Did she something about me?!  Oh, she's the best and there's just no words suitable to describe her beauty -- magicute is the best I can come up with.~  He flushes deeply and a goofy grin spreads across his face as wild imaginings dance behind his eyes.";
+                                   print "brunhilde is flirting with ", (address) Brunhilde.flirt_with;
+                                   if(Brunhilde.flirt_with == 'Skjordun') {
                                       print "^Just as Skjordun's daydreams ignite a sparkle behind his eyes, Brunhilde turns around in her desk, stretching luxuriously.  As she comes out of her preening, she meets his gaze smooth as you please and winks.  After an exchange of shy waves and a virginal blush only a professional actress could manage, the dreamy spark in Skjordun's eyes has turned to a conflagration and totally consumed his ability to pay attention to anything but her.";
                                       self.distractionStatus = true;
                                    }
+                                   rtrue;
                 
                              }
                        
@@ -304,12 +329,13 @@ Object -> TastyCake "Tasty Cake"
                           switch(noun) {
                              ! another oddment: since the noun in this case is an Object, you have to use that same Object (our man Food) in the switch case to get triggered by it instead of using a string literal representation as normal.
                              TastyCake: 
-                                "Skjordun greedily snatches the offered food, and begins to chow down.  He is a man obsessed, and all the rest of the world fades from his notice";
+                                print "^Skjordun greedily snatches the offered food, and begins to chow down.  He is a man obsessed, and all the rest of the world fades from his notice";
                                 move TastyCake to Skjordun;
                                 self.distractionStatus = true;
+                                rtrue;
                           }
                           print "Skjordun distraction status is ", self. distractionStatus;
-                    default: "The stoic warrior stares straight ahead, ever vigilant save for the glances he steals at Brunhilde once a minute or so.";
+                    default: "^The stoic warrior stares straight ahead, ever vigilant save for the glances he steals at Brunhilde once a minute or so.";
                  ],
             height 5,
             weight 250,
@@ -319,28 +345,35 @@ Object -> TastyCake "Tasty Cake"
     ! Falknir is greedy, and can only be distracted with monetary compensation
     TreasuryGuard Falknir "Falknir"
        with name "Falknir",
-            description "Falknir is a grumpy old fellow, whose only loyalty is to money.  The royal treasury trusts him because they are confident none can beat their pay; they're not wrong.  Several of the street urchins you hired to probe his susceptibility to bribes met with great success while extracting privileged information about The Ancient Society of Scrooge, a secret organization by and for penny-pinchers who read the first chapter of the Dickens work, declared it the greatest work of all time, and then never finished it.",
+            description "^Falknir is a grumpy old fellow, whose only loyalty is to money.  The royal treasury trusts him because they are confident none can beat their pay; they're not wrong.  Several of the street urchins you hired to probe his susceptibility to bribes met with great success while extracting privileged information about The Ancient Society of Scrooge, a secret organization by and for penny-pinchers who read the first chapter of the Dickens work, declared it the greatest work of all time, and then never finished it.",
             interests 'wealth',
             money_counts 0,
             life [; 
                     Show, Give:
                        switch(noun) {
                           Coin:
-                             "Falknir's eyes light up at the sight of such a rare treasure as one of the infamous Cursed Coins.  ~Let me see that!~  he fairly howls, barely restraining himself from snatching it out of your hand.  You flip it to him, and hold a finger before your lips for an instant in a discreet hushing gesture.  He nods knowingly and begins studiously drooling over his new acquisition.";
+                             print "^Falknir's eyes light up at the sight of such a rare treasure as one of the infamous Cursed Coins.  ~Let me see that!~  he fairly howls, barely restraining himself from snatching it out of your hand.  You flip it to him, and hold a finger before your lips for an instant in a discreet hushing gesture.  He nods knowingly and begins studiously drooling over his new acquisition.";
                              move Coin to Falknir;
                              self.distractionStatus = true;
+                             rtrue;
                        }
                     default: "The surly old dwarf points toward Brunhilde and says, ~Please direct all inquiries to our receptionist.  I'm sure you'll find her very friendly.  Not so, me.~";
                        
                  ],
             daemon  [; 
                        if(player in Grandiossuary) {
+                          if(self.distractionStatus) {
+                        
+                            print "Falknir taps the side of his nose and leers at you, somehow indicating camaraderie.";
+                             
+                          } else {
                           switch (random(10)) {
                         1: "Falknir shifts his weight, grumping softly about creaking joints.";
                         3: "With a huff, Falknir blows out his glorious curled mustache and glares at you suspiciously.";
                         5: "Falknir ostentatiously jingles the coins in his many pouches, baring his gray teeth in a greasy grin.";
                         7: "Taking his eyes off you for a moment, Falknir busily counts out all the gold in his main money pouch (complete with a dollar sign in gold leaf) for the ",++self.money_counts,"th time.";
                           }
+                         } ! if not distracted
                        }
                ],
        has proper male;
@@ -412,23 +445,15 @@ Object -> TastyCake "Tasty Cake"
                      NotUnderstood: "She furrows her brow ostentatiously before saying, ~I'm afraid I don't know anything about that.~"; 
                      !Ask: "the first 21st 22nd and 23rd chars of buffer says [", (char)buffer->21, (char)buffer->22, (char)buffer->23, "]"; ! woo, this kinda works for intercepting raw user input!
                      Tell: 
-                        print "~I'm afraid I'm too busy to deal with ", second," just now.~";
-                        rtrue; ! remove this to reach debug raw parsing block below.  I sure love not having multiline comments...
-                        for(index = 0: index < consult_words: index++) {
-                           currentWord = NextWord();
-                           print "^the ", index, "th word in the any clause is [", currentWord,"].  BTW, consult_from says ", consult_from;
-                           if(currentWord == 'flirt') {
-                              ! todo: after finding the flirt token, look for an NPC symbol
-                              print "^Brunhilde smiles slyly.  ~You want me to flirt with someone?~";
-                           }
-                        }
-                        n = 0;
-                        while (NextWord() ~= 'flirt' && n <= consult_words) n++;
-                        print "we found flirt at the ", n, "th word of ", consult_words, "!";
+                        "~I'm afraid I'm too busy to deal with ", second," just now.~";
+                        
                      default: "Brunhilde smiles politely and tidies her desk."; 
                   ],
             daemon [;
                     if(player in Grandiossuary) {
+                       if(self.flirt_with ~= 'placeholder') {
+                          print "Brunhilde glows in the general direction of ", (address)self.flirt_with,", drawing his eyes like a planet's magnetism draws a compass needle, but with a much greater compulsive pull than any mere celestial body could muster.";
+                       } else {
                           switch (random(10)) {
                         1, 2: "Brunhilde stretches ostentatiously, preening herself.  A silence as staggering as a struck gong fills the atrium as dozens of quills cease their otherwise omnipresent scratching as one, if only for a moment.";
                         3, 4, 7, 8: "Clearing her throat demurely, Brunhilde flashes you a tiny smirk deep with conspiracy.";
@@ -437,10 +462,11 @@ Object -> TastyCake "Tasty Cake"
                         5, 6: "With the practiced languid carelessness of a mistress loof, Brunhilde brushes out her hair.  For an hour.  You hear a longing sigh from somewhere, quickly stifled into a fairly obvious fit of coughing.";
                         
                           }
+                         } ! if not flirting
                        }
                    ],
             ! the player can get her to flirt with someone to potentially distract them
-            flirt_with,
+            flirt_with 'placeholder',
             waiting_to_flirt false,
             interests 'cosmic horror' 'arcana' 'sweets',
             found_in Grandiossuary,
@@ -453,7 +479,7 @@ Object -> TastyCake "Tasty Cake"
         name 'cellar' 'basement' 'undercarriage',
         u_to Vault_Trapdoor,
         scored_value 10
-        has scored;
+        has scored light;
     
    Object Vault_Trapdoor "Trapdoor"
       with name 'trapdoor' 'hole',
@@ -473,7 +499,7 @@ Object -> TastyCake "Tasty Cake"
           "Mountains of gold coins, shimmering gems in every color of the rainbow plus a few you're certain you've never seen before, and powerful artifacts humming with magical potential languish in idle safety before you.  Your mouth begins to water, but you staunchly refuse to be distracted from your true goal: The OmniNomicron.  It should be here somewhere amidst the hoard.",
         s_to Vault_Door,
         scored_value 50,
-        has scored;
+        has scored light;
     
     Object Vault_Door "An immeasurably heavy steel door"
        with name "Vault" "Door",
