@@ -236,6 +236,14 @@ Object -> TastyCake "Tasty Cake"
        with name 'Fritzwig' 'accountant',
             description "This spindly accountant pours over ledgers like an overwrought machine, zipping through papers and somehow leaving more notes than there was source material.  Sweat dripping from his brow, he pauses for a moment to glance at Brunhilde, his perma-furrowed brow relaxing when and only when he takes in her visage.  With a whisper of a sigh, he then returns to his figures.  You didn't need to spy on Mr. Fritzwig to learn his weakness, though of course you did anyway: there's actually a little shrine to her in his flat, filled with discarded utensils and other garbage-y tidbits that had once come into contact with her -- it's creepy.",
             life [; 
+                    if(self.distractionStatus) {
+                       if(Brundhilde.flirt_with == 'Fritzwig') {
+                          ! todo: handle love-flustered fritzwig
+                          
+                       } else {
+                          ! todo: handle paper pushing Fritzwig
+                       }
+                    }
                     Answer:
                        if(noun == 'Brunhilde') {
                           print "Fritzwig looks up at you irritably, then starts as the name you've just invoked registers.  ~What was that? Has she said something?  Is she looking this way?!~  His eyes roll wildly, like those of a frenzied horse.  Then, abruptly, they settle on you with a fearsome intensity.  ~How do you even know her, anyway?  You're not one of us.~";
@@ -403,8 +411,14 @@ Object -> TastyCake "Tasty Cake"
                      } ! end whileing over the consult tokens
                      if(is_flirting) {
                            if(flirt_object ~= 'placeholder') {
-                           self.flirt_with = consultToken;
-                           print "The predatory and proprietary smile of a tigress baring her teeth before prey transforms Brunhilde's face for a flash as she turns to ", (address)flirt_object,".  ~Ready and...~ her voice darkens and sharpens, becoming husky and hot enough to burn, ~...willing.  Eager.  Needy.  Urgently!  Point him at me and I'll wrap him up so tightly in puppet strings he'd blissfully watch you cart away the whole mountain!~^";
+                              self.flirt_with = consultToken;
+                              print "The predatory and proprietary smile of a tigress baring her teeth before prey transforms Brunhilde's face for a flash as she turns to ", (address)flirt_object,".  ~Ready and...~ her voice darkens and sharpens, becoming husky and hot enough to burn, ~...willing.  Eager.  Needy.  Urgently!  Point him at me and I'll wrap him up so tightly in puppet strings he'd blissfully watch you cart away the whole mountain!~^";
+                              switch(self.flirt_with) {
+                                 'Skjordun':
+                                    Skjordun.distractionStatus = true;
+                                 'Fritzwig':
+                                    Fritzwig.distractionStatus = true;
+                              } 
                            rtrue;
                            } else {
                               ! this logic handles the case that player tries to 2-step this situation, first saying/telling/asking her to flirt, and then telling her who to flirt with in a new input
@@ -452,6 +466,7 @@ Object -> TastyCake "Tasty Cake"
             daemon [;
                     if(player in Grandiossuary) {
                        if(self.flirt_with ~= 'placeholder') {
+                          ! todo: this suggests that Brunhilde flirting with the mark is enough to distract him, which is not currently the case... but it probably should be.  The weird 'say brunhilde to skjordun' situation we have going on now is unintuitive, unnecessary, and uninteresting.
                           print "Brunhilde glows in the general direction of ", (address)self.flirt_with,", drawing his eyes like a planet's magnetism draws a compass needle, but with a much greater compulsive pull than any mere celestial body could muster.";
                        } else {
                           switch (random(10)) {
