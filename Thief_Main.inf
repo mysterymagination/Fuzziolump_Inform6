@@ -213,7 +213,7 @@ Object -> TastyCake "Tasty Cake"
             found_in Grandiossuary,
        has static door openable;
             
-    Object FritzwigDesk "The desk of Fritzwig"
+    Object FritzwigDesk "Desk of Fritzwig"
        with description "This old mahagony desk has been polished and cared for meticulously.  A few worn spots on the blotter from frequent and frenzied figuring are all that mar its pristine surface.",
              found_in Grandiossuary,
        has static supporter;
@@ -237,12 +237,14 @@ Object -> TastyCake "Tasty Cake"
             description "This spindly accountant pours over ledgers like an overwrought machine, zipping through papers and somehow leaving more notes than there was source material.  Sweat dripping from his brow, he pauses for a moment to glance at Brunhilde, his perma-furrowed brow relaxing when and only when he takes in her visage.  With a whisper of a sigh, he then returns to his figures.  You didn't need to spy on Mr. Fritzwig to learn his weakness, though of course you did anyway: there's actually a little shrine to her in his flat, filled with discarded utensils and other garbage-y tidbits that had once come into contact with her -- it's creepy.",
             life [; 
                     if(self.distractionStatus) {
-                       if(Brundhilde.flirt_with == 'Fritzwig') {
-                          ! todo: handle love-flustered fritzwig
-                          
+                       if(Brunhilde.flirt_with == 'Fritzwig') {
+                          ! handle love-flustered fritzwig
+                          print "^Just as Fritzwig seems to have decided he should murder you to be on the safe side of competition, Brunhilde waves to him and favors him with a smile whose luminance could strike onlookers blind as surely as it leaves them dumb.  Forgetting both you and the rest of the world besides Brunhilde, Fritzwig tries to smile back at her (managing a lopsided leer).";
                        } else {
-                          ! todo: handle paper pushing Fritzwig
+                          ! handle paper pushing Fritzwig
+                          print "^~Whatever your damnable problem is, I CANNOT help -- I'm TERRIBLY busy with this-this-this fffooo...rrrglerumble~ He trails off as his fury overwhelms his capacity for language.";
                        }
+                       rtrue;
                     }
                     Answer:
                        if(noun == 'Brunhilde') {
@@ -318,6 +320,14 @@ Object -> TastyCake "Tasty Cake"
                        }
                     ],
             life [; 
+                    if(self.distractionStatus) {
+                       if(Brunhilde.flirt_with == 'Skjordun') {
+                          print "^Just as Skjordun's daydreams ignite a sparkle behind his eyes, Brunhilde turns around in her desk, stretching luxuriously.  As she comes out of her preening, she meets his gaze smooth as you please and winks.  After an exchange of shy waves and a virginal blush only a professional actress could manage, the dreamy spark in Skjordun's eyes has turned to a conflagration and totally consumed his ability to pay attention to anything but her.";
+                       } else {
+                          print "^Skjordun pays you no mind, for the tasty cake has eclipsed the world to him.  It is his world, now.";
+                       }
+                       rtrue;
+                    }
                     Answer:
                        switch(noun) {
                                 'food':
@@ -357,6 +367,9 @@ Object -> TastyCake "Tasty Cake"
             interests 'wealth',
             money_counts 0,
             life [; 
+                    if(Brunhilde.flirt_with == 'Falknir') {
+                       print "^Falknir arches a curious eyebrow at Brunhilde's enthusiastic come-hithering, but seems otherwise uninterested."; 
+                    }
                     Show, Give:
                        switch(noun) {
                           Coin:
@@ -412,7 +425,7 @@ Object -> TastyCake "Tasty Cake"
                      if(is_flirting) {
                            if(flirt_object ~= 'placeholder') {
                               self.flirt_with = consultToken;
-                              print "The predatory and proprietary smile of a tigress baring her teeth before prey transforms Brunhilde's face for a flash as she turns to ", (address)flirt_object,".  ~Ready and...~ her voice darkens and sharpens, becoming husky and hot enough to burn, ~...willing.  Eager.  Needy.  Urgently!  Point him at me and I'll wrap him up so tightly in puppet strings he'd blissfully watch you cart away the whole mountain!~^";
+                              print "The predatory and proprietary smile of a tigress baring her teeth before prey transforms Brunhilde's face for a flash as she turns to ", (address)flirt_object,".  ~Ready and...~ her voice darkens and sharpens, becoming husky and hot enough to burn, ~...willing.  Eager.  Needy.  Urgently!  I'll wrap him up so tightly in puppet strings he'd blissfully watch you cart away the whole mountain!~^";
                               switch(self.flirt_with) {
                                  'Skjordun':
                                     Skjordun.distractionStatus = true;
@@ -466,7 +479,7 @@ Object -> TastyCake "Tasty Cake"
             daemon [;
                     if(player in Grandiossuary) {
                        if(self.flirt_with ~= 'placeholder') {
-                          ! todo: this suggests that Brunhilde flirting with the mark is enough to distract him, which is not currently the case... but it probably should be.  The weird 'say brunhilde to skjordun' situation we have going on now is unintuitive, unnecessary, and uninteresting.
+                          ! this suggests that Brunhilde flirting with the mark is enough to distract him, which is (was) not currently the case... but it probably should be.  The weird 'say brunhilde to skjordun' situation we have going on now is unintuitive, unnecessary, and uninteresting.
                           print "Brunhilde glows in the general direction of ", (address)self.flirt_with,", drawing his eyes like a planet's magnetism draws a compass needle, but with a much greater compulsive pull than any mere celestial body could muster.";
                        } else {
                           switch (random(10)) {
