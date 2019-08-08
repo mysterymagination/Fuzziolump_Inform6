@@ -561,6 +561,28 @@ Object -> TastyCake "Tasty Cake"
         "Bookcases filled with accounting ledgers line the walls here, making the room stuffy despite being quite large.  As a draft rustles the ancient yellowed pages of a nearby text, you wonder why a Treasury needs its own library.  Whispers just beyond hearing plague the silence.",
            se_to Grandiossuary,
       has light;
+   
+    ! todo: add creepy books to the Archive
+    Object -> DreamscapeAtlas "Dreamscape Atlas"
+      with name 'atlas' 'dreamscape atlas' 'dreamscape',
+           description "A weathered tome, its leather binding cracked by age and frequent reference, sits open on a table set before a comfortable winged reading chair.",
+           before [; read:
+                        "The book describes impossible environs, laws of nature that simply cannot be, and creatures that could never live.  It reads like the diary of a mad naturalist surveying VERY uncharted territory.  One entry describes in detail a humanoid creature with no bones or organs, only soft fur, and which is sustained by joy -- its own and that of the friends it makes with every creature it comes into contact with.  Another details a land no more than a mile wide where gravity simply takes a turn sideways when it wants, sending things flying or floating towards sky, ground, or mountainsides willy nilly.  What an odd book for a bank."
+                  ],
+      has legible openable open;
+
+      Object -> BestiaryOfInfinity "Bestiary of Infinity"
+         with name 'bestiary' 'infinity book',
+              description "Bound in a strange oily hide with patches of withered scales, certainly not from any animal you recognize (or so you hope), this book sits on its side on top of a nearby bookshelf.  It somehow manages to look restless.",
+              before [; read:
+                           "~There are creatures great and small all around us in our everyday lives, but these are of no importance.  The claws and teeth and mind-bending power to create, shape, and destroy universes unique to godbeasts are our singular point of interest, and we shall discuss herein the mathematics dictating their majesty.~  This encyclopedia has troubling entries about myriad huge and imposing creatures out of dream and nightmare.  Hundreds of them.  Toothy and tentacled titans adorn every page, adding a physically painful visual overture to the fearsome stage already set for the theater of the mind by the text.  You can't make tails or feathers of the complex diagrams and formulae scattered amongst the colorful descriptions, but you note with a shudder that the mountain in the background of many of the illuminations looks distressingly familiar -- it can only be Mount Godspeak, out of which the Royal Treasury was carved."; 
+                     ],
+         has legible openable open;
+
+      Object -> Abjurataraxia "Abjurataraxia: Words about Wards"
+         with name 'abjurataraxia' 'ward book' 'book of wards' 'words about wards',
+              description "~~",
+         has legible openable open;
     
     ! The Warden's Chamber: NE off the Grandiossuary, this is the office of 
     ! the Treasurer.  He introduces himself as such, but the arcane wards and
@@ -571,6 +593,8 @@ Object -> TastyCake "Tasty Cake"
         "A few ledgers are placed ostentatiously, though the layer of dust upon them suggests they are not visited as often as one would expect.  The walls are decorated with odd symbols, one of which you recognize as a symbol of warding against the local Goddess of Lost Things, Amyria.  That one's not so strange for an accountant but the dozens of others, along with copious arcane-looking artifacts on display, seem suspicious.",
         sw_to Grandiossuary,
         has light;
+
+    ! todo: add ward objects to the WardenChamber, with something(s) that can be used to disarm the fire lasers in the passage leading into the Maw of Infinity from the Vault 
     
     ! The Maw of Infinity: N of the Vault, the entryway to the Tomb of Forgotten Gods,
     ! it is here that player encounters their cosmic tease and the end 
