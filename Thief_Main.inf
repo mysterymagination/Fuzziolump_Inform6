@@ -562,7 +562,7 @@ Object -> TastyCake "Tasty Cake"
            se_to Grandiossuary,
       has light;
    
-    ! todo: add creepy books to the Archive
+    ! add creepy books to the Archive, hinting at lore
     Object -> DreamscapeAtlas "Dreamscape Atlas"
       with name 'atlas' 'dreamscape atlas' 'dreamscape',
            description "A weathered tome, its leather binding cracked by age and frequent reference, sits open on a table set before a comfortable winged reading chair.",
@@ -581,7 +581,10 @@ Object -> TastyCake "Tasty Cake"
 
       Object -> Abjurataraxia "Abjurataraxia: Words about Wards"
          with name 'abjurataraxia' 'ward book' 'book of wards' 'words about wards',
-              description "~~",
+              description "A red silken bookmark leads to a chapter about summoning seals; judging by the fading on these pages from exposure to light relative to the rest of the book, this chapter is referenced often.",
+              before [; read: 
+                           "~When dealing with demons, devils, wild gods, and other uncouth sorts, the most important measures to consider are containment and control.  Whatever you've caught, it's not going to take kindly to confinement; that's just the nature of life.  Below follow a few basic wards one can construct to protect oneself.  Do note, however, that a certain amount of magical ^radiation^, if you will, leaking through any ward is to be expected.  Best not hang around too close to your captured charges, especially if they've had a while to acclimate themselves to your plane of existence -- once they've sorted out their power, some creatures' influence cannot be bound by wards no matter the strength.~  Incidentally, you wonder where the Archivist is.";
+              ],
          has legible openable open;
     
     ! The Warden's Chamber: NE off the Grandiossuary, this is the office of 
@@ -595,6 +598,24 @@ Object -> TastyCake "Tasty Cake"
         has light;
 
     ! todo: add ward objects to the WardenChamber, with something(s) that can be used to disarm the fire lasers in the passage leading into the Maw of Infinity from the Vault 
+
+    Object -> CrystalChest "Crystal Chest"
+      with name 'crystal chest' 'chest',
+           description "This chest is constructed entirely from translucent crystal, which appears to have been grown into the required shape rather than carved.  It's only the size of a common dog, but it's impossibly heavy (also like the common dog, one who doesn't want to be picked up).  You can see a faint violet light pulsing from within.",
+      has static openable lockable locked;
+   
+    Object -> -> MagmaHeart "Heart of Magma"
+      with name 'heart' 'heart of magma' 'magma',
+           description "This strange glowing stone appears to be a sphere of magma, heat pulsing furiously out from between cracks in its (relatively?) cooled surface, yet you feel no heat radiating off it. In fact, your breath steams the inside of the crystal chest as if in a winter chill when you bend close to examine the sphere.",
+           before [
+                     take:
+                        "As you lift the sphere, you begin to shiver and note a distinct pallor sweep over your skin.  You toss it in your pack hastily.";
+                        move self to player;
+                        rtrue;
+                  ];
+      
+    
+
     
     ! The Maw of Infinity: N of the Vault, the entryway to the Tomb of Forgotten Gods,
     ! it is here that player encounters their cosmic tease and the end 
