@@ -614,8 +614,17 @@ Object -> TastyCake "Tasty Cake"
                         rtrue;
                   ];
       
-    
+    Object WardenDesk "Grand Mahagony Desk"
+      with name 'grand mahagony desk' 'grand desk' 'mahagony desk' 'desk',
+           description "This lovely mahagony desk is well-polished and meticulously ordered.  Several books lie open on the surface, each detailing methods of banishment for demonic figures.  The Treasurer must be a superstitious sort.",
+      has static openable;
 
+    ! todo: give the player a turn in the Maw of Infinity before they are consumed by the abyss and all that lives there to use the wand to fend it off for an instant.  This will let them flee screaming, achieving the 'good' ending.  If they have the OmniNomicron, they can even decide to declare war upon the cult and their foul gods using its power? 
+    Object -> WandOfWarding "Wand of Warding"
+      with name 'wand' 'wand of warding' 'warding wand',
+           description "The Wand of Warding is a beautifully carved 20cm length of wood from a Bodhi Tree, and you feel a tingle of power run through your hand as you grasp it.  Tiny and stunningly intricate scenes of mythological battle ornament its entire surface: the wielder of a minute wand holds it dramatically before themselves, keeping at bay or banishing hordes of horned phantasms.",
+           score_value 25,
+      has scored;
     
     ! The Maw of Infinity: N of the Vault, the entryway to the Tomb of Forgotten Gods,
     ! it is here that player encounters their cosmic tease and the end 
