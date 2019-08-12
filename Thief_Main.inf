@@ -597,7 +597,7 @@ Object -> TastyCake "Tasty Cake"
         sw_to Grandiossuary,
         has light;
 
-    ! todo: add ward objects to the WardenChamber, with something(s) that can be used to disarm the fire lasers in the passage leading into the Maw of Infinity from the Vault 
+    ! add ward objects to the WardenChamber, with something(s) that can be used to disarm the fire lasers in the passage leading into the Maw of Infinity from the Vault 
 
     Object -> CrystalChest "Crystal Chest"
       with name 'crystal chest' 'chest',
@@ -613,16 +613,98 @@ Object -> TastyCake "Tasty Cake"
                         move self to player;
                         rtrue;
                   ];
-      
+    ! this fn takes in an array of query tokens that we want to match in the <any clause> consult tokens.  It returns true if these tokens are found and false otherwise.
+    [checkInputForTokens 
+      consultWords consultToken tokensFound tokenArray; 
+                     wn = consult_from; ! the magic var wn is the <any clause> token position in the input string where NextWord() will start from 
+                     consultWords = consult_words; ! the number of understood <any clause> tokens
+                     tokensFound = 0;
+                     while(consultWords) {
+                        ! the current word from user input that does not fit in the life structure table
+                        consultToken = NextWord();
+                        consultWords--;
+                        print "Examining consult token [", (address)consultToken,"], of ", consultWords," tokens";
+                        !print "understood noun is [", (address)noun, "] and second is [", (address)second,"]";
+                        ! check array for a match against current consult token
+                        index = 0;
+                        for(index=0: index < #tokenArray: index++) {
+                           if((address)tokenArray->index == (address)consultToken) {
+                              ! note that another token has been found
+                              tokensFound++;
+                              ! remove this token from the query array since it has now been matched
+                              !tokenArray.remove(index); ! sadly this isn't a thing in Inform 6 and I can't be bothered to find out how it might be implemented.  It was only for performance anyway, and this is a text adventure, so... Oh wait, nm: the algorithm actually doesn't work without removal of tokens on match because then we can't tie a token find to a unique token.  This means that searching for ['bottom', 'drawer', 'search'] would return true for input "bottom bottom bottom".  Butts. Eh, close enough.
+                           }
+                        }
+                     } ! end whileing over the consult tokens
+
+                     ! return true if tokensFound is at least equal to the number of query tokens 
+                     return tokensFound >= #tokenArray;
+    ];
+
+    ! this fn takes in an array of base query tokens that must all be matched in the <any clause> consult tokens and an auxiliary array of query tokens, only one of which must be matched.  It returns true if these tokens are found and false otherwise.  This allows for an easy check of input for a base set of qualifiers necessary to indicate an otherwise unnamed object or object component e.g. the 'bottom of the upper right drawer' along with a set of words that would all reasonably indicate the same categorical action e.g. 'lift out the bottom of the upper right drawer', 'reveal the bottom of the upepr right drawer', 'pull out the bottom of the upper rigt drawer'...
+    [checkInputForBaseAuxTokens 
+      consultWords consultToken tokensFoundBase tokensFoundAux tokenArrayBase tokenArrayAux; 
+                     wn = consult_from; ! the magic var wn is the <any clause> token position in the input string where NextWord() will start from 
+                     consultWords = consult_words; ! the number of understood <any clause> tokens
+                     tokensFoundBase = 0;
+                     tokensFoundAux = 0;
+                     while(consultWords) {
+                        ! the current word from user input that does not fit in the life structure table
+                        consultToken = NextWord();
+                        consultWords--;
+                        print "Examining consult token [", (address)consultToken,"], of ", consultWords," tokens";
+                        ! check base and aux array for a match against current consult token
+                        index = 0;
+                        for(index=0: index < #tokenArray: index++) {
+                           if((address)tokenArrayBase->index == (address)consultToken) {
+                              ! note that another base token has been found
+                              tokensFoundBase++;
+                           } else if(address)tokenArrayAux->index == (address)consultToken) {
+                              ! note that another aux token has been found
+                              tokensFoundAux++;
+                           }
+                        }
+                     } ! end whileing over the consult tokens
+
+                     ! return true if tokensFoundBase is at least equal to the number of base query tokens AND tokensFoundAux is at least 1
+                     return tokensFoundBase >= #tokenArrayBase && tokensFoundAux >= 1;
+    ];
+
     Object WardenDesk "Grand Mahagony Desk"
       with name 'grand mahagony desk' 'grand desk' 'mahagony desk' 'desk',
            description "This lovely mahagony desk is well-polished and meticulously ordered.  Several books lie open on the surface, each detailing methods of banishment for demonic figures.  The Treasurer must be a superstitious sort.",
+           before [queryTokensBase queryTokensAuxiliary; 
+                     print "the action taken is ", action;
+                     if(~self.secret_compartment_discovered) {
+                        queryTokensBase 'bottom' 'upper right' 'drawer';
+                        queryTokensAuxiliary 'lift' 'pull' 'open' 'reveal' 'take';
+                        if(checkInputForTokensBaseAux(queryTokensBase, queryTokensAuxiliary)) {
+                           self.secret_compartment_discovered = true;
+                           move WandOfWarding to WardenDesk;
+                           print "You lift out the false bottom of the drawer, revealing a velvet lined compartment containing a beautiful wand.";
+                           rtrue;
+                        }
+                     }
+                     examine:
+                        if(~self.secret_compartment_discovered && checkInputForTokens('bottom' 'upper right' 'drawer')) {
+                           "Poking at the odd drawer bottom yields a curious wobble, as if the bottom is not actually afixed.";
+                        }
+                     open:
+                        if(~self.secret_compartment_discovered) {
+                           print "As you rifle through the desk drawers, mostly filled with ledgers and logistical nonsense, you notice that the stain on the bottom of the upper right drawer doesn't match the rest.  Even the wood's slightly different.  Newer.";
+                        } else {
+                           print "Like a guilty conscience, the secret compartment beneath the upper right drawer refuses to be concealed properly no matter how you futz with the removable panel.";
+                        }
+                        rfalse;
+
+                  ],
+            secret_compartment_discovered false,
       has static openable;
 
     ! todo: give the player a turn in the Maw of Infinity before they are consumed by the abyss and all that lives there to use the wand to fend it off for an instant.  This will let them flee screaming, achieving the 'good' ending.  If they have the OmniNomicron, they can even decide to declare war upon the cult and their foul gods using its power? 
-    Object -> WandOfWarding "Wand of Warding"
+    Object WandOfWarding "Wand of Warding"
       with name 'wand' 'wand of warding' 'warding wand',
-           description "The Wand of Warding is a beautifully carved 20cm length of wood from a Bodhi Tree, and you feel a tingle of power run through your hand as you grasp it.  Tiny and stunningly intricate scenes of mythological battle ornament its entire surface: the wielder of a minute wand holds it dramatically before themselves, keeping at bay or banishing hordes of horned phantasms.",
+           description "The Wand of Warding is a beautifully carved 20cm length of wood from a Bodhi Tree with a strange rainbow helix arrangement of multi-hued gemstones fastened to the tip.  Looking closer, you actually can't determine how the stones are connected to the wood -- they appear to grow seamlessly from it.  A tingle of power runs through your hand as you grasp it.  Tiny and stunningly intricate scenes of mythological battle ornament its entire surface: the wielder of a minute wand holds it dramatically before themselves, keeping at bay or banishing hordes of horned phantasms.",
            score_value 25,
       has scored;
     
