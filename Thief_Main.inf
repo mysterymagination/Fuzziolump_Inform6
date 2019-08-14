@@ -567,7 +567,7 @@ Object -> TastyCake "Tasty Cake"
       with name 'atlas' 'dreamscape atlas' 'dreamscape',
            description "A weathered tome, its leather binding cracked by age and frequent reference, sits open on a table set before a comfortable winged reading chair.",
            before [; read:
-                        "The book describes impossible environs, laws of nature that simply cannot be, and creatures that could never live.  It reads like the diary of a mad naturalist surveying VERY uncharted territory.  One entry describes in detail a humanoid creature with no bones or organs, only soft fur, and which is sustained by joy -- its own and that of the friends it makes with every creature it comes into contact with.  Another details a land no more than a mile wide where gravity simply takes a turn sideways when it wants, sending things flying or floating towards sky, ground, or mountainsides willy nilly.  What an odd book for a bank."
+                        "The book describes impossible environs, laws of nature that simply cannot be, and creatures that could never live.  It reads like the diary of a mad naturalist surveying VERY uncharted territory.  One entry describes in detail a humanoid creature with no bones or organs, only soft fur, and which is sustained by joy -- its own and that of the friends it makes with every creature it comes into contact with.  Another details a land no more than a mile wide where gravity simply takes a turn sideways when it wants, sending things flying or floating towards sky, ground, or mountainsides willy nilly.  What an odd book for a bank.";
                   ],
       has legible openable open;
 
@@ -607,78 +607,104 @@ Object -> TastyCake "Tasty Cake"
     Object -> -> MagmaHeart "Heart of Magma"
       with name 'heart' 'heart of magma' 'magma',
            description "This strange glowing stone appears to be a sphere of magma, heat pulsing furiously out from between cracks in its (relatively?) cooled surface, yet you feel no heat radiating off it. In fact, your breath steams the inside of the crystal chest as if in a winter chill when you bend close to examine the sphere.",
-           before [
+           before [;
                      take:
-                        "As you lift the sphere, you begin to shiver and note a distinct pallor sweep over your skin.  You toss it in your pack hastily.";
+                        print "As you lift the sphere, you begin to shiver and note a distinct pallor sweep over your skin.  You toss it in your pack hastily.";
                         move self to player;
                         rtrue;
                   ];
     ! this fn takes in an array of query tokens that we want to match in the <any clause> consult tokens.  It returns true if these tokens are found and false otherwise.
-    [checkInputForTokens 
-      consultWords consultToken tokensFound tokenArray; 
-                     wn = consult_from; ! the magic var wn is the <any clause> token position in the input string where NextWord() will start from 
-                     consultWords = consult_words; ! the number of understood <any clause> tokens
-                     tokensFound = 0;
-                     while(consultWords) {
-                        ! the current word from user input that does not fit in the life structure table
-                        consultToken = NextWord();
-                        consultWords--;
-                        print "Examining consult token [", (address)consultToken,"], of ", consultWords," tokens";
-                        !print "understood noun is [", (address)noun, "] and second is [", (address)second,"]";
-                        ! check array for a match against current consult token
-                        index = 0;
-                        for(index=0: index < #tokenArray: index++) {
-                           if((address)tokenArray->index == (address)consultToken) {
-                              ! note that another token has been found
-                              tokensFound++;
-                              ! remove this token from the query array since it has now been matched
-                              !tokenArray.remove(index); ! sadly this isn't a thing in Inform 6 and I can't be bothered to find out how it might be implemented.  It was only for performance anyway, and this is a text adventure, so... Oh wait, nm: the algorithm actually doesn't work without removal of tokens on match because then we can't tie a token find to a unique token.  This means that searching for ['bottom', 'drawer', 'search'] would return true for input "bottom bottom bottom".  Butts. Eh, close enough.
-                           }
-                        }
-                     } ! end whileing over the consult tokens
+    !Array gTokenArray --> 10; ! only statically sized arrays supported?  Yargh, this language!  I guess traverse until deref is 0? Undeclared variable?
+   !  Object ArrayWrapper "Array Wrapper"
+   !    with wrappedArray 'placeholder' 'placeholder' 'placeholder' 'placeholder' 'placeholder' 'placeholder' 'placeholder' 'placeholder' 'placeholder' 'placeholder'; !%^#%&^*&
+   !  [checkInputForTokens 
+   !    consultWords consultToken tokensFound tokenArray; 
+   !                   wn = consult_from; ! the magic var wn is the <any clause> token position in the input string where NextWord() will start from 
+   !                   consultWords = consult_words; ! the number of understood <any clause> tokens
+   !                   tokensFound = 0;
+   !                   !gTokenArray = tokenArray;
+   !                   while(consultWords) {
+   !                      ! the current word from user input that does not fit in the life structure table
+   !                      consultToken = NextWord();
+   !                      consultWords--;
+   !                      print "Examining consult token [", (address)consultToken,"], of ", consultWords," tokens";
+   !                      !print "understood noun is [", (address)noun, "] and second is [", (address)second,"]";
+   !                      ! check array for a match against current consult token
+   !                      index = 0;
+   !                      for(index=0: index < ArrayWrapper.#wrappedArray: index++) {
+   !                         if(((address)ArrayWrapper.wrappedArray->index) == (address)consultToken) { ! missing operator?  Oh this can go straight to hell
+   !                            ! note that another token has been found
+   !                            tokensFound++;
+   !                            ! remove this token from the query array since it has now been matched
+   !                            !tokenArray.remove(index); ! sadly this isn't a thing in Inform 6 and I can't be bothered to find out how it might be implemented.  It was only for performance anyway, and this is a text adventure, so... Oh wait, nm: the algorithm actually doesn't work without removal of tokens on match because then we can't tie a token find to a unique token.  This means that searching for ['bottom', 'drawer', 'search'] would return true for input "bottom bottom bottom".  Butts. Eh, close enough.
+   !                         }
+   !                      }
+   !                   } ! end whileing over the consult tokens
 
-                     ! return true if tokensFound is at least equal to the number of query tokens 
-                     return tokensFound >= #tokenArray;
-    ];
+   !                   ! return true if tokensFound is at least equal to the number of query tokens 
+   !                   return tokensFound >= ArrayWrapper.#wrappedArray;
+   !  ];
 
-    ! this fn takes in an array of base query tokens that must all be matched in the <any clause> consult tokens and an auxiliary array of query tokens, only one of which must be matched.  It returns true if these tokens are found and false otherwise.  This allows for an easy check of input for a base set of qualifiers necessary to indicate an otherwise unnamed object or object component e.g. the 'bottom of the upper right drawer' along with a set of words that would all reasonably indicate the same categorical action e.g. 'lift out the bottom of the upper right drawer', 'reveal the bottom of the upepr right drawer', 'pull out the bottom of the upper rigt drawer'...
-    [checkInputForBaseAuxTokens 
-      consultWords consultToken tokensFoundBase tokensFoundAux tokenArrayBase tokenArrayAux; 
-                     wn = consult_from; ! the magic var wn is the <any clause> token position in the input string where NextWord() will start from 
-                     consultWords = consult_words; ! the number of understood <any clause> tokens
-                     tokensFoundBase = 0;
-                     tokensFoundAux = 0;
-                     while(consultWords) {
-                        ! the current word from user input that does not fit in the life structure table
-                        consultToken = NextWord();
-                        consultWords--;
-                        print "Examining consult token [", (address)consultToken,"], of ", consultWords," tokens";
-                        ! check base and aux array for a match against current consult token
-                        index = 0;
-                        for(index=0: index < #tokenArray: index++) {
-                           if((address)tokenArrayBase->index == (address)consultToken) {
-                              ! note that another base token has been found
-                              tokensFoundBase++;
-                           } else if(address)tokenArrayAux->index == (address)consultToken) {
-                              ! note that another aux token has been found
-                              tokensFoundAux++;
-                           }
-                        }
-                     } ! end whileing over the consult tokens
+   !  ! this fn takes in an array of base query tokens that must all be matched in the <any clause> consult tokens and an auxiliary array of query tokens, only one of which must be matched.  It returns true if these tokens are found and false otherwise.  This allows for an easy check of input for a base set of qualifiers necessary to indicate an otherwise unnamed object or object component e.g. the 'bottom of the upper right drawer' along with a set of words that would all reasonably indicate the same categorical action e.g. 'lift out the bottom of the upper right drawer', 'reveal the bottom of the upepr right drawer', 'pull out the bottom of the upper rigt drawer'...
+   !  [checkInputForBaseAuxTokens 
+   !    consultWords consultToken tokensFoundBase tokensFoundAux tokenArrayBase tokenArrayAux; 
+   !                   wn = consult_from; ! the magic var wn is the <any clause> token position in the input string where NextWord() will start from 
+   !                   consultWords = consult_words; ! the number of understood <any clause> tokens
+   !                   tokensFoundBase = 0;
+   !                   tokensFoundAux = 0;
+   !                   while(consultWords) {
+   !                      ! the current word from user input that does not fit in the life structure table
+   !                      consultToken = NextWord();
+   !                      consultWords--;
+   !                      print "Examining consult token [", (address)consultToken,"], of ", consultWords," tokens";
+   !                      ! check base and aux array for a match against current consult token
+   !                      index = 0;
+   !                      for(index=0: index < #tokenArray: index++) {
+   !                         if((address)tokenArrayBase->index == (address)consultToken) {
+   !                            ! note that another base token has been found
+   !                            tokensFoundBase++;
+   !                         } else if(address)tokenArrayAux->index == (address)consultToken) {
+   !                            ! note that another aux token has been found
+   !                            tokensFoundAux++;
+   !                         }
+   !                      }
+   !                   } ! end whileing over the consult tokens
 
-                     ! return true if tokensFoundBase is at least equal to the number of base query tokens AND tokensFoundAux is at least 1
-                     return tokensFoundBase >= #tokenArrayBase && tokensFoundAux >= 1;
-    ];
+   !                   ! return true if tokensFoundBase is at least equal to the number of base query tokens AND tokensFoundAux is at least 1
+   !                   return tokensFoundBase >= #tokenArrayBase && tokensFoundAux >= 1;
+   !  ];
 
     Object WardenDesk "Grand Mahagony Desk"
       with name 'grand mahagony desk' 'grand desk' 'mahagony desk' 'desk',
            description "This lovely mahagony desk is well-polished and meticulously ordered.  Several books lie open on the surface, each detailing methods of banishment for demonic figures.  The Treasurer must be a superstitious sort.",
-           before [queryTokensBase queryTokensAuxiliary; 
+           before [baseTokenCurrentCount baseTokenExpectedCount baseTokensFound auxTokensFound consultToken consultWords;!queryTokensBase queryTokensAuxiliary; 
                      print "the action taken is ", action;
+                     baseTokenCurrentCount = 0;
+                     baseTokenExpectedCount = 3;
+                     baseTokensFound = false;
+                     auxTokensFound = false;
+                     consultToken = 'placeholder';
+                     consultWords = consult_words;
+                     wn = consult_from;
                      if(~self.secret_compartment_discovered) {
-                        queryTokensBase 'bottom' 'upper right' 'drawer';
-                        queryTokensAuxiliary 'lift' 'pull' 'open' 'reveal' 'take';
-                        if(checkInputForTokensBaseAux(queryTokensBase, queryTokensAuxiliary)) {
+                        ! this was an interesting idea, but the array support in Inform 6 is garbage, so... mrr.
+                        !queryTokensBase 'bottom' 'upper right' 'drawer';
+                        !queryTokensAuxiliary 'lift' 'pull' 'open' 'reveal' 'take';
+                        !if(checkInputForTokensBaseAux(queryTokensBase, queryTokensAuxiliary)) {
+                        while(consultWords) {
+                           ! the current word from user input that does not fit in the life structure table
+                           consultToken = NextWord();
+                           consultWords--;
+                           ! kinda stupid, but close enough.  Could still be satisfied with 'bottom bottom bottom reveal'... but if the user types that I'm making a ruling as the designer that they deserve the treasure anyway.
+                           switch(consultToken) {
+                              'bottom', 'upper right', 'drawer':
+                                 baseTokenCurrentCount++;
+                              'lift', 'pull', 'open', 'reveal', 'take':
+                                 auxTokensFound = true;
+                           }
+                        } ! end whileing over the consult tokens
+                        baseTokensFound = baseTokenCurrentCount >= baseTokenExpectedCount;
+                        if(baseTokensFound && auxTokensFound) {
                            self.secret_compartment_discovered = true;
                            move WandOfWarding to WardenDesk;
                            print "You lift out the false bottom of the drawer, revealing a velvet lined compartment containing a beautiful wand.";
@@ -686,7 +712,7 @@ Object -> TastyCake "Tasty Cake"
                         }
                      }
                      examine:
-                        if(~self.secret_compartment_discovered && checkInputForTokens('bottom' 'upper right' 'drawer')) {
+                        if(~self.secret_compartment_discovered && baseTokensFound) {!checkInputForTokens('bottom' 'upper right' 'drawer')) {
                            "Poking at the odd drawer bottom yields a curious wobble, as if the bottom is not actually afixed.";
                         }
                      open:
