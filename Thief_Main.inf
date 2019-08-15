@@ -20,6 +20,11 @@ Constant MAX_SCORE 255;
 ! current build revision
 Release 1;
 
+! this works, but we don't need it atm.  The trick to getting entry point fns to work was implementing them above the boilerplate includes
+! [GamePreRoutine;
+!    print "in GamePreRoutine";
+! ];
+
 ! Parser and VerbLib form the foundation of the Inform parser and are required
 Include "Parser";
 Include "VerbLib";
@@ -608,9 +613,7 @@ Object -> TastyCake "Tasty Cake"
     ![BeforeParsing;
     !  print "in BeforeParsing";
     !];
-   !  [ GamePreRoutine;
-   !    print "in GamePreRoutine";
-   !  ];
+     
 
     ! The Warden's Chamber: NE off the Grandiossuary, this is the office of 
     ! the Treasurer.  He introduces himself as such, but the arcane wards and
