@@ -619,54 +619,55 @@ Object -> TastyCake "Tasty Cake"
     Object WardenChamber "The Treasurer's Office"
       with description
         "A few ledgers are placed ostentatiously, though the layer of dust upon them suggests they are not visited as often as one would expect.  The walls are decorated with odd symbols, one of which you recognize as a symbol of warding against the local Goddess of Lost Things, Amyria.  That one's not so strange for an accountant but the dozens of others, along with copious arcane-looking artifacts on display, seem suspicious.",
-           before [baseTokenCurrentCount baseTokenExpectedCount baseTokensFound auxTokensFound consultToken consultWords;!queryTokensBase queryTokensAuxiliary; 
-                     !print "the action taken is ", (address)action; ! nope, just gives garbage and action alone gives and address (?)
-                     print "running before handlers for WardenChamber...^";
-                     baseTokenCurrentCount = 0;
-                     baseTokenExpectedCount = 3;
-                     baseTokensFound = false;
-                     auxTokensFound = false;
-                     consultToken = 'placeholder';
-                     consultWords = consult_words;
-                     wn = consult_from;
-                     if(~WardenDesk.secret_compartment_discovered) {
-                        ! this was an interesting idea, but the array support in Inform 6 is garbage, so... mrr.
-                        !queryTokensBase 'bottom' 'upper right' 'drawer';
-                        !queryTokensAuxiliary 'lift' 'pull' 'open' 'reveal' 'take';
-                        !if(checkInputForTokensBaseAux(queryTokensBase, queryTokensAuxiliary)) {
-                        while(consultWords) {
-                           ! the current word from user input that does not fit in the life structure table
-                           consultToken = NextWord();
-                           consultWords--;
-                           ! kinda stupid, but close enough.  Could still be satisfied with 'bottom bottom bottom reveal'... but if the user types that I'm making a ruling as the designer that they deserve the treasure anyway.
-                           switch(consultToken) {
-                              'bottom', 'upper right', 'drawer':
-                                 baseTokenCurrentCount++;
-                              'lift', 'pull', 'open', 'reveal', 'take':
-                                 auxTokensFound = true;
-                           }
-                        } ! end whileing over the consult tokens
-                        baseTokensFound = baseTokenCurrentCount >= baseTokenExpectedCount;
-                        if(baseTokensFound && auxTokensFound) {
-                           WardenDesk.secret_compartment_discovered = true;
-                           move WandOfWarding to WardenDesk;
-                           print "You lift out the false bottom of the drawer, revealing a velvet lined compartment containing a beautiful wand.";
-                           rtrue;
-                        }
-                     }
-                     examine:
-                        if(~WardenDesk.secret_compartment_discovered && baseTokensFound) {!checkInputForTokens('bottom' 'upper right' 'drawer')) {
-                           "Poking at the odd drawer bottom yields a curious wobble, as if the bottom is not actually afixed.";
-                        }
-                     open:
-                        if(~WardenDesk.secret_compartment_discovered) {
-                           print "As you rifle through the desk drawers, mostly filled with ledgers and logistical nonsense, you notice that the stain on the bottom of the upper right drawer doesn't match the rest.  Even the wood's slightly different.  Newer.^";
-                           !move SecretDrawerBottom to WardenDesk;
-                        } else {
-                           print "Like a guilty conscience, the secret compartment beneath the upper right drawer refuses to be concealed properly no matter how you futz with the removable panel.^";
-                        }
-                        rfalse;
-           ],
+         ! todo: hard to get this triggering with any consult tokens -- the object targeting verbs like look at, take, open... are pretty rigid so saying "look at bottom of upper right drawer" will simply result in 'you can't see any such thing' before the before handlers run.  Probably a raw entry point like BeforeParse() is in order if we want this, but the take/look at concealed hack below works for secret compartment stuff.
+         !   before [baseTokenCurrentCount baseTokenExpectedCount baseTokensFound auxTokensFound consultToken consultWords;!queryTokensBase queryTokensAuxiliary; 
+         !             !print "the action taken is ", (address)action; ! nope, just gives garbage and action alone gives and address (?)
+         !             print "running before handlers for WardenChamber...^";
+         !             baseTokenCurrentCount = 0;
+         !             baseTokenExpectedCount = 3;
+         !             baseTokensFound = false;
+         !             auxTokensFound = false;
+         !             consultToken = 'placeholder';
+         !             consultWords = consult_words;
+         !             wn = consult_from;
+         !             if(~WardenDesk.secret_compartment_discovered) {
+         !                ! this was an interesting idea, but the array support in Inform 6 is garbage, so... mrr.
+         !                !queryTokensBase 'bottom' 'upper right' 'drawer';
+         !                !queryTokensAuxiliary 'lift' 'pull' 'open' 'reveal' 'take';
+         !                !if(checkInputForTokensBaseAux(queryTokensBase, queryTokensAuxiliary)) {
+         !                while(consultWords) {
+         !                   ! the current word from user input that does not fit in the life structure table
+         !                   consultToken = NextWord();
+         !                   consultWords--;
+         !                   ! kinda stupid, but close enough.  Could still be satisfied with 'bottom bottom bottom reveal'... but if the user types that I'm making a ruling as the designer that they deserve the treasure anyway.
+         !                   switch(consultToken) {
+         !                      'bottom', 'upper right', 'drawer':
+         !                         baseTokenCurrentCount++;
+         !                      'lift', 'pull', 'open', 'reveal', 'take':
+         !                         auxTokensFound = true;
+         !                   }
+         !                } ! end whileing over the consult tokens
+         !                baseTokensFound = baseTokenCurrentCount >= baseTokenExpectedCount;
+         !                if(baseTokensFound && auxTokensFound) {
+         !                   WardenDesk.secret_compartment_discovered = true;
+         !                   move WandOfWarding to WardenDesk;
+         !                   print "You lift out the false bottom of the drawer, revealing a velvet lined compartment containing a beautiful wand.";
+         !                   rtrue;
+         !                }
+         !             }
+         !             examine:
+         !                if(~WardenDesk.secret_compartment_discovered && baseTokensFound) {!checkInputForTokens('bottom' 'upper right' 'drawer')) {
+         !                   "Poking at the odd drawer bottom yields a curious wobble, as if the bottom is not actually afixed.";
+         !                }
+         !             open:
+         !                if(~WardenDesk.secret_compartment_discovered) {
+         !                   print "As you rifle through the desk drawers, mostly filled with ledgers and logistical nonsense, you notice that the stain on the bottom of the upper right drawer doesn't match the rest.  Even the wood's slightly different.  Newer.^";
+         !                   !move SecretDrawerBottom to WardenDesk;
+         !                } else {
+         !                   print "Like a guilty conscience, the secret compartment beneath the upper right drawer refuses to be concealed properly no matter how you futz with the removable panel.^";
+         !                }
+         !                rfalse;
+         !   ],
         sw_to Grandiossuary,
         has light;
 
