@@ -540,9 +540,20 @@ Object -> TastyCake "Tasty Cake"
            ! todo: gem logic?
       has static;
     
+    ! ideally we'd let the player choose how/whether to use the omninomicron, but that would require going beyond the scope of this mini game.  Therefore, we'll rule that if they hit the Edge of Nothing and All with the Omninomicron and the Wand of Warding, then they go on to fight the cultists.  Omninomicron without Wand leads to worst ending, where they empower the Lost Lords.     
     Object -> OmniNomicron "OmniNomicron"
       with name 'omninomicron',
-           description "",
+           before [;
+                     examine:
+                        ! todo: player knows truth after entering Maw of Infinity, and can still exit it until they gaze upon The Edge of Nothing and All.
+                        if(player.knows_truth) {
+                           "This is it!  The mightiest tome in the known multiverse, the OmniNomicron not only has the most comprehensive list of legendary dwarven recipes ever compiled, but also is capable of transmuting matter into ingredients for said recipes!  Some of the more advanced formulae can reduce enemy armies into tasty treats ready to serve.  Not even the Cult of the Lost could stand before its might... a twinge of conscious bugs you, for you may unwittingly and unwillingly have become the last hope for the world as you know it."
+                        } else {
+                           "This is it!  The mightiest tome in the known multiverse, the OmniNomicron not only has the most comprehensive list of legendary dwarven recipes ever compiled, but also is capable of transmuting matter into ingredients for said recipes!  Some of the more advanced formulae can reduce enemy armies into tasty treats ready to serve.  With this, you've no need to share the spoils reaped from fencing ~My God: The Paradox~ with any co-conspirators -- they'll either back off or become food."
+                        }
+                  ],
+           scored_value 100,
+      has scored;
     
     Object Vault_Door "An immeasurably heavy steel door"
        with name "Vault" "Door",
