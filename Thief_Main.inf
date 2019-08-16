@@ -36,6 +36,8 @@ Attribute legible;
 Global index = 0;
 ! placeholder var for manually examining tokens in user input
 Global currentWord;
+! switch indicating that the player has discovered the truth of the Cult of the Lost and the Lost Lords imprisoned within The Tomb of Forgotten Gods hidden behind and beneath the Treasury in Mt. Godspeak
+Global truth_known = false;
 ! custom actions
    !
    ! Added function ReadSub so that the property 'before' can use it. The default,
@@ -524,6 +526,28 @@ Object -> TastyCake "Tasty Cake"
            found_in Cellar Vault,
       has static door openable;
    
+!    Inform is very good about telling the player what's where automatically.  I want to suppress that behavior somewhat to implement a secret compartment.  Basically I want a small box within a big box that is hinted at by the big box's description, and the player should be able to interact with the small box via attempting to take actions targeting one of the many possible dictionary names I've provided for the small box:
+! ```
+! Object BigBox "The Big Box"
+!  with name 'big box',
+!         description "This is a very big box.  It's empty, though the inside looks suspiciously smaller than you thought it would based on the exterior.  The fold-down flap system is needlessly complex, and folded like masterwork origami.  It bulges oddly.",
+!  has static container openable open;
+
+! Object -> SmallBox
+!  with name 'small box' 'inside' 'hidden area' 'hidden' 'hidden compartment' 'flaps' 'odd flaps',
+!          description "A gentle shake rewards you with expensive-sounding jingles.",
+!          before [;
+!                      look:
+!                       print "Eureka!  Upon fiddling with the box's flaps, a smaller box with goodies jangling inside tumbles out into your hand.";
+!                       move SmallBox to player;
+!                       rtrue;
+!                     ],
+!  has container openable concealed;
+! ```
+! This works as far as not printing out that the small box is inside the big box, but the user is not able to discover the small box with input like "look at flaps" presumably because the SmallBox object mapped to dictionary word flaps is concealed and therefore the library assumes the player can't act on it (?)
+
+! How would one trick Inform into recognizing an object as present in the game world without automatically calling out its presence to the player?
+! UPDATE: turns out the above does work -- my mistake was using multi-word space-delimited name tokens, which apparently Inform 6 does not support (name 'smallest of boxes' is not recognized at runtime when the user types 'look at smallest of boxes').  You need to use <name 'smallest' 'of' 'boxes'> for something that you want recognized as 'smallest of boxes'; Inform will try to match dictionary tokens on a closest-fit basis, such that if you had 'smallest' 'of' 'boxes' and another object with 'smallest' 'of' 'cans' a user input of 'smallest' would be ambiguous but 'smallest cans' should match the can rather than the box.
     
     
     ! The Vault: N of the Grandiossuary is the public heart of the dwarven treasury, holding immeasurable wealth
@@ -539,14 +563,45 @@ Object -> TastyCake "Tasty Cake"
            description "All you can see of the Rainbow Coil with your naked eye is a slightly shimmering harsh white glow; it's this room's only light source, in fact, and is more than enough.  The glow emanates from a thickly braided cable made of myriad precious metals that runs around the perimeter of the room's ceiling.",
            ! todo: gem logic?
       has static;
+   
+    ! used to filter out red light wavelengths
+    Object -> RubyLion "Ruby Lion"
+     with name 'ruby' 'lion',
+          description "";
+
+    ! used to filter out green light wavelengths  
+    Object -> EmeraldFaerie "Emerald Faerie"
+     with name 'emerald' 'faerie',
+          description "";
+
+    ! used to break white light of the coil into components
+    Object -> PrismaticCrystalPlatypus "Prismatic Crystalline Platypus"
+      with name 'prismatic' 'crystalline' 'crystal' 'platypus',
+           description "";
+
+    Object -> FirstEditionsBookcase "Bookcase of Irreplaceable 1st Editions"
+      with name 'bookcase' 'of' 'irrepleaceable' '1st' 'first' 'editions',
+           description "This bookcase is carved from a single piece of Brazilian Rosewood, just because they could afford it.",
+      has static container;
+   
+    Object -> -> Paradox "Nnamni's My God: The Paradox"
+      with name 'nnamni^s' 'my' 'god' 'god:' 'the' 'paradox',
+           description "A tale of heretical philosophy that turned the ancient world on its head, this text woke everyone to the irreconcilable contradictions of the dominant religion of the time.  Said religion had a stranglehold on the world's faith for thousands of years, none brave or wary enough to question it until mighty Nnamni.  Now there are almost as many religions as there are folk, and the inevitable quarrels that break out between clashing belief systems are at least limited to bar fights and neighborly feuds rather than the wars that ravaged the ancient world.  Everyone knows of Nnamni's pivotal work, and though a 1st edition is technically priceless, your fence will power through that and surely come up with a tidy king's ransom for it.",
+           scored_value 50,
+      has scored;
+
+    Object -> Pedestal "Oppulent Pedestal"
+      with name 'oppulent' 'pedestal',
+           description "Gold, silver, and platinum filigree adorn this stone ostentatious stone pedestal.  It's clearly meant to draw the eye!",
+      has static supporter;
     
     ! ideally we'd let the player choose how/whether to use the omninomicron, but that would require going beyond the scope of this mini game.  Therefore, we'll rule that if they hit the Edge of Nothing and All with the Omninomicron and the Wand of Warding, then they go on to fight the cultists.  Omninomicron without Wand leads to worst ending, where they empower the Lost Lords.     
-    Object -> OmniNomicron "OmniNomicron"
+    Object -> -> OmniNomicron "OmniNomicron"
       with name 'omninomicron',
            before [;
                      examine:
                         ! todo: player knows truth after entering Maw of Infinity, and can still exit it until they gaze upon The Edge of Nothing and All.
-                        if(player.knows_truth) {
+                        if(truth_known) {
                            "This is it!  The mightiest tome in the known multiverse, the OmniNomicron not only has the most comprehensive list of legendary dwarven recipes ever compiled, but also is capable of transmuting matter into ingredients for said recipes!  Some of the more advanced formulae can reduce enemy armies into tasty treats ready to serve.  Not even the Cult of the Lost could stand before its might... a twinge of conscious bugs you, for you may unwittingly and unwillingly have become the last hope for the world as you know it."
                         } else {
                            "This is it!  The mightiest tome in the known multiverse, the OmniNomicron not only has the most comprehensive list of legendary dwarven recipes ever compiled, but also is capable of transmuting matter into ingredients for said recipes!  Some of the more advanced formulae can reduce enemy armies into tasty treats ready to serve.  With this, you've no need to share the spoils reaped from fencing ~My God: The Paradox~ with any co-conspirators -- they'll either back off or become food."
@@ -850,8 +905,19 @@ Object -> TastyCake "Tasty Cake"
     ! The Maw of Infinity: N of the Vault, the entryway to the Tomb of Forgotten Gods,
     ! it is here that player encounters their cosmic tease and the end 
     ! of their journey.
-    Object MawOfInfinity "The Maw of Infinity"
+    Object MawOfInfinity "Maw of Infinity"
       with description
         "Mount Godspeak is not supposed to be hollow, but you stand in a yawning cavern beyond the carefully hewn stone of the Treasury behind you.  You stand on a narrow outcropping that stretches out over an infinite abyss, something of a lookout point.  Things stir in the darkness and all the hair on your body stands on end.",
-           scored_value 100, 
+           scored_value 100,
+           n_to EdgeOfAllAndNothing, 
+      has scored;
+    
+    ! the end of the line
+    Object EdgeOfAllAndNothing "Edge of All and Nothing"
+      with description "",
+           before [;
+                     ! todo: add handling for Wand + Omninomicron, modifying the ending branches
+                  ],
+           scored_value 100,
+           s_to MawOfInfinity,
       has scored;
