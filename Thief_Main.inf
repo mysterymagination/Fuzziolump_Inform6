@@ -533,6 +533,16 @@ Object -> TastyCake "Tasty Cake"
         s_to Vault_Door,
         scored_value 50,
         has scored light;
+
+    Object -> RainbowCoil "Rainbow Coil"
+      with name 'rainbow' 'coil',
+           description "All you can see of the Rainbow Coil with your naked eye is a slightly shimmering harsh white glow; it's this room's only light source, in fact, and is more than enough.  The glow emanates from a thickly braided cable made of myriad precious metals that runs around the perimeter of the room's ceiling.",
+           ! todo: gem logic?
+      has static;
+    
+    Object -> OmniNomicron "OmniNomicron"
+      with name 'omninomicron',
+           description "",
     
     Object Vault_Door "An immeasurably heavy steel door"
        with name "Vault" "Door",
@@ -601,11 +611,12 @@ Object -> TastyCake "Tasty Cake"
                      ],
          has legible openable open;
 
+      ! flavor, and contains a crucial hint about how to foil the rainbow coil in the vault
       Object -> Abjurataraxia "Abjurataraxia: Words about Wards"
          with name 'abjurataraxia' 'ward book' 'book of wards' 'words about wards',
               description "A red silken bookmark leads to a chapter about summoning seals; judging by the fading on these pages from exposure to light relative to the rest of the book, this chapter is referenced often.",
               before [; read: 
-                           "~When dealing with demons, devils, wild gods, and other uncouth sorts, the most important measures to consider are containment and control.  Whatever you've caught, it's not going to take kindly to confinement; that's just the nature of life.  Below follow a few basic wards one can construct to protect oneself.  Do note, however, that a certain amount of magical ^radiation^, if you will, leaking through any ward is to be expected.  Best not hang around too close to your captured charges, especially if they've had a while to acclimate themselves to your plane of existence -- once they've sorted out their power, some creatures' influence cannot be bound by wards no matter the strength.~  Incidentally, you wonder where the Archivist is.";
+                           "~When dealing with demons, devils, wild gods, and other uncouth sorts, the most important measures to consider are containment and control.  Whatever you've caught, it's not going to take kindly to confinement; that's just the nature of life.  Below follow a few basic wards one can construct to protect oneself.  Do note, however, that a certain amount of magical ^radiation^, if you will, leaking through any ward is to be expected.  Best not hang around too close to your captured charges, especially if they've had a while to acclimate themselves to your plane of existence -- once they've sorted out their power, some creatures' influence cannot be bound by wards no matter the strength.~  Incidentally, you wonder where the Archivist is.  ~Said radiative power can be itself combated: the easiest vector is to apply a countercurrent radiation bearing wave properties inverse to those of the naughty godbeast you wish to suppress.  Light suggests itself readily, and you'll find that certain eldritch hues that can only be generated faithfully by running a huge amount of energy through rare and precious metals will often serve this function well.  Some think the metals are themselves divine, a gift from benevolent gods seeking to protect us from ourselves.  In this author's opinion, it was sheer dumb luck.  These same lights, when combined with arcane wards, can have peculiar and occasionally beneficial side effects, such as producing illusions.  These, along with any demonic suppression efficacy, can of course be derailed within certain span by bending the light through a prism or similar medium.~";
               ],
          has legible openable open;
     
