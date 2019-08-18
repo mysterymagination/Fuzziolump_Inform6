@@ -104,7 +104,7 @@ Object SkullLetter "Skullduggerous Letter"
    with name 'letter' 'skullduggerous letter' 'instructions',
         description "This yellowed parchment contains a coded message from your informants, explaining your mission and the plan hatched between ye maestros of mischief.",
         before [; read: 
-        print "~The swan sings upon the lowest branch, her eggs balanced perfectly.  The monk, meanwhile, must make his pilgrimmage down the southwestern slopes of purgatory before descending to hell itself; there only shall he learn the meaning of light by confronting the puzzle of true darkness.~^This nonsense is meant to read like the ravings of a demented priest, or perhaps a fragment of a strange novel.  It's not a code so much as a mneumonic to remind you that your informants, a group of crooked contractors who recently replaced plumbing in the Treasury's undercarriage, bored a hole up into the vault in the exact center of the cellar ceiling.  It's been disguised expertly, and they assure you none would find it without knowing its position.  Stealing much from the Treasury would be impossible with all its safeguards -- a heist like this calls for a surgical strike, and that's what you're for!  The job is to lift ~Nnamni's My God: The Paradox~ from a set of precious 1st edition books inside the Vault, then get out.  The book is worth about three-quarters of the gold and gems the dwarves likely have hoarded away on its own anyway, so there's no need to shovel loot into a conspicuous container.  The ~plumbers~ furnished you with a forgery of the book to replace it, so with any luck no one will miss it for a few days and you can all make good your flight out of town.  Further, the Treasury's receptionist Brunhilde, who greets everyone as they enter and serves as a rather impossible to miss or mistake face of the Treasury, is their woman on the inside -- she's privy to the plan and fully cut-in to the profits, so she'll try to help.  Finally, the bizarre philosophical drivel about a monk traveling to hell means that the best covert way into the cellar is through the air ducts; the safest and most hidden of these can be found in the Southwest corner of the Atrium."; 
+        print "~The swan sings upon the lowest branch, her eggs balanced perfectly.  The wayfaring priest, meanwhile, must make his pilgrimmage down the southwestern slopes of purgatory before descending to hell itself; there only shall he learn the meaning of light by confronting the puzzle of true darkness.~^This nonsense is meant to read like the ravings of a demented priest, or perhaps a fragment of a strange novel.  It's not a code so much as a mneumonic to remind you that your informants, a group of crooked contractors who recently replaced plumbing in the Treasury's undercarriage, bored a hole up into the vault in the exact center of the cellar ceiling.  It's been disguised expertly, and they assure you none would find it without knowing its position.  Stealing much from the Treasury would be impossible with all its safeguards -- a heist like this calls for a surgical strike, and that's what you're for!  The job is to lift ~Nnamni's My God: The Paradox~ from a set of precious 1st edition books inside the Vault, then get out.  The book is worth about three-quarters of the gold and gems the dwarves likely have hoarded away on its own anyway, so there's no need to shovel loot into a conspicuous container.  The ~plumbers~ furnished you with a forgery of the book to replace it, so with any luck no one will miss it for a few days and you can all make good your flight out of town.  Further, the Treasury's receptionist Brunhilde, who greets everyone as they enter and serves as a rather impossible to miss or mistake face of the Treasury, is their woman on the inside -- she's privy to the plan and fully cut-in to the profits, so she'll try to help.  Finally, the bizarre philosophical drivel about a monk traveling to hell means that the best covert way into the cellar is through the air ducts; the safest and most hidden of these can be found in the Southwest corner of the Atrium."; 
         rtrue;],
    has legible;
 
@@ -554,30 +554,37 @@ Object -> TastyCake "Tasty Cake"
     Object Vault "A vault capable of keeping anything out... or in"
        with description
           "Mountains of gold coins, shimmering gems in every color of the rainbow plus a few you're certain you've never seen before, and powerful artifacts humming with magical potential languish in idle safety before you.  Your mouth begins to water, but you staunchly refuse to be distracted from your true goal: The OmniNomicron.  It should be here somewhere amidst the hoard.",
+          ! todo: talk about the walls in each direction specifically, to hint that the player needs to target directional walls here.  
         s_to Vault_Door,
         scored_value 50,
         has scored light;
 
+    ! todo: add concealed north wall, west wall... etc. so that player can use them as targets.
+
     Object -> RainbowCoil "Rainbow Coil"
       with name 'rainbow' 'coil',
            description "All you can see of the Rainbow Coil with your naked eye is a slightly shimmering harsh white glow; it's this room's only light source, in fact, and is more than enough.  The glow emanates from a thickly braided cable made of myriad precious metals that runs around the perimeter of the room's ceiling.",
-           ! todo: gem logic?
+           ! todo: gem puzzle?  I'm thinking with the verdant hint in the warden's chamber that the solution will be to hold the ruby and sapphire gems together to filter out all but green from the light actually shining on the northern vault wall.  Mechanically, this'd be something like use ruby on sapphire to get a combined gem with the red + blue properties, and then use that on the north wall.  This will reveal the passage, which is filled with divine fire and needs the Magma Heart to pass through.  Revealing the passage, however, will allow the Lost Lords to speak to the player, saying that the fire is a defense of the wardens here, and that the means to pass must be somewhere within the treasury.  They will then proceed to open all locked containers, allowing the player to go back and nab the magma heart as well as other collectibles for points.
       has static;
    
     ! used to filter out red light wavelengths
     Object -> RubyLion "Ruby Lion"
      with name 'ruby' 'lion',
-          description "";
+          description "Though it cannot technically make a sound, this proud lion's mere presence roars as surely as the genuine article: innumerable facets of three distinct and impossibly life-like cut rubies form its mane, body, and eyes, and they've been slotted together seamlessly.";
 
     ! used to filter out green light wavelengths  
     Object -> EmeraldFaerie "Emerald Faerie"
      with name 'emerald' 'faerie',
-          description "";
+          description "Her impish grin a dead giveaway, this little beauty clearly has mischief in mind.  You marvel at the slender translucent sheets of intricately shaped emerald that form her wings and the minute filaments and shards that make up her wild hair.  She looks like she could take flight at any moment.";
 
-    ! used to break white light of the coil into components
+    Object -> SapphireSiren "Sapphire Siren"
+     with name 'sapphire' 'siren',
+          description "The crash of ocean waves fills your mind as you gaze upon the unfathomably deep blue of this sapphire mermaid.  Myriad subtle shades of blue compose the shimmering scales of her tail, and you can imagine the sun shining merrily down upon her as she stretches luxuriously. She wears nothing, and a blush blooms in your cheeks as you note that the gemstone of her right arm, with which she is lazily covering her chest, is slightly more translucent than that of her body and allows a peek through.";
+
+    ! used to break white light of the coil into components, this platypus serves as another hint that green is the man you want, and on the north wall -- when the green of the separated spectrum lands on the north wall (via use platypus on north wall)
     Object -> PrismaticCrystalPlatypus "Prismatic Crystalline Platypus"
       with name 'prismatic' 'crystalline' 'crystal' 'platypus',
-           description "";
+           description "Ah the noble platypus, the world's token nonconformist.  He does what he pleases, and wonders why the rest of the world doesn't try to blend in with him.  You go, little man.  The detail on this rendition is phenomenal: the bill alone has more facets than you can count, and moving it through the eerie light in the room yields fireworks of sparkling reflections and splashes a lovely rainbow blanket over whatever surface lies beyond it.  It softens the imposing mountain of treasures from blinding gold to a whimsical tableau of dancing color.";
 
     Object -> FirstEditionsBookcase "Bookcase of Irreplaceable 1st Editions"
       with name 'bookcase' 'of' 'irrepleaceable' '1st' 'first' 'editions',
@@ -602,9 +609,9 @@ Object -> TastyCake "Tasty Cake"
                      examine:
                         ! todo: player knows truth after entering Maw of Infinity, and can still exit it until they gaze upon The Edge of Nothing and All.
                         if(truth_known) {
-                           "This is it!  The mightiest tome in the known multiverse, the OmniNomicron not only has the most comprehensive list of legendary dwarven recipes ever compiled, but also is capable of transmuting matter into ingredients for said recipes!  Some of the more advanced formulae can reduce enemy armies into tasty treats ready to serve.  Not even the Cult of the Lost could stand before its might... a twinge of conscious bugs you, for you may unwittingly and unwillingly have become the last hope for the world as you know it."
+                           "This is it!  The mightiest tome in the known multiverse, the OmniNomicron not only has the most comprehensive list of legendary dwarven recipes ever compiled, but also is capable of transmuting matter into ingredients for said recipes!  Some of the more advanced formulae can reduce enemy armies into tasty treats ready to serve.  Not even the Cult of the Lost could stand before its might... a twinge of conscious bugs you, for you may unwittingly and unwillingly have become the last hope for the world as you know it.";
                         } else {
-                           "This is it!  The mightiest tome in the known multiverse, the OmniNomicron not only has the most comprehensive list of legendary dwarven recipes ever compiled, but also is capable of transmuting matter into ingredients for said recipes!  Some of the more advanced formulae can reduce enemy armies into tasty treats ready to serve.  With this, you've no need to share the spoils reaped from fencing ~My God: The Paradox~ with any co-conspirators -- they'll either back off or become food."
+                           "This is it!  The mightiest tome in the known multiverse, the OmniNomicron not only has the most comprehensive list of legendary dwarven recipes ever compiled, but also is capable of transmuting matter into ingredients for said recipes!  Some of the more advanced formulae can reduce enemy armies into tasty treats ready to serve.  With this, you've no need to share the spoils reaped from fencing ~My God: The Paradox~ with any co-conspirators -- they'll either back off or become food.";
                         }
                   ],
            scored_value 100,
@@ -830,8 +837,9 @@ Object -> TastyCake "Tasty Cake"
 
     Object WardenDesk "Grand Mahagony Desk"
       with name 'grand mahagony desk' 'grand desk' 'mahagony desk' 'desk',
-           description "This lovely mahagony desk is well-polished and meticulously ordered.  Several books lie open on the surface, each detailing methods of banishment for demonic figures.  The Treasurer must be a superstitious sort.",
+           description "This lovely mahagony desk is well-polished and meticulously ordered.  Several books lie open on the surface, each detailing methods of banishment for demonic figures.  The Treasurer must be a superstitious sort.  A hand-written note written in huge block letters is secured to the front of the desk, visible only to one sitting at it but emminently visible to that person -- it reads, ~ALWAYS REMEMBER THE GREAT AND TERRIBLE TRUTH OF NATURE: LIFE IS THE BEGINNING OF DEATH, IN ALL WAYS.  DO NOT CAST ABOUT THOUGHTLESSLY THAT WHICH IS VERDANT LEST YOU CONSTRUCT A BRIDGE TO CERTAIN DEATH.~",
          !   before [baseTokenCurrentCount baseTokenExpectedCount baseTokensFound auxTokensFound consultToken consultWords;!queryTokensBase queryTokensAuxiliary; 
+         before [;
          !             !print "the action taken is ", (address)action; ! nope, just gives garbage and action alone gives and address (?)
          !             baseTokenCurrentCount = 0;
          !             baseTokenExpectedCount = 3;
@@ -869,16 +877,15 @@ Object -> TastyCake "Tasty Cake"
          !                if(~self.secret_compartment_discovered && baseTokensFound) {!checkInputForTokens('bottom' 'upper right' 'drawer')) {
          !                   "Poking at the odd drawer bottom yields a curious wobble, as if the bottom is not actually afixed.";
          !                }
-         !             open:
-         !                if(~self.secret_compartment_discovered) {
-         !                   print "As you rifle through the desk drawers, mostly filled with ledgers and logistical nonsense, you notice that the stain on the bottom of the upper right drawer doesn't match the rest.  Even the wood's slightly different.  Newer.^";
-         !                   !move SecretDrawerBottom to WardenDesk;
-         !                } else {
-         !                   print "Like a guilty conscience, the secret compartment beneath the upper right drawer refuses to be concealed properly no matter how you futz with the removable panel.^";
-         !                }
-         !                rfalse;
+                     open: ! note: if you're gonna override open behavior, you need to rfalse at then end for objects inside a container to actually be there as far as the library is concerned
+                        if(~self.secret_compartment_discovered) {
+                           print "As you rifle through the desk drawers, mostly filled with ledgers and logistical nonsense, you notice that the stain on the bottom of the upper right drawer doesn't match the rest.  Even the wood's slightly different.  Newer.^";
+                        } else {
+                           print "Like a guilty conscience, the secret compartment beneath the upper right drawer refuses to be concealed properly no matter how you futz with the removable panel.  It's a nice bit of wood; might as well keep it.^";
+                        }
+                        rfalse;
 
-         !          ],
+                   ],
             secret_compartment_discovered false,
             found_in WardenChamber,
       has static openable container;
