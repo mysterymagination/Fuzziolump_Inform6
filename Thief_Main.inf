@@ -58,8 +58,7 @@ Global truth_known = false;
    ! Added function UseSub so that the property 'before' can use it. The default,
    ! if there is no 'before use', is to print that there's no way to use that.
    !
-   ![ UseSub; <<Examine noun>>;]; !&$^$%(* this bloody works but for some reason noun isn't set for a custom print command?  I haven't been this angry programming in many moons
-   [ UseSub; "There's no obvious way to use that."; ]; ! well f*** it I guess.  So damn angry. Inform 6 suuuuuuuucks ", (address)noun, " on ", (address)second, "."; ]; ?? no docs on what, if anything, gets set when a verb is parsed and its sub is called.  Obviously noun is known within the afaics undocumented <<OtherVerb noun>> syntax, but for no reason it is not available to a print command within the sub?  Or maybe I'm dereferencing it using the correct random f***ing cast?!
+   [ UseSub; "There's no obvious way to use ", (the)noun, " on ", (the)second, "."; ]; ! no docs on what, if anything, gets set when a verb is parsed and its sub is called.  Obviously noun is known within the afaics undocumented <<OtherVerb noun>> syntax, but for no reason it is not available to a print command within the sub?  Or maybe I'm dereferencing it using the correct random f***ing cast?! UPDATE: it was the wrong f***ing cast.  Evidently (the) or (name) to get the string name of an object were what I needed.
 
 ! Grammar will provide the standard Inform grammar plus extensions
 Include "Grammar";
@@ -243,12 +242,24 @@ Object -> TastyCake "Tasty Cake"
                          print "*CRASH* With barely a touch you send the stack of papers scattering to the floor, and a few to the winds.  Fritzwig makes a sort of whining shriek like a wounded animal that cannot comprehend its own pain, and dives upon the mess.  A passing accountant chuckles and whispers, ~Good one, mate!  He'll be fiddling with that rot for days.~";
                          Fritzwig.distractionStatus = true;
                          rtrue;
-                      Use: 
-                        print "You have used the ", noun;
-                        if(noun=='Fritzwig') {
-                           print "used inbox on fritz";
-                           rtrue;
-                        }
+                        ! okay, so when you enter 'use X on Y', X's use handler is called and Y will be stored symbolically in second.
+                     !  Use: 
+                     !    print "You have used ", (the)noun;
+                     !    if(noun=='Fritzwig') {
+                     !       print "used inbox on noun fritz";
+                     !       rtrue;
+                     !    } else if(second=='Fritzwig') {
+                     !       print "used inbox on second fritz";
+                     !       rtrue;
+                     !    }
+
+                     !    if(noun==Fritzwig) {
+                     !       print "used inbox on symbolic noun fritz";
+                     !       rtrue;
+                     !    } else if(second==Fritzwig) {
+                     !       print "used inbox on symbolic second fritz";
+                     !       rtrue;
+                     !    }
                    ],
        has container open;
     
@@ -581,6 +592,34 @@ Object -> TastyCake "Tasty Cake"
            description "All you can see of the Rainbow Coil with your naked eye is a slightly shimmering harsh white glow; it's this room's only light source, in fact, and is more than enough.  The glow emanates from a thickly braided cable made of myriad precious metals that runs around the perimeter of the room's ceiling.",
            ! todo: gem puzzle?  I'm thinking with the verdant hint in the warden's chamber that the solution will be to hold the ruby and sapphire gems together to filter out all but green from the light actually shining on the northern vault wall.  Mechanically, this'd be something like use ruby on sapphire to get a combined gem with the red + blue properties, and then use that on the north wall.  This will reveal the passage, which is filled with divine fire and needs the Magma Heart to pass through.  Revealing the passage, however, will allow the Lost Lords to speak to the player, saying that the fire is a defense of the wardens here, and that the means to pass must be somewhere within the treasury.  They will then proceed to open all locked containers, allowing the player to go back and nab the magma heart as well as other collectibles for points.
       has static;
+    
+    ! the walls in the vault are addressable objects, and the NorthWall will open to reveal The Barbed Bridge
+    Object -> NorthWall "North Wall of the Vault"
+      with name 'north' 'wall',
+           description "The north wall of the vault is oddly bare, with stonework whose wear appears suspiciously like an average of that exhibited by the other three walls.",
+      has static concealed;
+
+    Object -> EastWall "East Wall of the Vault"
+      with name 'east' 'wall',
+           description "The east wall is lined with bookcases.  You smile as you imagine your bibliophile book fence fainting dead away at the sight of all these 1st editions", 
+      has static concealed;
+
+    Object -> SouthWall "South Wall of the Vault"
+      with name 'south' 'wall',
+           description "The south wall is cluttered with trophy cases upon which are perched the stuffed remains of numerous extinct species.",
+      has static concealed;
+
+    Object -> WestWall "West Wall of the Vault" 
+      with name 'west' 'wall',
+           description "Arms and armor adorn the ground level of the west wall, with original prints from famous artists dancing in a purposeful, ordered sort of chaos above them.",
+      has static; 
+
+    ! todo: add this bridge as a door between Vault and Maw
+    ! todo: describe
+    Object BarbedBridge "Barbed Bridge"
+      with name 'barbed' 'bridge',
+           description "",
+      has door static; 
 
     ! the player uses a gem on another to create the compound gemwork; with it, they can reflect two primary color spectra from the rainbow coil's white light.
     Object CompoundGem "Compund Gemwork"
@@ -589,6 +628,10 @@ Object -> TastyCake "Tasty Cake"
                      examine:
                         print "This construct combines the ", self.part_1_gem, " and ", self.part_2_gem, ".";
                         rtrue;
+                     use:
+                        if(second == NorthWall) {
+                           ! todo: handle bridge summoned into juxtaposition with the north wall
+                        }
                   ],
            part_1_gem 'placeholder',
            part_2_gem 'placeholder';
@@ -865,10 +908,11 @@ Object -> TastyCake "Tasty Cake"
    !                   ! return true if tokensFoundBase is at least equal to the number of base query tokens AND tokensFoundAux is at least 1
    !                   return tokensFoundBase >= #tokenArrayBase && tokensFoundAux >= 1;
    !  ];
-
+    
+    ! sticky note with crucial hint about green light shone on the north wall of the vault opening the bridge
     Object WardenDesk "Grand Mahagony Desk"
       with name 'grand mahagony desk' 'grand desk' 'mahagony desk' 'desk',
-           description "This lovely mahagony desk is well-polished and meticulously ordered.  Several books lie open on the surface, each detailing methods of banishment for demonic figures.  The Treasurer must be a superstitious sort.  A hand-written note written in huge block letters is secured to the front of the desk, visible only to one sitting at it but emminently visible to that person -- it reads, ~ALWAYS REMEMBER THE GREAT AND TERRIBLE TRUTH OF NATURE: LIFE IS THE BEGINNING OF DEATH, IN ALL WAYS.  DO NOT CAST ABOUT THOUGHTLESSLY THAT WHICH IS VERDANT LEST YOU CONSTRUCT A BRIDGE TO CERTAIN DEATH.~",
+           description "This lovely mahagony desk is well-polished and meticulously ordered.  Several books lie open on the surface, each detailing methods of banishment for demonic figures.  The Treasurer must be a superstitious sort.  A hand-written note written in huge block letters is secured to the front of the desk, visible only to one sitting at it but emminently visible to that person -- it reads, ~Always remember the great and terrible truth of nature: life is the beginning of death, in all ways.  Do not cast about thoughtlessly that which is VERDANT lest you construct a bridge to certain death, frozen and BOREAL.~",
          !   before [baseTokenCurrentCount baseTokenExpectedCount baseTokensFound auxTokensFound consultToken consultWords;!queryTokensBase queryTokensAuxiliary; 
          before [;
          !             !print "the action taken is ", (address)action; ! nope, just gives garbage and action alone gives and address (?)
