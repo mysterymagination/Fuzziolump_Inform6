@@ -55,6 +55,12 @@ Global truth_known = false;
    !
    [ PunchSub; <<Hit noun>>; ];
 
+   ! Added function UseSub so that the property 'before' can use it. The default,
+   ! if there is no 'before use', is to print that there's no way to use that.
+   !
+   ![ UseSub; <<Examine noun>>;]; !&$^$%(* this bloody works but for some reason noun isn't set for a custom print command?  I haven't been this angry programming in many moons
+   [ UseSub; "There's no obvious way to use that."; ]; ! well f*** it I guess.  So damn angry. Inform 6 suuuuuuuucks ", (address)noun, " on ", (address)second, "."; ]; ?? no docs on what, if anything, gets set when a verb is parsed and its sub is called.  Obviously noun is known within the afaics undocumented <<OtherVerb noun>> syntax, but for no reason it is not available to a print command within the sub?  Or maybe I'm dereferencing it using the correct random f***ing cast?!
+
 ! Grammar will provide the standard Inform grammar plus extensions
 Include "Grammar";
 
@@ -75,6 +81,9 @@ Include "Grammar";
    ! of the word "read".
    !
    Extend "read" first * legible                       -> Read;
+
+   ! define use verb as supporting 'use X on Y'
+   Verb "use" * noun 'on' noun -> Use;
 
 ! main fn
 [ Initialise;
@@ -234,6 +243,12 @@ Object -> TastyCake "Tasty Cake"
                          print "*CRASH* With barely a touch you send the stack of papers scattering to the floor, and a few to the winds.  Fritzwig makes a sort of whining shriek like a wounded animal that cannot comprehend its own pain, and dives upon the mess.  A passing accountant chuckles and whispers, ~Good one, mate!  He'll be fiddling with that rot for days.~";
                          Fritzwig.distractionStatus = true;
                          rtrue;
+                      Use: 
+                        print "You have used the ", noun;
+                        if(noun=='Fritzwig') {
+                           print "used inbox on fritz";
+                           rtrue;
+                        }
                    ],
        has container open;
     
@@ -566,11 +581,26 @@ Object -> TastyCake "Tasty Cake"
            description "All you can see of the Rainbow Coil with your naked eye is a slightly shimmering harsh white glow; it's this room's only light source, in fact, and is more than enough.  The glow emanates from a thickly braided cable made of myriad precious metals that runs around the perimeter of the room's ceiling.",
            ! todo: gem puzzle?  I'm thinking with the verdant hint in the warden's chamber that the solution will be to hold the ruby and sapphire gems together to filter out all but green from the light actually shining on the northern vault wall.  Mechanically, this'd be something like use ruby on sapphire to get a combined gem with the red + blue properties, and then use that on the north wall.  This will reveal the passage, which is filled with divine fire and needs the Magma Heart to pass through.  Revealing the passage, however, will allow the Lost Lords to speak to the player, saying that the fire is a defense of the wardens here, and that the means to pass must be somewhere within the treasury.  They will then proceed to open all locked containers, allowing the player to go back and nab the magma heart as well as other collectibles for points.
       has static;
+
+    ! the player uses a gem on another to create the compound gemwork; with it, they can reflect two primary color spectra from the rainbow coil's white light.
+    Object CompoundGem "Compund Gemwork"
+      with name 'compund' 'gem' 'gemwork',
+           before [;
+                     examine:
+                        print "This construct combines the ", self.part_1_gem, " and ", self.part_2_gem, ".";
+                        rtrue;
+                  ],
+           part_1_gem 'placeholder',
+           part_2_gem 'placeholder';
    
     ! used to filter out red light wavelengths
     Object -> RubyLion "Ruby Lion"
      with name 'ruby' 'lion',
-          description "Though it cannot technically make a sound, this proud lion's mere presence roars as surely as the genuine article: innumerable facets of three distinct and impossibly life-like cut rubies form its mane, body, and eyes, and they've been slotted together seamlessly.";
+          description "Though it cannot technically make a sound, this proud lion's mere presence roars as surely as the genuine article: innumerable facets of three distinct and impossibly life-like cut rubies form its mane, body, and eyes, and they've been slotted together seamlessly.",
+          before [;
+                  use:
+                     "You have used the ", (address)noun;
+                 ];
 
     ! used to filter out green light wavelengths  
     Object -> EmeraldFaerie "Emerald Faerie"
@@ -579,12 +609,13 @@ Object -> TastyCake "Tasty Cake"
 
     Object -> SapphireSiren "Sapphire Siren"
      with name 'sapphire' 'siren',
-          description "The crash of ocean waves fills your mind as you gaze upon the unfathomably deep blue of this sapphire mermaid.  Myriad subtle shades of blue compose the shimmering scales of her tail, and you can imagine the sun shining merrily down upon her as she stretches luxuriously. She wears nothing, and a blush blooms in your cheeks as you note that the gemstone of her right arm, with which she is lazily covering her chest, is slightly more translucent than that of her body and allows a peek through.";
+          description "The crash of ocean waves fills your mind as you gaze upon the unfathomably deep blue of this sapphire mermaid.  Myriad subtle shades of blue compose the shimmering scales of her tail, and you can imagine the sun shining merrily down upon her as she stretches luxuriously. She wears nothing, and a blush blooms in your cheeks as you note that the gemstone of her right arm, with which she is lazily covering her chest, is slightly more translucent than that of her body and allows a peek through.  The sculptor did not omit details due to (partial) occlusion.";
 
     ! used to break white light of the coil into components, this platypus serves as another hint that green is the man you want, and on the north wall -- when the green of the separated spectrum lands on the north wall (via use platypus on north wall)
     Object -> PrismaticCrystalPlatypus "Prismatic Crystalline Platypus"
       with name 'prismatic' 'crystalline' 'crystal' 'platypus',
-           description "Ah the noble platypus, the world's token nonconformist.  He does what he pleases, and wonders why the rest of the world doesn't try to blend in with him.  You go, little man.  The detail on this rendition is phenomenal: the bill alone has more facets than you can count, and moving it through the eerie light in the room yields fireworks of sparkling reflections and splashes a lovely rainbow blanket over whatever surface lies beyond it.  It softens the imposing mountain of treasures from blinding gold to a whimsical tableau of dancing color.";
+           ! little shoutout to zefrank1's true facts series, though he was talking about a reverse-camo octopus 
+           description "Ah the noble platypus, the world's token nonconformist.  He does what he pleases, and wonders why the rest of the world doesn't try to blend in with him.  You go, little man; don't go changin' for nobody.  The detail on this rendition is phenomenal: the bill alone has more facets than you can count, and moving it through the eerie light in the room yields fireworks of sparkling reflections and splashes a lovely rainbow blanket over whatever surface lies beyond it.  It softens the imposing mountain of treasures from blinding gold to a whimsical tableau of dancing color.";
 
     Object -> FirstEditionsBookcase "Bookcase of Irreplaceable 1st Editions"
       with name 'bookcase' 'of' 'irrepleaceable' '1st' 'first' 'editions',
