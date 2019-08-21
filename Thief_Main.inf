@@ -614,12 +614,21 @@ Object -> TastyCake "Tasty Cake"
            description "Arms and armor adorn the ground level of the west wall, with original prints from famous artists dancing in a purposeful, ordered sort of chaos above them.",
       has static; 
 
-    ! todo: add this bridge as a door between Vault and Maw
-    ! todo: describe
+    ! bridge serves as a door between Vault and Maw
     Object BarbedBridge "Barbed Bridge"
       with name 'barbed' 'bridge',
-           description "",
-      has door static; 
+           description "Teeth of stone line the edges of this old stone bridge, the only barrier between one traversing the bridge and the yawning emptiness on either side.  Cracks and pits mar its surface liberally, with layers upon layers of spider webs crisscrossed between them; the spiders might well be its only maintainers.",
+           after [;
+                     examine:
+                        if(location == Vault) {
+                           "Lightning flashes out in the void beyond the bridge, and you can make out the sultry sullen glow of standing fire at its far end.";
+                        } else {
+                           "Tantalizing treasure glitters at the far side of the bridge; that, combined with the haunting voices of lingering ghosts whispering that you should delve deeper into the Maw, make a compelling case to abandon your exploration and flee back to relative safety."
+                        }
+                 ],
+           door_to [; if (location == Vault) return MawOfInfinity; else return Vault;],
+           door_dir [; if (location == Vault) return n_to; else return s_to;],
+      has static door; 
 
     ! the player uses a gem on another to create the compound gemwork; with it, they can reflect two primary color spectra from the rainbow coil's white light.
     Object CompoundGem "Compund Gemwork"
@@ -629,28 +638,36 @@ Object -> TastyCake "Tasty Cake"
                         print "This construct combines the ", self.part_1_gem, " and ", self.part_2_gem, ".";
                         rtrue;
                      use:
-                        if(second == NorthWall) {
+                        if((self.part_1_gem == RubyLion && self.part_2_gem == SapphireSiren)
+                           || (self.part_1_gem == SapphireSiren && self.part_2_gem == RubyLion)
+                           && second == NorthWall) {
                            ! todo: handle bridge summoned into juxtaposition with the north wall
                         }
+                        ! todo: handle flavor text for non-solution cases
                   ],
-           part_1_gem 'placeholder',
-           part_2_gem 'placeholder';
+           part_1_gem,
+           part_2_gem;
    
-    ! used to filter out red light wavelengths
-    Object -> RubyLion "Ruby Lion"
-     with name 'ruby' 'lion',
-          description "Though it cannot technically make a sound, this proud lion's mere presence roars as surely as the genuine article: innumerable facets of three distinct and impossibly life-like cut rubies form its mane, body, and eyes, and they've been slotted together seamlessly.",
-          before [;
+    Class VaultGem 
+      with before [;
                   use:
-                     "You have used the ", (address)noun;
+                     "You have used ", (the)noun, "gem on ", (the)second;
+                     CompoundGem.part_1_gem = self;
+                     CompoundGem.part_2_gem = second;
                  ];
 
+    ! used to filter out red light wavelengths
+    VaultGem -> RubyLion "Ruby Lion"
+     with name 'ruby' 'lion',
+          description "Though it cannot technically make a sound, this proud lion's mere presence roars as surely as the genuine article: innumerable facets of three distinct and impossibly life-like cut rubies form its mane, body, and eyes, and they've been slotted together seamlessly.";
+          
+
     ! used to filter out green light wavelengths  
-    Object -> EmeraldFaerie "Emerald Faerie"
+    VaultGem -> EmeraldFaerie "Emerald Faerie"
      with name 'emerald' 'faerie',
           description "Her impish grin a dead giveaway, this little beauty clearly has mischief in mind.  You marvel at the slender translucent sheets of intricately shaped emerald that form her wings and the minute filaments and shards that make up her wild hair.  She looks like she could take flight at any moment.";
 
-    Object -> SapphireSiren "Sapphire Siren"
+    VaultGem -> SapphireSiren "Sapphire Siren"
      with name 'sapphire' 'siren',
           description "The crash of ocean waves fills your mind as you gaze upon the unfathomably deep blue of this sapphire mermaid.  Myriad subtle shades of blue compose the shimmering scales of her tail, and you can imagine the sun shining merrily down upon her as she stretches luxuriously. She wears nothing, and a blush blooms in your cheeks as you note that the gemstone of her right arm, with which she is lazily covering her chest, is slightly more translucent than that of her body and allows a peek through.  The sculptor did not omit details due to (partial) occlusion.";
 
@@ -702,8 +719,6 @@ Object -> TastyCake "Tasty Cake"
             before [; Open:
                       if(Skjordun.isWatching() || Falknir.isWatching()) {
                         print "The guards eye you warily as you fiddle with the vault door's opening mechanism.  ~Please step away from that.  Immediately.~^";
-                        rfalse;
-                      } else {
                         rtrue;
                       }
                       
