@@ -579,8 +579,7 @@ Object -> TastyCake "Tasty Cake"
     ! The Vault: N of the Grandiossuary is the public heart of the dwarven treasury, holding immeasurable wealth
     Object Vault "A vault capable of keeping anything out... or in"
        with description
-          "Mountains of gold coins, shimmering gems in every color of the rainbow plus a few you're certain you've never seen before, and powerful artifacts humming with magical potential languish in idle safety before you.  Your mouth begins to water, but you staunchly refuse to be distracted from your true goal: The OmniNomicron.  It should be here somewhere amidst the hoard.",
-          ! todo: talk about the walls in each direction specifically, to hint that the player needs to target directional walls here.  
+          "Mountains of gold coins, shimmering gems in every color of the rainbow plus a few you're certain you've never seen before, and powerful artifacts humming with magical potential languish in idle safety before you.  Your mouth begins to water, but you staunchly refuse to be distracted from your true goal: The OmniNomicron.  It should be here somewhere amidst the hoard.  Before you can search, a booming voice fills your mind.  Its volume and intensity are indescribable, and you fall to your knees and pound at your head in a vain effort to dislodge the irreconcilable presence.  ~Welcome, Thief.  We know what you are for we summoned you.  Our servants were our mouthpieces, but that matters not.  The will was our own, as it was your will to answer the summons.  A contract has been written between us, tacit and informal perhaps, but no less cooperative for this.  It is this connection that allows us to touch your mind when you stand so near to anything and everything you could wish for.  If you take the Paradox and go, our servants will destroy you for a traitor; they have no true interest in material gain.  If you take the OmniNomicron and do battle with them you might prevail, but we will hound you the rest of your days.  A third choice waits, just beyond the boundaries of your understanding of reality -- come to us, free us, and you will have pow-~ *fghzzzz* With a blinding flash from the Rainbow Coil stretched around the room's perimiter, the presence vanishes from your mind.  The vaccuum it leaves is at once relief incarnate and a horrific mirror revealing your own sudden sense of microscopic substance.",
         s_to Vault_Door,
         scored_value 50,
         has scored light;
@@ -618,6 +617,15 @@ Object -> TastyCake "Tasty Cake"
     Object BarbedBridge "Barbed Bridge"
       with name 'barbed' 'bridge',
            description "Teeth of stone line the edges of this old stone bridge, the only barrier between one traversing the bridge and the yawning emptiness on either side.  Cracks and pits mar its surface liberally, with layers upon layers of spider webs crisscrossed between them; the spiders might well be its only maintainers.",
+           before [;
+                     go:
+                        if(MagmaHeart not in player) {
+                           ! have fire beams spin up, preventing travel
+                           print "As you try to step onto the bridge, massive pillars of flame shoot out of the darkness all around and alight upon the bridge.  They dance to and fro in a complex and disturbingly beautiful waltz.  One nearby seems to flush from gold to deep scarlet and then approach another before the two spin off close together.  Though the flames scorch the bridge's surface at first, the hurt disappears as if it had never been moments later.  Still, you imagine if these fire lasers cut you to ribbons you would remain dead.  While you ponder this new lovely wrinkle, the booming voice from earlier rumbles back into your head as if it never left; this time, you remain standing and in fact feel a certain longing emptiness inside at once fulfilled.  ~Good little soul, you have bridged the gap between the forgettable truth of 'what is' and the glorious landscape of 'what could be' for you.  You must not let their petty traps dissuade you -- search the Treasury proper for something to disable this warding.~  For a moment, reality seems to twist and your stomach heaves violently before things come back into focus.  ~All that was once denied you in this place is now open, all locks opened and all secrets unveiled.~";
+                           ! todo: is there an unlock all command?
+                           rtrue;
+                        }
+                  ],
            after [;
                      examine:
                         if(location == Vault) {
@@ -641,9 +649,19 @@ Object -> TastyCake "Tasty Cake"
                         if((self.part_1_gem == RubyLion && self.part_2_gem == SapphireSiren)
                            || (self.part_1_gem == SapphireSiren && self.part_2_gem == RubyLion)
                            && second == NorthWall) {
-                           ! todo: handle bridge summoned into juxtaposition with the north wall
+                           ! handle bridge summoned into juxtaposition with the north wall
+                           print "You holding the ruby and sapphire gem sculptures together, filtering out all but green hues from the strange ceiling coild.  As a brilliant verdant glow bathes the north wall, you feel like you've conjured life... or perhaps summoned it.  Before you can register this notion as odd, the wall before you dissolves into ghostly tendrils of gray-black smoke.  These swirl about the room for a moment, brushing about your person playfully before retreating into a vast abyss where the north wall once stood.  A stone bridge out of nightmare, a thing clearly constructed for the purpose of making a crossing but also to dissuade anyone from choosing to use it, meanders into existence from deep within the darkness and extending towards you.  With a soft *chunk* it meets the edge of the Vault floor, and a sigh of displaced air beckons.";
+                           move BarbedBridge to Vault;
+                           rtrue;
+                        } else {
+                           ! handle flavor text for other combos, also giving hint at what the CompoundGem accomplishes
+                           if((self.part_1_gem == RubyLion && self.part_2_gem == EmeraldFaerie)
+                           || self.part_1_gem == EmeraldFaerie && self.part_2_gem == RubyLion) {
+                              "Soothing blue light shines upon ", (the)second, " making you feel calm for a moment.";
+                           } else {
+                              "Burning crimson imparts a sort of furious energy to ", (the)second, " but only in your perception."
+                           }
                         }
-                        ! todo: handle flavor text for non-solution cases
                   ],
            part_1_gem,
            part_2_gem;
