@@ -536,9 +536,10 @@ Object -> TastyCake "Tasty Cake"
     ! The Cellar: D from the Grandiossuary is the Treasury's undercarriage, wherein vital automation that no one wants to see dutifully chugs along... until it doesn't
     Object Cellar "Undercarriage of the Treasury"
        with description
-          "It's damp down here, and musty.  Most people don't like dank dark places, but you've always felt at home there.  The air duct you came down through sits innocently high above you, out of reach now thanks to cursed gravity.  A row of Climatrol brand heating and cooling pillars lines the West wall, magical flame currently keeping the winter chill at bay.  Brilliant copper pipes criss-cross the other walls like an orgy of serpents, compelte with occasional writhing when someone flushes a toilet or turns on a sink.  The Treasury really should have hired actual plumbers; thieves and grifters know much, but not how to set up functional plumbing.  The ceiling, your singular point of interest, is bare stone and looks untouched and impregnable.  A close look up on the handy stepladder nearby reveals a perfectly circular hair's breadth groove cut into it, however -- the hole is just large enough for someone your size to barely squeeze through, which should also mean you can support the stone once you open the hole and avoid a loud crashing of stone and/or crushed thief flesh.",
+          "It's damp down here, and musty.  Most people don't like dank dark places, but you've always felt at home there.  The air duct you came down through sits innocently high above you on the North wall, but still within reach despite cursed gravity.  A row of Climatrol brand heating and cooling pillars lines the West wall, magical flame currently keeping the winter chill at bay.  Brilliant copper pipes criss-cross the other walls like an orgy of serpents, complete with occasional writhing when someone flushes a toilet or turns on a sink.  The Treasury really should have hired actual plumbers; thieves and grifters know much, but not how to set up functional plumbing.  The ceiling, your singular point of interest, is bare stone and looks untouched and impregnable.  A close look up on the handy stepladder nearby reveals a perfectly circular hair's breadth groove cut into it, however -- the hole is just large enough for someone your size to barely squeeze through, which should also mean you can support the stone once you open the hole and avoid a loud crashing of stone and/or crushed thief flesh.",
         name 'cellar' 'basement' 'undercarriage',
         u_to Vault_Trapdoor,
+        n_to Gradiossuary,
         scored_value 10
         has scored light;
     
@@ -582,14 +583,13 @@ Object -> TastyCake "Tasty Cake"
           "Mountains of gold coins, shimmering gems in every color of the rainbow plus a few you're certain you've never seen before, and powerful artifacts humming with magical potential languish in idle safety before you.  Your mouth begins to water, but you staunchly refuse to be distracted from your true goal: The OmniNomicron.  It should be here somewhere amidst the hoard.  Before you can search, a booming voice fills your mind.  Its volume and intensity are indescribable, and you fall to your knees and pound at your head in a vain effort to dislodge the irreconcilable presence.  ~Welcome, Thief.  We know what you are for we summoned you.  Our servants were our mouthpieces, but that matters not.  The will was our own, as it was your will to answer the summons.  A contract has been written between us, tacit and informal perhaps, but no less cooperative for this.  It is this connection that allows us to touch your mind when you stand so near to anything and everything you could wish for.  If you take the Paradox and go, our servants will destroy you for a traitor; they have no true interest in material gain.  If you take the OmniNomicron and do battle with them you might prevail, but we will hound you the rest of your days.  A third choice waits, just beyond the boundaries of your understanding of reality -- come to us, free us, and you will have pow-~ *fghzzzz* With a blinding flash from the Rainbow Coil stretched around the room's perimiter, the presence vanishes from your mind.  The vaccuum it leaves is at once relief incarnate and a horrific mirror revealing your own sudden sense of microscopic substance.",
         s_to Vault_Door,
         scored_value 50,
+        is_rainbow_coil_active true,
         has scored light;
-
-    ! todo: add concealed north wall, west wall... etc. so that player can use them as targets.
 
     Object -> RainbowCoil "Rainbow Coil"
       with name 'rainbow' 'coil',
            description "All you can see of the Rainbow Coil with your naked eye is a slightly shimmering harsh white glow; it's this room's only light source, in fact, and is more than enough.  The glow emanates from a thickly braided cable made of myriad precious metals that runs around the perimeter of the room's ceiling.",
-           ! todo: gem puzzle?  I'm thinking with the verdant hint in the warden's chamber that the solution will be to hold the ruby and sapphire gems together to filter out all but green from the light actually shining on the northern vault wall.  Mechanically, this'd be something like use ruby on sapphire to get a combined gem with the red + blue properties, and then use that on the north wall.  This will reveal the passage, which is filled with divine fire and needs the Magma Heart to pass through.  Revealing the passage, however, will allow the Lost Lords to speak to the player, saying that the fire is a defense of the wardens here, and that the means to pass must be somewhere within the treasury.  They will then proceed to open all locked containers, allowing the player to go back and nab the magma heart as well as other collectibles for points.
+           ! gem puzzle?  I'm thinking with the verdant hint in the warden's chamber that the solution will be to hold the ruby and sapphire gems together to filter out all but green from the light actually shining on the northern vault wall.  Mechanically, this'd be something like use ruby on sapphire to get a combined gem with the red + blue properties, and then use that on the north wall.  This will reveal the passage, which is filled with divine fire and needs the Magma Heart to pass through.  Revealing the passage, however, will allow the Lost Lords to speak to the player, saying that the fire is a defense of the wardens here, and that the means to pass must be somewhere within the treasury.  They will then proceed to open all locked containers, allowing the player to go back and nab the magma heart as well as other collectibles for points.
       has static;
     
     ! the walls in the vault are addressable objects, and the NorthWall will open to reveal The Barbed Bridge
@@ -619,11 +619,24 @@ Object -> TastyCake "Tasty Cake"
            description "Teeth of stone line the edges of this old stone bridge, the only barrier between one traversing the bridge and the yawning emptiness on either side.  Cracks and pits mar its surface liberally, with layers upon layers of spider webs crisscrossed between them; the spiders might well be its only maintainers.",
            before [;
                      go:
-                        if(~(MagmaHeart in player)) {
-                           ! have fire beams spin up, preventing travel
-                           print "As you try to step onto the bridge, massive pillars of flame shoot out of the darkness all around and alight upon the bridge.  They dance to and fro in a complex and disturbingly beautiful waltz.  One nearby seems to flush from gold to deep scarlet and then approach another before the two spin off close together.  Though the flames scorch the bridge's surface at first, the hurt disappears as if it had never been moments later.  Still, you imagine if these fire lasers cut you to ribbons you would remain dead.  While you ponder this new lovely wrinkle, the booming voice from earlier rumbles back into your head as if it never left; this time, you remain standing and in fact feel a certain longing emptiness inside at once fulfilled.  ~Good little soul, you have bridged the gap between the forgettable truth of 'what is' and the glorious landscape of 'what could be' for you.  You must not let their petty traps dissuade you -- search the Treasury proper for something to disable this warding.~  For a moment, reality seems to twist and your stomach heaves violently before things come back into focus.  ~All that was once denied you in this place is now open, all locks opened and all secrets unveiled.~";
-                           ! todo: is there an unlock all command?
-                           rtrue;
+                        if(self.fire_lasers) {
+                           if(~(MagmaHeart in player)) {
+                              ! have fire beams spin up, preventing travel
+                              print "As you try to step onto the bridge, massive pillars of flame shoot out of the darkness all around and alight upon the bridge.  They dance to and fro in a complex and disturbingly beautiful waltz.  One nearby seems to flush from gold to deep scarlet and then approach another before the two spin off close together.  Though the flames scorch the bridge's surface at first, the hurt disappears as if it had never been moments later.  Still, you imagine if these fire lasers cut you to ribbons you would remain dead.  While you ponder this new lovely wrinkle, the booming voice from earlier rumbles back into your head as if it never left; this time, you remain standing and in fact feel a certain longing emptiness inside at once fulfilled.  ~Good little soul, you have bridged the gap between the forgettable truth of 'what is' and the glorious landscape of 'what could be' for you.  You must not let their petty traps dissuade you -- search the Treasury proper for something to disable this warding.~  For a moment, reality seems to twist and your stomach heaves violently before things come back into focus.  ~All that was once denied you in this place is now open, all locks opened and all secrets unveiled.~";
+                              ! todo: is there an unlock all command?
+                              give CrystalChest ~locked;
+                              rtrue;
+                           } else {
+                              print "The very instant your pack passes the threshold between the Vault and the Barbed Bridge, the heart of magma rises of its own accord and all the fire scouring the bridge's surface is drawn directly into it.  A torrent of hellfire surges toward you, but there is no pain; the heart absorbs all the wrath and wild fury of the concept of combustion itself, and then the light show abruptly ends.  When your vision clears, the bridge stretches out before you unobstructed but still uninviting.";
+                              self.fire_lasers = false;
+                              rtrue;
+                           }
+                        } else {
+                           if(Vault.is_rainbow_coil_active) {
+                              ! shut down rainbow coil in rainbow serpent form before allowing player forward
+                              print "As you set foot on the Barbed Bridge, you hear a grating hiss behind you.  Turning swiftly, you see the coil stretched around the Vault's ceiling twist and transform into a vast glowing serpent with rainbow scales and bands of colorful feathers at intervals along its length.  Its fanged maw levels with your face as its body thrashes, and you see terrified despair in its eyes.  Before you can even jump back, the serpent's scales wither and dissolve into dust, and its feathers wilt away to nothing.  A great hulk of bone crashes to the ground behind you, scattering material treasures like so much debris.  The only light remaining comes from the standing fires over the bridge, which seem to burn more brightly now than ever.  A fell wind ruffles your hair, carrying bits of clashing dust and stone that produce a sound that reminds you of laughter despite running somehow fundamentally counter to any and all expressions of joy.  An involuntary shiver runs down your spine.";
+                           }
+                           rfalse;
                         }
                   ],
            after [;
@@ -636,6 +649,7 @@ Object -> TastyCake "Tasty Cake"
                  ],
            door_to [; if (location == Vault) return MawOfInfinity; else return Vault;],
            door_dir [; if (location == Vault) return n_to; else return s_to;],
+           fire_lasers true,
       has static door; 
 
     ! the player uses a gem on another to create the compound gemwork; with it, they can reflect two primary color spectra from the rainbow coil's white light.
@@ -650,7 +664,7 @@ Object -> TastyCake "Tasty Cake"
                            || (self.part_1_gem == SapphireSiren && self.part_2_gem == RubyLion)
                            && second == NorthWall) {
                            ! handle bridge summoned into juxtaposition with the north wall
-                           print "You holding the ruby and sapphire gem sculptures together, filtering out all but green hues from the strange ceiling coild.  As a brilliant verdant glow bathes the north wall, you feel like you've conjured life... or perhaps summoned it.  Before you can register this notion as odd, the wall before you dissolves into ghostly tendrils of gray-black smoke.  These swirl about the room for a moment, brushing about your person playfully before retreating into a vast abyss where the north wall once stood.  A stone bridge out of nightmare, a thing clearly constructed for the purpose of making a crossing but also to dissuade anyone from choosing to use it, meanders into existence from deep within the darkness and extending towards you.  With a soft *chunk* it meets the edge of the Vault floor, and a sigh of displaced air beckons.";
+                           print "You hold the ruby and sapphire gem sculptures together, filtering out all but green hues from the strange ceiling coil.  As a brilliant verdant glow bathes the north wall, you feel like you've conjured life... or perhaps summoned it.  Before you can register this notion as odd, the wall before you dissolves into ghostly tendrils of gray-black smoke.  These swirl about the room for a moment, brushing about your person playfully before retreating into a vast abyss where the north wall once stood.  A stone bridge out of nightmare, a thing clearly constructed for the purpose of making a crossing but also to dissuade anyone from choosing to use it, meanders into existence from deep within the darkness and extending towards you.  With a soft *chunk* it meets the edge of the Vault floor, and a sigh of displaced air beckons.";
                            move BarbedBridge to Vault;
                            rtrue;
                         } else {
@@ -881,6 +895,21 @@ Object -> TastyCake "Tasty Cake"
                         print "As you lift the sphere, you begin to shiver and note a distinct pallor sweep over your skin.  You toss it in your pack hastily.";
                         move self to player;
                         rtrue;
+                     use:
+                        if(player in Vault) {
+                           if(BarbedBridge.fire_lasers) {
+                              if(second == BarbedBridge) {
+                                 ! turn off fire beams, and have the rainbow coil turn into a thrashing rainbow serpent for a moment and then go dark.  Light spins up as the standing flames beyond the bridge grow brighter etc.
+                                 print "The very instant the heart of magma passes the threshold between the Vault and the Barbed Bridge, all the fire scouring the bridge's surface is drawn directly into the heart.  A torrent of hellfire surges at and into your outstretched hands, but there is no pain; the heart absorbs all the wrath and wild fury of the concept of combustion itself, and then the light show abruptly ends.  When your vision clears, the bridge stretches out before you unobstructed but still uninviting.";
+                                 BarbedBridge.fire_lasers = false;
+                                 rtrue;
+                              } else if(BarbedBridge in Vault){
+                                 ! hint at usage on fire beams, maybe heart pulses in their direction yearningly
+                                 print "Nothing obvious happens when you use the heart of magma on ", (the)second, ", but you do notice the heart pulsing strongly in the direction of the bridge.  Furiously oscillating flashes of gold and crimson in shrinking concentric circles point towards the bridge on the heart's surface, and you feel an intangible pull in that direction -- a yearning.";
+                                 rtrue;
+                              }
+                           }
+                        }
                   ];
     ! this fn takes in an array of query tokens that we want to match in the <any clause> consult tokens.  It returns true if these tokens are found and false otherwise.
     !Array gTokenArray --> 10; ! only statically sized arrays supported?  Yargh, this language!  I guess traverse until deref is 0? Undeclared variable?
@@ -1011,7 +1040,7 @@ Object -> TastyCake "Tasty Cake"
            scored_value 10,
       has scored concealed; 
 
-    ! todo: give the player a turn in the Maw of Infinity before they are consumed by the abyss and all that lives there to use the wand to fend it off for an instant.  This will let them flee screaming, achieving the 'good' ending.  If they have the OmniNomicron, they can even decide to declare war upon the cult and their foul gods using its power? 
+    ! todo: give the player a turn in the Edge of All and Nothing before they are consumed by the abyss and all that lives there to use the wand to fend it off for an instant.  This will let them flee screaming, achieving the 'good' ending.  If they have the OmniNomicron, they can even decide to declare war upon the cult and their foul gods using its power? 
     Object WandOfWarding "Wand of Warding" ! todo: put this in limbo by default so that player has to 'open a secret compartment' to teleport it in
       with name 'wand' 'warding',
            description "The Wand of Warding is a beautifully carved 20cm length of wood from a Bodhi Tree with a strange rainbow helix arrangement of multi-hued gemstones fastened to the tip.  Looking closer, you actually can't determine how the stones are connected to the wood -- they appear to grow seamlessly from it.  A tingle of power runs through your hand as you grasp it.  Tiny and stunningly intricate scenes of mythological battle ornament its entire surface: the wielder of a minute wand holds it dramatically before themselves, keeping at bay or banishing hordes of horned phantasms.",
