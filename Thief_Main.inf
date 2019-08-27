@@ -176,7 +176,29 @@ Object -> TastyCake "Tasty Cake"
              ne_to WardenChamber,
              n_to Vault_Door,
              d_to AirDuct,
+             s_to MarketStreet,
        has light;
+    
+    Object MarketStreet "Market Street"
+      with before [;
+                     go:
+                        ! handle endings where player flees
+                        if(OmniNomicron in player) {
+                           ! todo: the player is doomed to a life on the run, using the mighty omninomicron simply to survive
+                        } else {
+                           ! the player is hunted down by the cult
+                           if(truth_known) {
+                              print "Though you have successfully fled the nightmares within Mt. Godspeak's Tomb of Forgotten Gods, you cannot outrun their minions -- in a matter of days they find you, capture you, and prepare you to be a sacrifice to their lauded Lost.";
+                              
+                           } else {
+                              print "This is all too much for any take -- you flee the Treasury and its oddments, and put the shady folk who hired you out of your mind.  Late the next night, some unexpected visitors appear on your doorstep.  Brunhilde the beautiful receptionist leads them, though she looks a bit less appealing in a hooded black robe spattered with blood.  Before you can fight or fly, they are upon you with ropes and chains.  They blindfold you and drag you over rough pavement for some time.";
+                             
+                           }
+                           print "When your blindfold is finally removed, you behold the last sight you'll ever see: an array of leering hook-tentacled statues ringed around an altar over which you are stretched, and Brunhilde holding a curved dagger over your heart.  She wears nothing but a giddy grin, and your last thought is that even through a filter of murderous madness she is still so beautiful.  As your blood drains away into massive necrotic batteries, so too does your memory disappear into obscurity.";
+                           deadflag = 1;
+                        }
+                        rtrue;
+                  ];
     
     !Attribute distracted; ! seems attributes have to be set statically at compile time and are read-only thereafter?
     
@@ -581,6 +603,12 @@ Object -> TastyCake "Tasty Cake"
     Object Vault "A vault capable of keeping anything out... or in"
        with description
           "Mountains of gold coins, shimmering gems in every color of the rainbow plus a few you're certain you've never seen before, and powerful artifacts humming with magical potential languish in idle safety before you.  Your mouth begins to water, but you staunchly refuse to be distracted from your true goal: The OmniNomicron.  It should be here somewhere amidst the hoard.  Before you can search, a booming voice fills your mind.  Its volume and intensity are indescribable, and you fall to your knees and pound at your head in a vain effort to dislodge the irreconcilable presence.  ~Welcome, Thief.  We know what you are for we summoned you.  Our servants were our mouthpieces, but that matters not.  The will was our own, as it was your will to answer the summons.  A contract has been written between us, tacit and informal perhaps, but no less cooperative for this.  It is this connection that allows us to touch your mind when you stand so near to anything and everything you could wish for.  If you take the Paradox and go, our servants will destroy you for a traitor; they have no true interest in material gain.  If you take the OmniNomicron and do battle with them you might prevail, but we will hound you the rest of your days.  A third choice waits, just beyond the boundaries of your understanding of reality -- come to us, free us, and you will have pow-~ *fghzzzz* With a blinding flash from the Rainbow Coil stretched around the room's perimiter, the presence vanishes from your mind.  The vaccuum it leaves is at once relief incarnate and a horrific mirror revealing your own sudden sense of microscopic substance.",
+            before [;
+                     ! as soon as the player enters the Vault, the truth is revealed to them so raise the flag
+                     go:
+                        truth_known = true;
+                        rfalse;
+                   ],
         s_to Vault_Door,
         scored_value 50,
         is_rainbow_coil_active true,
@@ -1052,7 +1080,7 @@ Object -> TastyCake "Tasty Cake"
     ! of their journey.
     Object MawOfInfinity "Maw of Infinity"
       with description
-        "Mount Godspeak is not supposed to be hollow, but you stand in a yawning cavern beyond the carefully hewn stone of the Treasury behind you.  You stand on a narrow outcropping that stretches out over an infinite abyss, something of a lookout point.  Things stir in the darkness and all the hair on your body stands on end.",
+        "Mount Godspeak is not supposed to be hollow, but you stand in a yawning cavern beyond the carefully hewn stone of the Treasury behind you.  You stand on a narrow outcropping that stretches out over an infinite abyss, something of a lookout point.  Things stir in the darkness and all the hair on your body stands on end.  Away North stretches a sort of platform made of muted light, barely visible against the backdrop of inky blackness.  ~Step forward little soul, if you feel you are ready to meet your destiny!~  The voices in your head, now an uncountable myriad rather than a mere single monstrous godbeast howl, beckon you urgently.",
            scored_value 100,
            n_to EdgeOfAllAndNothing, 
       has scored;
