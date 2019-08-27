@@ -163,12 +163,12 @@ Object -> TastyCake "Tasty Cake"
    ! you sweat from across the room."
    ! Attributes: light
    !
-   ! The Gradiossuary is the oppulent to 11 atrium of the Dwarven Royal Treasury,
+   ! The Grandiossuary is the oppulent to 11 atrium of the Dwarven Royal Treasury,
    ! and hosts a multitude of dwarves whose smiles are all teeth.
    !
    Object Grandiossuary "A lavish atrium, flush with thorned roses"
        with description
-             "You are standing before a dazzling array of glittering oppulence.  Rows upon rows of bespectacled dwarves labor over ledgers amidst a cacophony of quill scratches, all ignoring you studiously.  Several burly guards, each wielding twin battleaxes with blades twice the width of your shoulderspan, watch you carefully.  A gorgeous female receptionist beams at you, her incandescence making you sweat from across the room.^The mighty Vault looms imposingly directly North, with the Treasury Archive off to the Northwest and the humble Warden's chamber tucked away beyond the Northeast corner of the room.",
+             "You are standing before a dazzling array of glittering oppulence.  Rows upon rows of bespectacled dwarves labor over ledgers amidst a cacophony of quill scratches, all ignoring you studiously.  Several burly guards, each wielding twin battleaxes with blades twice the width of your shoulderspan, watch you carefully.  A gorgeous female receptionist beams at you, her incandescence making you sweat from across the room.^The mighty Vault looms imposingly directly North, with the Treasury Archive off to the Northwest and the humble Warden's chamber tucked away beyond the Northeast corner of the room.  Back South is Market Street, figuratively paved with gold.  Best not leave yet, though, unless you're abandoning the mission; your clients are likely watching.",
              !guards 'TGuard1' 'TGuard2', !array creation
              ! intercept entry to Grandiossuary with a command to start Falknir's daemon activity
              ! after [; go: print "we have entered the Grandiossuary"; StartDaemon(Falknir); rfalse;], ! not the right hook? UPDATE NewRoom() would likely be the entry point fn to override
@@ -184,7 +184,9 @@ Object -> TastyCake "Tasty Cake"
                      go:
                         ! handle endings where player flees
                         if(OmniNomicron in player) {
-                           ! todo: the player is doomed to a life on the run, using the mighty omninomicron simply to survive
+                           ! the player is doomed to a life on the run, using the mighty omninomicron simply to survive
+                           ! since they have the nomicron, we know they have uncovered the truth so no need to hold back!
+                           print "Having fled the haunted Treasury with the world's mightiest weapon in your pack, your days dissolve into a blur of paranoia and violence.  Cultists of the Lost Lords find you wherever you hide, crossing nations and oceans and the sky itself to silence you.  At first it was an easy thing to transform your pursuers into candy and trail rations and sweet water to both escape their clutches and fuel your flight, but the transmutation magic is taking its toll on you.  Things don't look as they once did: every tree is a possible fudgeicle, every person a new flavor of jerky, and the whole world is tilting rather... sideways.  After more than afew 'accidental' assaults upon random passersby who startled you, the mundane law enforcement of the world has unwittingly joined their eldritch counterparts in the hunt.  You'll keep fighting and running for as long as you draw breath, but... hey, when did you sprout tasty sausages from your hands and feet?";
                         } else {
                            ! the player is hunted down by the cult
                            if(truth_known) {
@@ -195,8 +197,8 @@ Object -> TastyCake "Tasty Cake"
                              
                            }
                            print "When your blindfold is finally removed, you behold the last sight you'll ever see: an array of leering hook-tentacled statues ringed around an altar over which you are stretched, and Brunhilde holding a curved dagger over your heart.  She wears nothing but a giddy grin, and your last thought is that even through a filter of murderous madness she is still so beautiful.  As your blood drains away into massive necrotic batteries, so too does your memory disappear into obscurity.";
-                           deadflag = 1;
                         }
+                        deadflag = 1;
                         rtrue;
                   ];
     
@@ -561,7 +563,7 @@ Object -> TastyCake "Tasty Cake"
           "It's damp down here, and musty.  Most people don't like dank dark places, but you've always felt at home there.  The air duct you came down through sits innocently high above you on the North wall, but still within reach despite cursed gravity.  A row of Climatrol brand heating and cooling pillars lines the West wall, magical flame currently keeping the winter chill at bay.  Brilliant copper pipes criss-cross the other walls like an orgy of serpents, complete with occasional writhing when someone flushes a toilet or turns on a sink.  The Treasury really should have hired actual plumbers; thieves and grifters know much, but not how to set up functional plumbing.  The ceiling, your singular point of interest, is bare stone and looks untouched and impregnable.  A close look up on the handy stepladder nearby reveals a perfectly circular hair's breadth groove cut into it, however -- the hole is just large enough for someone your size to barely squeeze through, which should also mean you can support the stone once you open the hole and avoid a loud crashing of stone and/or crushed thief flesh.",
         name 'cellar' 'basement' 'undercarriage',
         u_to Vault_Trapdoor,
-        n_to Gradiossuary,
+        n_to Grandiossuary,
         scored_value 10
         has scored light;
     
@@ -662,7 +664,7 @@ Object -> TastyCake "Tasty Cake"
                         } else {
                            if(Vault.is_rainbow_coil_active) {
                               ! shut down rainbow coil in rainbow serpent form before allowing player forward
-                              print "As you set foot on the Barbed Bridge, you hear a grating hiss behind you.  Turning swiftly, you see the coil stretched around the Vault's ceiling twist and transform into a vast glowing serpent with rainbow scales and bands of colorful feathers at intervals along its length.  Its fanged maw levels with your face as its body thrashes, and you see terrified despair in its eyes.  Before you can even jump back, the serpent's scales wither and dissolve into dust, and its feathers wilt away to nothing.  A great hulk of bone crashes to the ground behind you, scattering material treasures like so much debris.  The only light remaining comes from the standing fires over the bridge, which seem to burn more brightly now than ever.  A fell wind ruffles your hair, carrying bits of clashing dust and stone that produce a sound that reminds you of laughter despite running somehow fundamentally counter to any and all expressions of joy.  An involuntary shiver runs down your spine.";
+                              print "As you set foot on the Barbed Bridge, you hear a grating hiss behind you.  Turning swiftly, you see the coil stretched around the Vault's ceiling twist and transform into a vast glowing serpent with rainbow scales and bands of colorful feathers at intervals along its length.  Its fanged maw levels with your face as its body thrashes, and you see terrified despair in its eyes.  Before you can even jump back, the serpent's scales alight with gorgeously colorful flames.  In an instant they wither and dissolve into dust, its sad eyes melt, and its feathers wilt away to nothing.  A great hulk of bone crashes to the ground behind you, scattering material treasures like so much debris.  The only light remaining comes from the standing fires over the bridge, which seem to burn more brightly now than ever.  A fell wind ruffles your hair, carrying bits of clashing dust and stone that produce a sound that reminds you of laughter despite running somehow fundamentally counter to any and all expressions of joy.  An involuntary shiver runs down your spine.";
                            }
                            rfalse;
                         }
@@ -830,7 +832,7 @@ Object -> TastyCake "Tasty Cake"
          with name 'bestiary' 'infinity book',
               description "Bound in a strange oily hide with patches of withered scales, certainly not from any animal you recognize (or so you hope), this book sits on its side on top of a nearby bookshelf.  It somehow manages to look restless.",
               before [; read:
-                           "~There are creatures great and small all around us in our everyday lives, but these are of no importance.  The claws and teeth and mind-bending power to create, shape, and destroy universes unique to godbeasts are our singular point of interest, and we shall discuss herein the mathematics dictating their majesty.~  This encyclopedia has troubling entries about myriad huge and imposing creatures out of dream and nightmare.  Hundreds of them.  Toothy and tentacled titans adorn every page, adding a physically painful visual overture to the fearsome stage already set for the theater of the mind by the text.  You can't make tails or feathers of the complex diagrams and formulae scattered amongst the colorful descriptions, but you note with a shudder that the mountain in the background of many of the illuminations looks distressingly familiar -- it can only be Mount Godspeak, out of which the Royal Treasury was carved."; 
+                           "~There are creatures great and small all around us in our everyday lives, but these are of no importance.  The claws and teeth and mind-bending power to create, shape, and destroy universes unique to godbeasts are our singular point of interest, and we shall discuss herein the mathematics dictating their terrible majesty.~  This encyclopedia has troubling entries about myriad huge and imposing creatures out of dream and nightmare.  Hundreds of them.  Toothy and tentacled titans adorn every page, adding a physically painful visual overture to the fearsome stage already set for the theater of the mind by the text.  You can't make tails or feathers of the complex diagrams and formulae scattered amongst the colorful descriptions, but you note with a shudder that the mountain in the background of many of the illuminations looks distressingly familiar -- it can only be Mount Godspeak, out of which the Royal Treasury was carved."; 
                      ],
          has legible openable open;
 
@@ -839,7 +841,7 @@ Object -> TastyCake "Tasty Cake"
          with name 'abjurataraxia' 'ward book' 'book of wards' 'words about wards',
               description "A red silken bookmark leads to a chapter about summoning seals; judging by the fading on these pages from exposure to light relative to the rest of the book, this chapter is referenced often.",
               before [; read: 
-                           "~When dealing with demons, devils, wild gods, and other uncouth sorts, the most important measures to consider are containment and control.  Whatever you've caught, it's not going to take kindly to confinement; that's just the nature of life.  Below follow a few basic wards one can construct to protect oneself.  Do note, however, that a certain amount of magical ^radiation^, if you will, leaking through any ward is to be expected.  Best not hang around too close to your captured charges, especially if they've had a while to acclimate themselves to your plane of existence -- once they've sorted out their power, some creatures' influence cannot be bound by wards no matter the strength.~  Incidentally, you wonder where the Archivist is.  ~Said radiative power can be itself combated: the easiest vector is to apply a countercurrent radiation bearing wave properties inverse to those of the naughty godbeast you wish to suppress.  Light suggests itself readily, and you'll find that certain eldritch hues that can only be generated faithfully by running a huge amount of energy through rare and precious metals will often serve this function well.  Some think the metals are themselves divine, a gift from benevolent gods seeking to protect us from ourselves.  In this author's opinion, it was sheer dumb luck.  These same lights, when combined with arcane wards, can have peculiar and occasionally beneficial side effects, such as producing illusions.  These, along with any demonic suppression efficacy, can of course be derailed within certain span by bending the light through a prism or similar medium.~";
+                           "~When dealing with demons, devils, wild gods, and other uncouth sorts, the most important measures to consider are containment and control.  Whatever you've caught, it's not going to take kindly to confinement; that's just the nature of life.  That said, if you're reading this then you've caught something nasty indeed, so for pity's sake please heed my instructions carefully. Below follow a few basic wards one can construct to protect oneself.  Do note, however, that a certain amount of magical ^radiation^, if you will, leaking through any ward is to be expected.  Best not hang around too close to your captured charges, especially if they've had a while to acclimate themselves to your plane of existence -- once they've sorted out their power, some creatures' influence cannot be bound by wards no matter the strength.~  Incidentally, you wonder where the Archivist is.  ~Said radiative power can be itself combated: the easiest vector is to apply a countercurrent radiation bearing wave properties inverse to those of the naughty godbeast you wish to suppress.  Light suggests itself readily, and you'll find that certain eldritch hues that can only be generated faithfully by running a huge amount of energy through rare and precious metals will often serve this function well.  Some think the metals are themselves divine, a gift from benevolent gods seeking to protect us from ourselves.  In this author's opinion, it was sheer dumb luck.  These same lights, when combined with arcane wards, can have peculiar and occasionally beneficial side effects, such as producing illusions.  These, along with any demonic suppression efficacy, can of course be derailed within certain span by bending the light through a prism or similar medium.~";
               ],
          has legible openable open;
     
@@ -1069,9 +1071,17 @@ Object -> TastyCake "Tasty Cake"
       has scored concealed; 
 
     ! todo: give the player a turn in the Edge of All and Nothing before they are consumed by the abyss and all that lives there to use the wand to fend it off for an instant.  This will let them flee screaming, achieving the 'good' ending.  If they have the OmniNomicron, they can even decide to declare war upon the cult and their foul gods using its power? 
-    Object WandOfWarding "Wand of Warding" ! todo: put this in limbo by default so that player has to 'open a secret compartment' to teleport it in
+    Object WandOfWarding "Wand of Warding" ! put this in limbo by default so that player has to 'open a secret compartment' to teleport it in
       with name 'wand' 'warding',
            description "The Wand of Warding is a beautifully carved 20cm length of wood from a Bodhi Tree with a strange rainbow helix arrangement of multi-hued gemstones fastened to the tip.  Looking closer, you actually can't determine how the stones are connected to the wood -- they appear to grow seamlessly from it.  A tingle of power runs through your hand as you grasp it.  Tiny and stunningly intricate scenes of mythological battle ornament its entire surface: the wielder of a minute wand holds it dramatically before themselves, keeping at bay or banishing hordes of horned phantasms.",
+           before [;
+                     use:
+                        if(second == TheLost) {
+                           ! flip the wand switch
+                           EdgeOfAllAndNothing.is_wand_used = true;
+                           rtrue;
+                        }
+                  ],
            score_value 25,
       has scored;
     
@@ -1087,10 +1097,45 @@ Object -> TastyCake "Tasty Cake"
     
     ! the end of the line
     Object EdgeOfAllAndNothing "Edge of All and Nothing"
-      with description "",
-           before [;
-                     ! todo: add handling for Wand + Omninomicron, modifying the ending branches
+      with description "Ghostly forms swirl about you, variously wailing and cackling, and a glowing mass that fills the horizon in all directions floats out in the darkness like a patient predator.  Faces swarm over its surface and innumerable pseudopod limbs reach toward you; some seem gently, others aggressive, but all bear an urgently covetous manner.  ~We are the Lost Lords, gods of this land that your kind have forsaken.  You, little soul who wandered willingly into our lair -- you are... OURS!~  The tendrils and tongues and teeth of this amalgam of forgotten gods surge forward, converging on your position!  You won't get a second chance to act.",
+           after [;
+                     ! add handling for Wand + Omninomicron, modifying the ending branches
+                     ! you get 1 turn to use the wand in the Edge, so... after anything, check if is_wand_used was set true (which occurs in the Wand's own use handler) -- if so, they live.  else, they die.  Nomicron possession then further modifies ending branch. 
+                     if(self.is_wand_used) {
+                        print "Light shines from the tip of the Wand of Warding, sunlight gold and so gentle that even in the midst of nightmare you are soothed.  The mass of monstrosities recoils from the light, and you flee back whence you came with infinite hellhounds on your heels!  The howling cacophony trailing you ceases in an abrupt wallop of silence as you dive back into the Vault, but you don't pause to see if your pursuit has broken off.  Instead, you dive through the trapdoor, clamber up through the air duct, and shoot straight out the Treasury front door to Market Street without slowing down until you're at home, in bed, and under the covers.^";
+                        if(OmniNomicron in player) {
+                           print "^When you've mastered your fear/bladder, you rise and take the OmniNomicron from your pack.  Together with the Wand of Warding, you just might be able to use this lovely weapon to eradicate all trace of the nightmare Lost Lords and their Cult of the Lost.  Or at least transform them into tasty treats that are relatively harmless.  Every instinct screams at you to run, but you know in your heart that if you run now you will never be able to stop.  Anyway, all this terror has left you awfully peckish...  Steeling your determination, hoping against hope that you aren't alone, you set out to mount a defense for all free creatures of the world!^";
+                           deadflag = 2;
+                        } else {
+                           if(WandOfWarding in player) {
+                              ! case where player got away after meeting Lost Lords and kept the Wand of Warding
+                              print "^Fear defines you now.  Though you have the Wand of Warding, you can feel its calming purpose with a touch and you know it could never be used as a weapon.  Your only other choice besides feeding your paranoia and fleeing forever is joining up with or starting a resistance group of some sort.  Hopefully your wand can aid them somehow, and they'll have artifacts of their own that can be turned against the Lost offensively.  Steeling your determination, hoping against hope that you aren't alone, you set out to mount a defense for all free creatures of the world!^";
+                              deadflag = 2;
+                           } else {
+                              ! case where player got away after meeting Lost Lords, but did not keep the Wand of Warding
+                              print "^Fear defines you now.  There is no weapon or ward you can turn against the coming nightmare, so there is nothing for it but to run.  Days blur one into the next as you travel across the world with your hunters in tow, and inevitably they catch up to you.  Late one night, some unexpected visitors appear on the doorstep of the hovel you're spending the night in.  Brunhilde the beautiful receptionist leads them, though she looks a bit less appealing in a hooded black robe spattered with blood.  Before you can fight or fly, they are upon you with ropes and chains.  They blindfold you and drag you over rough pavement for some time.^";
+                             
+                              print "^When your blindfold is finally removed, you behold the last sight you'll ever see: an array of leering hook-tentacled statues ringed around an altar over which you are stretched, and Brunhilde holding a curved dagger over your heart.  She wears nothing but a giddy grin, and your last thought is that even through a filter of murderous madness she is still so beautiful.  As your blood drains away into massive necrotic batteries, so too does your memory disappear into obscurity.^";
+                              deadflag = 1;
+                           }
+                        }
+                        
+                     } else {
+                        ! handle cases where player is consumed with and without nomicron
+                        ! the lost use your blood plus the fact that you lowered their prison walls to escape 
+                        print "^The Forgotten Gods pounce upon you, tearing you apart at the molecular level.  They leave your senses intact as long as possible in order to maximize your suffering, which seems to be a delicacy to them.  Since you have so helpfully lowered all the defenses against them and provided them with a battery of life force and pain on which to draw, they are easily able to free themselves to assert their terrible will upon the world.^";
+                        if(OmniNomicron in player) {
+                           ! the Lost now have the power of the nomicron
+                           print "^Howling giddy laughter from a thousand thousand mirthless voices is the last thing you'll ever hear as the tide of darkness and hatred washes over you, into you, and discovers the mighty OmniNomicron in your pack.  Perhaps they could have taken it without your help, but perhaps it wards of its own that you were not aware of.  Ah well, it's no matter to you anymore, for in the next few moments you are reduced to literally no matter.^";
+                        } 
+                        deadflag = 1;
+                     }
                   ],
            scored_value 100,
+           is_wand_used false,
            s_to MawOfInfinity,
       has scored;
+    
+    Object -> TheLost "Amalgam of Forgotten Gods"
+      with name 'glowing' 'mass' 'amalgam' 'of' 'forgotten' 'gods' 'lost' 'evil' 'abyss' 'darkness' 'edge' 'of' 'all' 'and' 'nothing' 'patient' 'predator', 
+      has static;
