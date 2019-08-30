@@ -610,12 +610,18 @@ Object -> TastyCake "Tasty Cake"
           "Mountains of gold coins, shimmering gems in every color of the rainbow plus a few you're certain you've never seen before, and powerful artifacts humming with magical potential languish in idle safety before you.  Your mouth begins to water, but you staunchly refuse to be distracted from your true goal: The OmniNomicron.  It should be here somewhere amidst the hoard.  Before you can search, a booming voice fills your mind.  Its volume and intensity are indescribable, and you fall to your knees and pound at your head in a vain effort to dislodge the irreconcilable presence.  ~Welcome, Thief.  We know what you are for we summoned you.  Our servants were our mouthpieces, but that matters not.  The will was our own, as it was your will to answer the summons.  A contract has been written between us, tacit and informal perhaps, but no less cooperative for this.  It is this connection that allows us to touch your mind when you stand so near to anything and everything you could wish for.  If you take the Paradox and go, our servants will destroy you for a traitor; they have no true interest in material gain.  If you take the OmniNomicron and do battle with them you might prevail, but we will hound you the rest of your days.  A third choice waits, just beyond the boundaries of your understanding of reality -- come to us, free us, and you will have pow-~ *fghzzzz* With a blinding flash from the Rainbow Coil stretched around the room's perimiter, the presence vanishes from your mind.  The vaccuum it leaves is at once relief incarnate and a horrific mirror revealing your own sudden sense of microscopic substance.",
             description "Mountains of gold coins, shimmering gems in every color of the rainbow plus a few you're certain you've never seen before, and powerful artifacts humming with magical potential languish in idle safety before you.",
             before [;
+                     examine:
+                        if(BarbedBridge in Vault) {
+                           "A haunting and, in all likelihood, haunted bridge stands to the North.^";
+                        }
                      ! as soon as the player enters the Vault, the truth is revealed to them so raise the flag
                      go:
                         truth_known = true;
                         rfalse;
                    ],
         s_to Vault_Door,
+        d_to Vault_Trapdoor,
+        n_to [; if(BarbedBridge in Vault) return BarbedBridge;],
         scored_value 50,
         is_rainbow_coil_active true,
         has scored light;
@@ -684,7 +690,7 @@ Object -> TastyCake "Tasty Cake"
            door_to [; if (location == Vault) return MawOfInfinity; else return Vault;],
            door_dir [; if (location == Vault) return n_to; else return s_to;],
            fire_lasers true,
-      has static door; 
+      has static door open; 
 
     ! todo: currently you can make the compound gem and still have the original gems present; no big, but the making of the compound gem should consume them until the compound gem is taken apart again.  This'd need explanation like 'they snap together so easily you could disassemble them again if you wanted.'
     ! the player uses a gem on another to create the compound gemwork; with it, they can reflect two primary color spectra from the rainbow coil's white light.
@@ -692,25 +698,31 @@ Object -> TastyCake "Tasty Cake"
       with name 'compund' 'gem' 'gemwork',
            before [;
                      examine:
-                        print "^This construct combines ", self.part_1_gem, " and ", self.part_2_gem, ".^";
-                        print "^DEBUG: ruby lion address is ", RubyLion, ", emerald faerie is ", EmeraldFaerie, ", and sapphire siren is ", SapphireSiren, "^";
-                        rtrue;
+                        "^This construct combines ", (the)self.part_1_gem, " and ", (the)self.part_2_gem, ".^";
+                        !print "^DEBUG: ruby lion address is ", RubyLion, ", emerald faerie is ", EmeraldFaerie, ", and sapphire siren is ", SapphireSiren, "^";
+                        !rtrue;
                      use:
-                        if((self.part_1_gem == "Ruby Lion" && self.part_2_gem == "Sapphire Siren")
-                           || (self.part_1_gem == "Sapphire Siren" && self.part_2_gem == "Ruby Lion")
+                        if((self.part_1_gem == RubyLion && self.part_2_gem == SapphireSiren)
+                           || (self.part_1_gem == SapphireSiren && self.part_2_gem == RubyLion)
                            && second == NorthWall) {
                            ! handle bridge summoned into juxtaposition with the north wall
-                           print "^You hold the ruby and sapphire gem sculptures together, filtering out all but green hues from the strange ceiling coil.  As a brilliant verdant glow bathes the north wall, you feel like you've conjured life... or perhaps summoned it.  Before you can register this notion as odd, the wall before you dissolves into ghostly tendrils of gray-black smoke.  These swirl about the room for a moment, brushing about your person playfully before retreating into a vast abyss where the north wall once stood.  A stone bridge out of nightmare, a thing clearly constructed for the purpose of making a crossing but also to dissuade anyone from choosing to use it, meanders into existence from deep within the darkness and extending towards you.  With a soft *chunk* it meets the edge of the Vault floor, and a sigh of displaced air beckons.^";
+                           print "^You hold the ruby and sapphire gem sculptures together, filtering out all but the green hues, as innumerable as life's many forms, from the strange ceiling coil.  As a brilliant verdant glow bathes the north wall, you feel like you've conjured life... or perhaps summoned it.  Before you can register this notion as odd, the wall before you dissolves into ghostly tendrils of gray-black smoke.  These swirl about the room for a moment, brushing about your person playfully before retreating into a vast abyss where the north wall once stood.  A stone bridge out of nightmare, a thing clearly constructed for the purpose of making a crossing but also to dissuade anyone from choosing to use it, meanders into existence from deep within the darkness and extending towards you.  With a soft *chunk* it meets the edge of the Vault floor, and a sigh of displaced air beckons.^";
                            move BarbedBridge to Vault;
                            rtrue;
                         } else {
                            ! handle flavor text for other combos, also giving hint at what the CompoundGem accomplishes
-                           if((self.part_1_gem == "Ruby Lion" && self.part_2_gem == "Emerald Faerie")
-                           || self.part_1_gem == "Emerald Faerie" && self.part_2_gem == "Ruby Lion") {
-                              "Soothing blue light shines upon ", (the)second, " making you feel calm for a moment.";
-                           } else {
-                              print "";
-                              print "Burning crimson imparts a sort of furious energy to ", (the)second, " but only in your perception.";
+                           if((self.part_1_gem == RubyLion && self.part_2_gem == EmeraldFaerie)
+                           || (self.part_1_gem == EmeraldFaerie && self.part_2_gem == RubyLion)) {
+                              "Soothing blue light shines upon ", (the)second, " making you feel calm for a moment.^";
+                           } 
+                           else if((self.part_1_gem == RubyLion && self.part_2_gem == SapphireSiren)
+                           || (self.part_1_gem == SapphireSiren && self.part_2_gem == RubyLion)) {
+                              ! right color, wrong target
+                              "Verdant light bathes ", (the)second, " reminding you of summer days spent reading or adventuring through woods as a child.  After all this time in the city, you've nearly forgotten the countless forms of life making up the world that have no concern for wealth or secrets or people.^";
+                           }
+                           else if((self.part_1_gem == SapphireSiren && self.part_2_gem == EmeraldFaerie)
+                           || (self.part_1_gem == EmeraldFaerie && self.part_2_gem == SapphireSiren)) {
+                              "Burning crimson imparts a sort of furious energy to ", (the)second, " but only in your perception.^";
                            }
                         }
                   ],
@@ -722,15 +734,8 @@ Object -> TastyCake "Tasty Cake"
       with before [;
                   use:
                      print "^You socket ", (the)noun, " into ", (the)second, ".  Against all odds, they fit seamlessly.^";
-                     ! todo: doesn't detect properly?  I'm guessing setting symbolically like this makes a copy of the VaultGem subclass objects, such that we need to match against them symbolically in the gemwork -> use handler, but the symbol is no longer the same as the global named instance.
                      CompoundGem.part_1_gem = self;
                      CompoundGem.part_2_gem = second;
-                     ! todo: dammit, this gives "nothing" for the value of each part.  I'm guessing this is accessing the short_name prop of the superclass VaultGem which doesn't have a short name... 
-                     !CompoundGem.part_1_gem = self.short_name;
-                     !CompoundGem.part_2_gem = second.short_name;
-                     ! todo: this doesn't compile for no reason. Cool.
-                     !CompoundGem.part_1_gem = (name)self;
-                     !CompoundGem.part_2_gem = (name)second;
                      move CompoundGem to player;
                      rtrue;
                  ];
@@ -764,7 +769,7 @@ Object -> TastyCake "Tasty Cake"
       with name 'bookcase' 'of' 'irrepleaceable' '1st' 'first' 'editions',
            description "This bookcase is carved from a single piece of Brazilian Rosewood, just because they could afford it.",
            found_in Vault,
-      has static container;
+      has static container open;
    
     Object -> Paradox "Nnamni's My God: The Paradox"
       with name 'nnamni^s' 'my' 'god' 'god:' 'the' 'paradox',
@@ -1122,48 +1127,72 @@ Object -> TastyCake "Tasty Cake"
         "Mount Godspeak is not supposed to be hollow, but you stand in a yawning cavern beyond the carefully hewn stone of the Treasury behind you.  You stand on a narrow outcropping that stretches out over an infinite abyss, something of a lookout point.  Things stir in the darkness and all the hair on your body stands on end.  Away North stretches a sort of platform made of muted light, barely visible against the backdrop of inky blackness.  ~Step forward little soul, if you feel you are ready to meet your destiny!~  The voices in your head, now an uncountable myriad rather than a mere single monstrous godbeast howl, beckon you urgently.",
            scored_value 100,
            n_to EdgeOfAllAndNothing, 
-      has scored;
+           s_to Vault,
+      has scored light;
     
     ! the end of the line
     Object EdgeOfAllAndNothing "Edge of All and Nothing"
       with description "Ghostly forms swirl about you, variously wailing and cackling, and a glowing mass that fills the horizon in all directions floats out in the darkness like a patient predator.  Faces swarm over its surface and innumerable pseudopod limbs reach toward you; some seem gently, others aggressive, but all bear an urgently covetous manner.  ~We are the Lost Lords, gods of this land that your kind have forsaken.  You, little soul who wandered willingly into our lair -- you are... OURS!~  The tendrils and tongues and teeth of this amalgam of forgotten gods surge forward, converging on your position!  You won't get a second chance to act.",
-           after [;
-                     ! add handling for Wand + Omninomicron, modifying the ending branches
-                     ! you get 1 turn to use the wand in the Edge, so... after anything, check if is_wand_used was set true (which occurs in the Wand's own use handler) -- if so, they live.  else, they die.  Nomicron possession then further modifies ending branch. 
-                     if(self.is_wand_used) {
-                        print "Light shines from the tip of the Wand of Warding, sunlight gold and so gentle that even in the midst of nightmare you are soothed.  The mass of monstrosities recoils from the light, and you flee back whence you came with infinite hellhounds on your heels!  The howling cacophony trailing you ceases in an abrupt wallop of silence as you dive back into the Vault, but you don't pause to see if your pursuit has broken off.  Instead, you dive through the trapdoor, clamber up through the air duct, and shoot straight out the Treasury front door to Market Street without slowing down until you're at home, in bed, and under the covers.^";
-                        if(OmniNomicron in player) {
-                           print "^When you've mastered your fear/bladder, you rise and take the OmniNomicron from your pack.  Together with the Wand of Warding, you just might be able to use this lovely weapon to eradicate all trace of the nightmare Lost Lords and their Cult of the Lost.  Or at least transform them into tasty treats that are relatively harmless.  Every instinct screams at you to run, but you know in your heart that if you run now you will never be able to stop.  Anyway, all this terror has left you awfully peckish...  Steeling your determination, hoping against hope that you aren't alone, you set out to mount a defense for all free creatures of the world!^";
-                           deadflag = 2;
-                        } else {
-                           if(WandOfWarding in player) {
-                              ! case where player got away after meeting Lost Lords and kept the Wand of Warding
-                              print "^Fear defines you now.  Though you have the Wand of Warding, you can feel its calming purpose with a touch and you know it could never be used as a weapon.  Your only other choice besides feeding your paranoia and fleeing forever is joining up with or starting a resistance group of some sort.  Hopefully your wand can aid them somehow, and they'll have artifacts of their own that can be turned against the Lost offensively.  Steeling your determination, hoping against hope that you aren't alone, you set out to mount a defense for all free creatures of the world!^";
-                              deadflag = 2;
-                           } else {
-                              ! case where player got away after meeting Lost Lords, but did not keep the Wand of Warding
-                              print "^Fear defines you now.  There is no weapon or ward you can turn against the coming nightmare, so there is nothing for it but to run.  Days blur one into the next as you travel across the world with your hunters in tow, and inevitably they catch up to you.  Late one night, some unexpected visitors appear on the doorstep of the hovel you're spending the night in.  Brunhilde the beautiful receptionist leads them, though she looks a bit less appealing in a hooded black robe spattered with blood.  Before you can fight or fly, they are upon you with ropes and chains.  They blindfold you and drag you over rough pavement for some time.^";
-                             
-                              print "^When your blindfold is finally removed, you behold the last sight you'll ever see: an array of leering hook-tentacled statues ringed around an altar over which you are stretched, and Brunhilde holding a curved dagger over your heart.  She wears nothing but a giddy grin, and your last thought is that even through a filter of murderous madness she is still so beautiful.  As your blood drains away into massive necrotic batteries, so too does your memory disappear into obscurity.^";
-                              deadflag = 1;
-                           }
-                        }
-                        
-                     } else {
-                        ! handle cases where player is consumed with and without nomicron
-                        ! the lost use your blood plus the fact that you lowered their prison walls to escape 
+           before [;
+                     go:
+                        print "You try to flee the might of the impossibility looming before you, but mortal space and time mean nothing to them; spectral claws arc out of nothing and snatch you up like a plaything.";
                         print "^The Forgotten Gods pounce upon you, tearing you apart at the molecular level.  They leave your senses intact as long as possible in order to maximize your suffering, which seems to be a delicacy to them.  Since you have so helpfully lowered all the defenses against them and provided them with a battery of life force and pain on which to draw, they are easily able to free themselves to assert their terrible will upon the world.^";
-                        if(OmniNomicron in player) {
-                           ! the Lost now have the power of the nomicron
-                           print "^Howling giddy laughter from a thousand thousand mirthless voices is the last thing you'll ever hear as the tide of darkness and hatred washes over you, into you, and discovers the mighty OmniNomicron in your pack.  Perhaps they could have taken it without your help, but perhaps it wards of its own that you were not aware of.  Ah well, it's no matter to you anymore, for in the next few moments you are reduced to literally no matter.^";
-                        } 
-                        deadflag = 1;
+                           if(OmniNomicron in player) {
+                              ! the Lost now have the power of the nomicron
+                              print "^Howling giddy laughter from a thousand thousand mirthless voices is the last thing you'll ever hear as the tide of darkness and hatred washes over you, into you, and discovers the mighty OmniNomicron in your pack.  Perhaps they could have taken it without your help, but perhaps it wards of its own that you were not aware of.  Ah well, it's no matter to you anymore, for in the next few moments you are reduced to literally no matter.^";
+                           } 
+                           deadflag = 1;
+                           rtrue;
+                  ],
+           after [;
+                     ! todo: if a child event returns true, does the handler of the super context run? e.g. if I say 'use ruby on sapphire', which rtrues, while in EdgeOfAllAndNothing, would we still get here to the after handler of that encompassing room? UPDATE: no, you don't.
+                     print "^DEBUG running the after for the Edge, with chances count at ", self.chances_to_act, ".^";
+
+                     ! initial + description passes for the room procs the after handler, so we need to have a counter check
+                     self.chances_to_act++;
+                        if(self.chances_to_act > 2) {
+                        ! add handling for Wand + Omninomicron, modifying the ending branches
+                        ! you get 1 turn to use the wand in the Edge, so... after anything, check if is_wand_used was set true (which occurs in the Wand's own use handler) -- if so, they live.  else, they die.  Nomicron possession then further modifies ending branch. 
+                        if(self.is_wand_used) {
+                           print "Light shines from the tip of the Wand of Warding, sunlight gold and so gentle that even in the midst of nightmare you are soothed.  The mass of monstrosities recoils from the light, and you flee back whence you came with infinite hellhounds on your heels!  The howling cacophony trailing you ceases in an abrupt wallop of silence as you dive back into the Vault, but you don't pause to see if your pursuit has broken off.  Instead, you dive through the trapdoor, clamber up through the air duct, and shoot straight out the Treasury front door to Market Street without slowing down until you're at home, in bed, and under the covers.^";
+                           if(OmniNomicron in player) {
+                              print "^When you've mastered your fear/bladder, you rise and take the OmniNomicron from your pack.  Together with the Wand of Warding, you just might be able to use this lovely weapon to eradicate all trace of the nightmare Lost Lords and their Cult of the Lost.  Or at least transform them into tasty treats that are relatively harmless.  Every instinct screams at you to run, but you know in your heart that if you run now you will never be able to stop.  Anyway, all this terror has left you awfully peckish...  Steeling your determination, hoping against hope that you aren't alone, you set out to mount a defense for all free creatures of the world!^";
+                              deadflag = 2;
+                              rtrue;
+                           } else {
+                              if(WandOfWarding in player) {
+                                 ! case where player got away after meeting Lost Lords and kept the Wand of Warding
+                                 print "^Fear defines you now.  Though you have the Wand of Warding, you can feel its calming purpose with a touch and you know it could never be used as a weapon.  Your only other choice besides feeding your paranoia and fleeing forever is joining up with or starting a resistance group of some sort.  Hopefully your wand can aid them somehow, and they'll have artifacts of their own that can be turned against the Lost offensively.  Steeling your determination, hoping against hope that you aren't alone, you set out to mount a defense for all free creatures of the world!^";
+                                 deadflag = 2;
+                                 rtrue;
+                              } else {
+                                 ! case where player got away after meeting Lost Lords, but did not keep the Wand of Warding
+                                 print "^Fear defines you now.  There is no weapon or ward you can turn against the coming nightmare, so there is nothing for it but to run.  Days blur one into the next as you travel across the world with your hunters in tow, and inevitably they catch up to you.  Late one night, some unexpected visitors appear on the doorstep of the hovel you're spending the night in.  Brunhilde the beautiful receptionist leads them, though she looks a bit less appealing in a hooded black robe spattered with blood.  Before you can fight or fly, they are upon you with ropes and chains.  They blindfold you and drag you over rough pavement for some time.^";
+                              
+                                 print "^When your blindfold is finally removed, you behold the last sight you'll ever see: an array of leering hook-tentacled statues ringed around an altar over which you are stretched, and Brunhilde holding a curved dagger over your heart.  She wears nothing but a giddy grin, and your last thought is that even through a filter of murderous madness she is still so beautiful.  As your blood drains away into massive necrotic batteries, so too does your memory disappear into obscurity.^";
+                                 deadflag = 1;
+                                 rtrue;
+                              }
+                           }
+                           
+                        } else {
+                           ! handle cases where player is consumed with and without nomicron
+                           ! the lost use your blood plus the fact that you lowered their prison walls to escape 
+                           print "^The Forgotten Gods pounce upon you, tearing you apart at the molecular level.  They leave your senses intact as long as possible in order to maximize your suffering, which seems to be a delicacy to them.  Since you have so helpfully lowered all the defenses against them and provided them with a battery of life force and pain on which to draw, they are easily able to free themselves to assert their terrible will upon the world.^";
+                           if(OmniNomicron in player) {
+                              ! the Lost now have the power of the nomicron
+                              print "^Howling giddy laughter from a thousand thousand mirthless voices is the last thing you'll ever hear as the tide of darkness and hatred washes over you, into you, and discovers the mighty OmniNomicron in your pack.  Perhaps they could have taken it without your help, but perhaps it wards of its own that you were not aware of.  Ah well, it's no matter to you anymore, for in the next few moments you are reduced to literally no matter.^";
+                           } 
+                           deadflag = 1;
+                           rtrue;
+                        }
                      }
                   ],
            scored_value 100,
+           chances_to_act 0,
            is_wand_used false,
            s_to MawOfInfinity,
-      has scored;
+      has scored light;
     
     Object -> TheLost "Amalgam of Forgotten Gods"
       with name 'glowing' 'mass' 'amalgam' 'of' 'forgotten' 'gods' 'lost' 'evil' 'abyss' 'darkness' 'edge' 'of' 'all' 'and' 'nothing' 'patient' 'predator', 
